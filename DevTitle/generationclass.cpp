@@ -1,6 +1,10 @@
 #include "generationclass.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
 
 generationclass::generationclass()
 {
@@ -18,22 +22,50 @@ int generationclass::initialize(int width, int height, int seed) {
 	generationclass::width = width;
 	generationclass::height = height;
 	generationclass::seed = seed;
+	return 1;
 }
 
-int generationclass::generate()
-{
-	int generating[512][512];
-	for (int x = 0; x <= generationclass::width; x++) {
-		for (int y = 0; y <= generationclass::height; y++) {
-			if (x > 2 && x < generationclass::width && y > 2 && y < generationclass::height) {
-				for (int i = 0; i < 4; i++) {
-					int rng = srand(generationclass::seed) % 3;
-				}
 
+vector<vector<char>> generationclass::generate()
+{
+	vector<vector<char>> generating;
+	generating.resize(generationclass::height);
+	for (int i = 0; i < generationclass::height; i++)
+		generating[i].resize(generationclass::width);
+	char rng;
+	char prevrng = '1';
+	int progress = 0;
+	srand(generationclass::seed);
+	for (int y = 0; y < generationclass::height; y++) {
+		for (int x = 0; x < generationclass::width; x++) {
+			rng = rand() % 10;
+			if (rand()%100 >= 80) {
+				generating[x][y] = prevrng;
+				prevrng = rng;
+				progress++;
 			}
-			
+			else {
+				generating[x][y] = rng;
+				progress++;
+			}
 		}
 	}
+	cout << "Generation Complete." << endl;
+	return generating;
+}
+
+int generationclass::save(char * filePath, vector<vector<char>> saveData)
+{
+	ofstream savefile;
+	savefile.open(filePath);
+	for (int y = 0; y < generationclass::height; y++) {
+		for (int x = 0; x < generationclass::width; x++) {
+			savefile << saveData[x][y];
+		}
+		savefile << endl;
+	}
+	savefile.close();
+	return 1;
 }
 
 /*
