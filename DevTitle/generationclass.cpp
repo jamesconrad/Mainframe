@@ -38,7 +38,7 @@ vector<vector<char>> generationclass::generate()
 	srand(generationclass::seed);
 	for (int y = 0; y < generationclass::height; y++) {
 		for (int x = 0; x < generationclass::width; x++) {
-			rng = rand() % 10;
+			rng = (rand() % 10);
 			if (rand()%100 >= 80) {
 				generating[x][y] = prevrng;
 				prevrng = rng;
