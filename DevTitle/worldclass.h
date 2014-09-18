@@ -6,6 +6,7 @@ class worldclass {
 private:
 	int framex, framey;
 	vector<vector<char>> worldmap;
+	bool cursorRenderd = false;
 
 public:
 	worldclass();
