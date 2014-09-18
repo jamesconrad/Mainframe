@@ -1,5 +1,7 @@
 #include <iostream>
 #include <Windows.h>
+#include <ctime>
+
 #include "worldclass.h"
 #include "clientclass.h"
 #include "serverclass.h"
@@ -12,16 +14,54 @@ int main() {
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	cls(hStdout);
 
+	time_t now = time(&now);
+	time_t lastRender;
+	bool running = true;
 	generationclass TerrainGenerator;
 	worldclass World;
-	TerrainGenerator.initialize(128, 128, 50982);
-	World.initialize(TerrainGenerator.generate(), 8, 8);
-	World.render(8, 8);
+	TerrainGenerator.initialize(512, 512, 50982);
+	World.initialize(TerrainGenerator.generate(), 32, 32);
+	World.render(2, 2);
+	time(&lastRender);
 	//cls(hStdout);
 	//screen should be re rendered every half second or every time keyboard input is detected
 	//TerrainGenerator.generate();
 	TerrainGenerator.save("savedata.txt", World.getMap());
+	int worldFrameX = World.getFrameX();
+	int worldFrameY = World.getFrameY();
+	while (running) {
+		//temp game loop
+		
+		if (GetAsyncKeyState(VK_UP)){
+			worldFrameY++;
+			Sleep(100);
+		}
+		if (GetAsyncKeyState(VK_DOWN)){
+			worldFrameY--;
+			Sleep(100);
+		}
+		if (GetAsyncKeyState(VK_LEFT)){
+			worldFrameX--;
+			Sleep(100);
+		}
+		if (GetAsyncKeyState(VK_RIGHT)){
+			worldFrameX++;
+			Sleep(100);
+		}
 
+		World.changeFrame(worldFrameX, worldFrameY);
+
+		time(&now);
+		if (difftime(now, lastRender) >= 0.5){
+			cls(hStdout);
+			World.render(2,2);
+			time(&lastRender);
+		}
+
+
+		if (GetAsyncKeyState(VK_ESCAPE))
+			running = false;
+	}
 }
 
 //The function cls(HANDLE) was taken from www.cplusplus.com/forum/beginner/1988/3/#msg10830 to solve the security issue of using a system(char*) call.

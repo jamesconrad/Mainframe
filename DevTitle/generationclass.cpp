@@ -64,6 +64,7 @@ int generationclass::save(char * filePath, vector<vector<char>> saveData)
 		}
 		savefile << endl;
 	}
+	savefile.flush();
 	savefile.close();
 	return 1;
 }

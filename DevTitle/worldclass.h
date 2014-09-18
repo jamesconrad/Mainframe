@@ -18,4 +18,6 @@ public:
 	int changeFrame(int, int);
 	int updateTile(int, int, int);
 	int render(int, int);
+	int getFrameX();
+	int getFrameY();
 };

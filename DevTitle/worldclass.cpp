@@ -51,7 +51,7 @@ int worldclass::render(int rendersizeX, int rendersizeY)
 			for (int x = (worldclass::framex - rendersizeX); x <= (worldclass::framex + rendersizeX); x++){
 				if (x >= 0){
 					if (y == worldclass::framey && x == worldclass::framex && worldclass::cursorRenderd == false){
-						worldclass::cursorRenderd == true;
+						worldclass::cursorRenderd = true;
 						cout << "+";
 					}
 					else{
@@ -63,5 +63,22 @@ int worldclass::render(int rendersizeX, int rendersizeY)
 			cout << endl;
 		}
 	}
+	return 1;
+}
+
+int worldclass::getFrameX()
+{
+	return worldclass::framex;
+}
+
+int worldclass::getFrameY()
+{
+	return worldclass::framey;
+}
+
+int worldclass::changeFrame(int newX, int newY)
+{
+	worldclass::framex = newX;
+	worldclass::framey = newY;
 	return 1;
 }
