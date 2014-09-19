@@ -1,20 +1,21 @@
-#include <vector>
+#include <Windows.h>
+
 using namespace std;
 
-class generationclass {
+class GenerationClass {
 private:
 	char * generated;
 	int seed;
 	int width, height;
 
 public:
-	generationclass();
-	generationclass(const generationclass&);
-	~generationclass();
+	GenerationClass();
+	GenerationClass(const GenerationClass&);
+	~GenerationClass();
 
-	int initialize(int, int, int);
-	vector<vector<char>> generate();
-	int save(char *, vector<vector<char>>);
+	int Initialize(int, int, int);
+	CHAR_INFO * * Generate();
+	int Save(char *, CHAR_INFO * *);
 };
 
 //This is the class that creates the save file, and terrain.

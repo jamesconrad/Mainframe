@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="clientclass.cpp" />
+    <ClCompile Include="conbufferclass.cpp" />
     <ClCompile Include="generationclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="main.cpp" />
@@ -87,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clientclass.h" />
+    <ClInclude Include="conbufferclass.h" />
     <ClInclude Include="generationclass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="serverclass.h" />

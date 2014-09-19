@@ -1,23 +1,26 @@
-#include <vector>
+#include "conbufferclass.h"
+#include <Windows.h>
 
 using namespace std;
 
-class worldclass {
+class WorldClass {
 private:
 	int framex, framey;
-	vector<vector<char>> worldmap;
+	CHAR_INFO** worldMap;
 	bool cursorRenderd = false;
 
-public:
-	worldclass();
-	worldclass(const worldclass&);
-	~worldclass();
+	ConBufferClass class_ConBuffer;
 
-	vector<vector<char>> getMap();
-	int initialize(vector<vector<char>>, int, int);
-	int changeFrame(int, int);
-	int updateTile(int, int, int);
-	int render(int, int);
-	int getFrameX();
-	int getFrameY();
+public:
+	WorldClass();
+	WorldClass(const WorldClass&);
+	~WorldClass();
+
+	CHAR_INFO** GetMap();
+	int Initialize(CHAR_INFO**, int, int);
+	int ChangeFrame(int, int);
+	int UpdateTile(int, int, int);
+	int Render(int, int);
+	int GetFrameX();
+	int GetFrameY();
 };

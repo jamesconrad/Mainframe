@@ -1,51 +1,56 @@
-#include "generationclass.h"
+#include "GenerationClass.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <vector>
+#include <Windows.h>
+
 using namespace std;
 
-generationclass::generationclass()
+GenerationClass::GenerationClass()
 {
 }
 
-generationclass::generationclass(const generationclass& other)
+GenerationClass::GenerationClass(const GenerationClass& other)
 {
 }
 
-generationclass::~generationclass()
+GenerationClass::~GenerationClass()
 {
 }
 
-int generationclass::initialize(int width, int height, int seed) {
-	generationclass::width = width;
-	generationclass::height = height;
-	generationclass::seed = seed;
+int GenerationClass::Initialize(int width, int height, int seed) {
+	GenerationClass::width = width;
+	GenerationClass::height = height;
+	GenerationClass::seed = seed;
 	return 1;
 }
 
 
-vector<vector<char>> generationclass::generate()
+CHAR_INFO * * GenerationClass::Generate()
 {
-	vector<vector<char>> generating;
-	generating.resize(generationclass::height);
-	for (int i = 0; i < generationclass::height; i++)
-		generating[i].resize(generationclass::width);
+	CHAR_INFO * * generating= (CHAR_INFO**)malloc(sizeof(CHAR_INFO*)*GenerationClass::height);
+	for (int i = 0; i < GenerationClass::width; i++)
+		generating[i] = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*GenerationClass::width);
+
 	char rng;
 	char prevrng = '1';
 	int progress = 0;
-	srand(generationclass::seed);
-	for (int y = 0; y < generationclass::height; y++) {
-		for (int x = 0; x < generationclass::width; x++) {
+	srand(GenerationClass::seed);
+	for (int y = 0; y < GenerationClass::height; y++) 
+	{
+		for (int x = 0; x < GenerationClass::width; x++) 
+		{
 			rng = (rand() % 10);
-			if (rand()%100 >= 80) {
-				generating[x][y] = prevrng;
+			if (rand()%100 >= 80) 
+			{
+				generating[x][y].Char.AsciiChar = prevrng;
 				prevrng = rng;
 				progress++;
 			}
-			else {
-				generating[x][y] = rng;
+			else 
+			{
+				generating[x][y].Char.AsciiChar = rng;
 				progress++;
 			}
 		}
@@ -54,13 +59,14 @@ vector<vector<char>> generationclass::generate()
 	return generating;
 }
 
-int generationclass::save(char * filePath, vector<vector<char>> saveData)
+int GenerationClass::Save(char * filePath, CHAR_INFO * * saveData)
 {
 	ofstream savefile;
 	savefile.open(filePath);
-	for (int y = 0; y < generationclass::height; y++) {
-		for (int x = 0; x < generationclass::width; x++) {
-			savefile << saveData[x][y];
+	for (int y = 0; y < GenerationClass::height; y++) {
+		for (int x = 0; x < GenerationClass::width; x++) {
+			savefile << saveData[x][y].Char.AsciiChar;
+			savefile << saveData[x][y].Attributes;
 		}
 		savefile << endl;
 	}

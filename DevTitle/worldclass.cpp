@@ -4,81 +4,96 @@ int changeFrame(int, int);
 int updateTile(int, int, int);
 int render();
 */
-#include <vector>
-#include "worldclass.h"
+#include "WorldClass.h"
 #include <iostream>
+#include <Windows.h>
 using namespace std;
 
-worldclass::worldclass()
+WorldClass::WorldClass()
 {
 
 }
-worldclass::worldclass(const worldclass&)
-{
-
-}
-
-worldclass::~worldclass()
+WorldClass::WorldClass(const WorldClass&)
 {
 
 }
 
-vector<vector<char>> worldclass::getMap()
+WorldClass::~WorldClass()
 {
-	return worldclass::worldmap;
+
 }
-int worldclass::initialize(vector<vector<char>> generation, int framex, int framey)
+
+CHAR_INFO** WorldClass::GetMap()
 {
-	worldclass::worldmap = generation;
-	worldclass::framex = framex;
-	worldclass::framey = framey;
+	return WorldClass::worldMap;
+}
+int WorldClass::Initialize(CHAR_INFO** generation, int framex, int framey)
+{
+	WorldClass::class_ConBuffer.Initialize();
+	WorldClass::worldMap = generation;
+	WorldClass::framex = framex;
+	WorldClass::framey = framey;
 	return 1;
 }
 
-int worldclass::updateTile(int x, int y, int newTile)
+int WorldClass::UpdateTile(int x, int y, int newTile)
 {
-	worldclass::worldmap[x][y] = newTile;
+	WorldClass::worldMap[x][y].Char.AsciiChar = newTile;
 	return 1;
 }
 
-int worldclass::render(int rendersizeX, int rendersizeY)
+int WorldClass::Render(int rendersizeX, int rendersizeY)
 {
+
+	for (int y = WorldClass::framey - rendersizeY; y <= WorldClass::framey + rendersizeY; y++)
+	{
+		if (y >= 0)
+		{
+			WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap[y], rendersizeX * 2, { 0, y });
+		}
+	}
+	WorldClass::class_ConBuffer.SwapBuffer();
+
+	//COMPLETE REWORK, LEGACY CODE BELOW
 	//Note colouring system still needs to be impletmented
 	//Switch cases would be best ex. case ASCIIChar-PlayerNum > 0; setcolour(playercolour); break;
+	/*
 	cout << "Ready to render world." << endl;
-	for (int y = (worldclass::framey - rendersizeY); y <= (worldclass::framey + rendersizeY); y++){
+	for (int y = (WorldClass::framey - rendersizeY); y <= (WorldClass::framey + rendersizeY); y++){
 		if (y >= 0) {
-			for (int x = (worldclass::framex - rendersizeX); x <= (worldclass::framex + rendersizeX); x++){
+			for (int x = (WorldClass::framex - rendersizeX); x <= (WorldClass::framex + rendersizeX); x++){
 				if (x >= 0){
-					if (y == worldclass::framey && x == worldclass::framex && worldclass::cursorRenderd == false){
-						worldclass::cursorRenderd = true;
+					if (y == WorldClass::framey && x == WorldClass::framex && WorldClass::cursorRenderd == false){
+						WorldClass::cursorRenderd = true;
 						cout << "+";
 					}
 					else{
-						cout << worldclass::worldmap[x][y];
-						worldclass::cursorRenderd = false;
+						WorldClass::worldmap[x][y];
+						WorldClass::cursorRenderd = false;
 					}
 				}
 			}
 			cout << endl;
 		}
 	}
+	*/
+
 	return 1;
 }
 
-int worldclass::getFrameX()
+int WorldClass::GetFrameX()
 {
-	return worldclass::framex;
+	return WorldClass::framex;
 }
 
-int worldclass::getFrameY()
+int WorldClass::GetFrameY()
 {
-	return worldclass::framey;
+	return WorldClass::framey;
 }
 
-int worldclass::changeFrame(int newX, int newY)
+int WorldClass::ChangeFrame(int newX, int newY)
 {
-	worldclass::framex = newX;
-	worldclass::framey = newY;
+	WorldClass::framex = newX;
+	WorldClass::framey = newY;
 	return 1;
 }

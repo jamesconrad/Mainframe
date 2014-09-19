@@ -5,56 +5,80 @@
 #include "worldclass.h"
 #include "clientclass.h"
 #include "serverclass.h"
+#include "conbufferclass.h"
 #include "generationclass.h"
-void cls(HANDLE);
+/*
+enum TextColour
+{
+	tWhite = (0x001 | 0x002 | 0x004),
+	tRed = (0x004),
+	tBlue = (0x001),
+	tGreen = (0x002)
+};
+enum BackgroundColour
+{
+	bWhie = (0x010 | 0x020 | 0x030),
+	bRed = (0x040),
+	bBlue = (0x010),
+	bGreen = (0x020)
+};
+*/
 
-int main() {
+/*
+TODO:
+http://msdn.microsoft.com/en-us/library/ms682073(v=vs.85).aspx
 
-	HANDLE hStdout;
-	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-	cls(hStdout);
+*/
 
+int main() 
+{
 	time_t now = time(&now);
 	time_t lastRender;
 	bool running = true;
-	generationclass TerrainGenerator;
-	worldclass World;
-	TerrainGenerator.initialize(512, 512, 50982);
-	World.initialize(TerrainGenerator.generate(), 32, 32);
-	World.render(2, 2);
+	GenerationClass terrainGenerator;
+	WorldClass world;
+	terrainGenerator.Initialize(512, 512, 50982);
+	
+	world.Initialize(terrainGenerator.Generate(), 32, 32);
+	world.Render(2, 2);
+	
 	time(&lastRender);
-	//cls(hStdout);
-	//screen should be re rendered every half second or every time keyboard input is detected
-	//TerrainGenerator.generate();
-	TerrainGenerator.save("savedata.txt", World.getMap());
-	int worldFrameX = World.getFrameX();
-	int worldFrameY = World.getFrameY();
-	while (running) {
+
+	terrainGenerator.Save("savedata.txt", world.GetMap());
+	int worldFrameX = world.GetFrameX();
+	int worldFrameY = world.GetFrameY();
+
+	while (running) 
+	{
 		//temp game loop
 		
-		if (GetAsyncKeyState(VK_UP)){
+		if (GetAsyncKeyState(VK_UP))
+		{
 			worldFrameY++;
 			Sleep(100);
 		}
-		if (GetAsyncKeyState(VK_DOWN)){
+		if (GetAsyncKeyState(VK_DOWN))
+		{
 			worldFrameY--;
 			Sleep(100);
 		}
-		if (GetAsyncKeyState(VK_LEFT)){
+		if (GetAsyncKeyState(VK_LEFT))
+		{
 			worldFrameX--;
 			Sleep(100);
 		}
-		if (GetAsyncKeyState(VK_RIGHT)){
+		if (GetAsyncKeyState(VK_RIGHT))
+		{
 			worldFrameX++;
 			Sleep(100);
 		}
 
-		World.changeFrame(worldFrameX, worldFrameY);
+		world.ChangeFrame(worldFrameX, worldFrameY);
 
 		time(&now);
-		if (difftime(now, lastRender) >= 0.5){
-			cls(hStdout);
-			World.render(2,2);
+		if (difftime(now, lastRender) >= 0.5)
+		{
+			world.Render(2,2);
 			time(&lastRender);
 		}
 
@@ -62,28 +86,5 @@ int main() {
 		if (GetAsyncKeyState(VK_ESCAPE))
 			running = false;
 	}
-}
-
-//The function cls(HANDLE) was taken from www.cplusplus.com/forum/beginner/1988/3/#msg10830 to solve the security issue of using a system(char*) call.
-//"Grey Wolf" (2008, July, 8) "Console Closing Down - C++ Forum" Retrieved from www.cplusplus.com/forum/beginner/1988/3/#msg10830
-void cls(HANDLE hConsole){
-	COORD coordScreen = { 0, 0 };
-	DWORD cCharsWritten;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	DWORD dwConSize;
-
-	if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
-		return;
-	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-
-	if (!FillConsoleOutputCharacter(hConsole, (TCHAR) ' ', dwConSize, coordScreen, &cCharsWritten))
-		return;
-
-	if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
-		return;
-
-	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten))
-		return;
-
-	SetConsoleCursorPosition(hConsole, coordScreen);
+	return 1;
 }
