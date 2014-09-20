@@ -51,8 +51,8 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, int height, int width, COO
 	COORD buffSize;
 	SMALL_RECT renderRect;
 
-	buffSize.X = 32; // 9,3
-	buffSize.Y = 32;
+	buffSize.X = width; //32,32
+	buffSize.Y = height;
 
 	
 

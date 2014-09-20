@@ -39,42 +39,56 @@ int main()
 	WorldClass world;
 	terrainGenerator.Initialize(32, 32, 50982);
 	
-	world.Initialize(terrainGenerator.Generate(), 32, 32);
-	world.Render(2, 2);
+	world.Initialize(terrainGenerator.Generate(), 0, terrainGenerator.GetHeight(), terrainGenerator.GetWidth());
+	world.Render();
 	
 	time(&lastRender);
 
 	terrainGenerator.Save("savedata.txt", world.GetMap());
-	int worldFrameX = world.GetFrameX();
-	int worldFrameY = world.GetFrameY();
 	
 	while (running) 
 	{
 		//temp game loop
 		
+
+		//Checks to see if can move left, or right, and does so
 		if (GetAsyncKeyState(VK_UP))
 		{
-			worldFrameY++;
+			if (world.GetFrame() - terrainGenerator.GetWidth() > 0)
+			{
+				world.ChangeFrame(world.GetFrame() - terrainGenerator.GetWidth());
+				Sleep(100);
+			}
 		}
 		if (GetAsyncKeyState(VK_DOWN))
 		{
-			worldFrameY--;
+			if (world.GetFrame() + terrainGenerator.GetWidth() < terrainGenerator.GetHeight() * terrainGenerator.GetWidth())
+			{
+				world.ChangeFrame(world.GetFrame() + terrainGenerator.GetWidth());
+				Sleep(100);
+			}
 		}
 		if (GetAsyncKeyState(VK_LEFT))
 		{
-			worldFrameX--;
+			if (world.GetFrame() % terrainGenerator.GetWidth() != 0)
+			{
+				world.ChangeFrame(world.GetFrame() - 1);
+				Sleep(100);
+			}
 		}
 		if (GetAsyncKeyState(VK_RIGHT))
 		{
-			worldFrameX++;
+			if (world.GetFrame() % terrainGenerator.GetWidth() != terrainGenerator.GetWidth() - 1)
+			{
+				world.ChangeFrame(world.GetFrame() + 1);
+				Sleep(100);
+			}
 		}
 
-		world.ChangeFrame(worldFrameX, worldFrameY);
-
 		time(&now);
-		if (difftime(now, lastRender) >= 0.5)
+		if (difftime(now, lastRender) >= 0.1)
 		{
-			world.Render(32,16);
+			world.Render();
 			time(&lastRender);
 		}
 

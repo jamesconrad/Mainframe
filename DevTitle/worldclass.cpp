@@ -26,12 +26,16 @@ CHAR_INFO* WorldClass::GetMap()
 {
 	return WorldClass::worldMap;
 }
-int WorldClass::Initialize(CHAR_INFO* generation, int framex, int framey)
+int WorldClass::Initialize(CHAR_INFO* generation, int frame, int height, int width)
 {
 	WorldClass::class_ConBuffer.Initialize();
 	WorldClass::worldMap = generation;
-	WorldClass::framex = framex;
-	WorldClass::framey = framey;
+	WorldClass::frame = frame;
+	WorldClass::height = height;
+	WorldClass::width = width;
+
+	WorldClass::cursor.Char.UnicodeChar = 43;
+	WorldClass::cursor.Attributes = 0x0004 | 0x0008;
 	return 1;
 }
 
@@ -41,11 +45,14 @@ int WorldClass::UpdateTile(int x, int y, int newTile)
 	return 1;
 }
 
-int WorldClass::Render(int rendersizeX, int rendersizeY)
+int WorldClass::Render()
 {
-
-	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::framex, WorldClass::framey, { 8, 3 });
-
+	class_ConBuffer.ClearConsole(class_ConBuffer.hConsole);
+	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::width, WorldClass::height, { 0 , 0 });
+	
+	
+	
+	SetConsoleCursorPosition(class_ConBuffer.hConsole, WorldClass::ConvertIndex(WorldClass::frame));
 
 	//COMPLETE REWORK, LEGACY CODE BELOW
 	//Note colouring system still needs to be impletmented
@@ -74,19 +81,31 @@ int WorldClass::Render(int rendersizeX, int rendersizeY)
 	return 1;
 }
 
-int WorldClass::GetFrameX()
+int WorldClass::GetFrame()
 {
-	return WorldClass::framex;
+	return WorldClass::frame;
 }
 
-int WorldClass::GetFrameY()
+int WorldClass::ChangeFrame(int newFrame)
 {
-	return WorldClass::framey;
-}
-
-int WorldClass::ChangeFrame(int newX, int newY)
-{
-	WorldClass::framex = newX;
-	WorldClass::framey = newY;
+	WorldClass::frame = newFrame;
 	return 1;
+}
+
+COORD WorldClass::ConvertIndex(int index)
+{
+	COORD indexCoord;
+	indexCoord.Y = index / WorldClass::width;
+	indexCoord.X = index % WorldClass::width;
+
+	return indexCoord;
+}
+
+int WorldClass::ConvertCoord(COORD indexCoord)
+{
+	int index;
+	index = indexCoord.Y * WorldClass::width;
+	index += indexCoord.X;
+
+	return index;
 }

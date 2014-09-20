@@ -67,3 +67,14 @@ int GenerationClass::Save(char * filePath, CHAR_INFO * saveData)
 	savefile.close();
 	return 1;
 }
+
+
+int GenerationClass::GetWidth() 
+{
+	return GenerationClass::width;
+}
+
+int GenerationClass::GetHeight()
+{
+	return GenerationClass::height;
+}

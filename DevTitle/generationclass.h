@@ -14,6 +14,8 @@ public:
 	~GenerationClass();
 
 	int Initialize(int, int, int);
+	int GetWidth();
+	int GetHeight();
 	CHAR_INFO * Generate();
 	int Save(char *, CHAR_INFO *);
 };
