@@ -4,9 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <Windows.h>
-
-using namespace std;
-
 GenerationClass::GenerationClass()
 {
 }
@@ -27,60 +24,46 @@ int GenerationClass::Initialize(int width, int height, int seed) {
 }
 
 
-CHAR_INFO * * GenerationClass::Generate()
+CHAR_INFO * GenerationClass::Generate()
 {
-	CHAR_INFO * * generating= (CHAR_INFO**)malloc(sizeof(CHAR_INFO*)*GenerationClass::height);
-	for (int i = 0; i < GenerationClass::width; i++)
-		generating[i] = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*GenerationClass::width);
-
+	//CHAR_INFO * * generating= (CHAR_INFO**)malloc(sizeof(CHAR_INFO*)*GenerationClass::height);
+	//for (int i = 0; i < GenerationClass::width; i++)
+	//	generating[i] = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*GenerationClass::width);
+	CHAR_INFO * generating = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*GenerationClass::width*GenerationClass::height);
 	char rng;
 	char prevrng = '1';
 	int progress = 0;
 	srand(GenerationClass::seed);
-	for (int y = 0; y < GenerationClass::height; y++) 
+	for (int i = 0; i < GenerationClass::width * GenerationClass::height; i++) 
 	{
-		for (int x = 0; x < GenerationClass::width; x++) 
+		rng = (rand() % 10);
+		if (rand()%100 >= 80) 
 		{
-			rng = (rand() % 10);
-			if (rand()%100 >= 80) 
-			{
-				generating[x][y].Char.AsciiChar = prevrng;
-				prevrng = rng;
-				progress++;
-			}
-			else 
-			{
-				generating[x][y].Char.AsciiChar = rng;
-				progress++;
-			}
+			generating[i].Char.UnicodeChar = prevrng;
+			prevrng = rng;
+			progress++;
 		}
+		else 
+		{
+			generating[i].Char.UnicodeChar = rng;
+			progress++;
+		}
+		generating[i].Attributes = 0x0001 | 0x0002 | 0x0004;
 	}
-	cout << "Generation Complete." << endl;
 	return generating;
 }
 
-int GenerationClass::Save(char * filePath, CHAR_INFO * * saveData)
+int GenerationClass::Save(char * filePath, CHAR_INFO * saveData)
 {
 	ofstream savefile;
 	savefile.open(filePath);
-	for (int y = 0; y < GenerationClass::height; y++) {
-		for (int x = 0; x < GenerationClass::width; x++) {
-			savefile << saveData[x][y].Char.AsciiChar;
-			savefile << saveData[x][y].Attributes;
-		}
+	for (int i = 0; i < GenerationClass::width * GenerationClass::height; i++)
+	{
+		savefile << saveData[i].Char.UnicodeChar;
+		savefile << saveData[i].Attributes; //This line converts the save file to some asain language.
 		savefile << endl;
 	}
 	savefile.flush();
 	savefile.close();
 	return 1;
 }
-
-/*
-Possible terrain generation
-0 - water
-1 - plains
-2 - hills
-3 - forrest
-4 - forrested hills
-5 - mountain
-*/

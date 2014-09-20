@@ -7,7 +7,6 @@ int render();
 #include "WorldClass.h"
 #include <iostream>
 #include <Windows.h>
-using namespace std;
 
 WorldClass::WorldClass()
 {
@@ -23,11 +22,11 @@ WorldClass::~WorldClass()
 
 }
 
-CHAR_INFO** WorldClass::GetMap()
+CHAR_INFO* WorldClass::GetMap()
 {
 	return WorldClass::worldMap;
 }
-int WorldClass::Initialize(CHAR_INFO** generation, int framex, int framey)
+int WorldClass::Initialize(CHAR_INFO* generation, int framex, int framey)
 {
 	WorldClass::class_ConBuffer.Initialize();
 	WorldClass::worldMap = generation;
@@ -38,21 +37,15 @@ int WorldClass::Initialize(CHAR_INFO** generation, int framex, int framey)
 
 int WorldClass::UpdateTile(int x, int y, int newTile)
 {
-	WorldClass::worldMap[x][y].Char.AsciiChar = newTile;
+	WorldClass::worldMap[x].Char.AsciiChar = newTile;
 	return 1;
 }
 
 int WorldClass::Render(int rendersizeX, int rendersizeY)
 {
 
-	for (int y = WorldClass::framey - rendersizeY; y <= WorldClass::framey + rendersizeY; y++)
-	{
-		if (y >= 0)
-		{
-			WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap[y], rendersizeX * 2, { 0, y });
-		}
-	}
-	WorldClass::class_ConBuffer.SwapBuffer();
+	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::framex, WorldClass::framey, { 8, 3 });
+
 
 	//COMPLETE REWORK, LEGACY CODE BELOW
 	//Note colouring system still needs to be impletmented

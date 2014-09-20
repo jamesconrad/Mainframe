@@ -1,12 +1,10 @@
 #include "conbufferclass.h"
 #include <Windows.h>
 
-using namespace std;
-
 class WorldClass {
 private:
 	int framex, framey;
-	CHAR_INFO** worldMap;
+	CHAR_INFO* worldMap;
 	bool cursorRenderd = false;
 
 	ConBufferClass class_ConBuffer;
@@ -16,8 +14,8 @@ public:
 	WorldClass(const WorldClass&);
 	~WorldClass();
 
-	CHAR_INFO** GetMap();
-	int Initialize(CHAR_INFO**, int, int);
+	CHAR_INFO* GetMap();
+	int Initialize(CHAR_INFO* , int, int);
 	int ChangeFrame(int, int);
 	int UpdateTile(int, int, int);
 	int Render(int, int);

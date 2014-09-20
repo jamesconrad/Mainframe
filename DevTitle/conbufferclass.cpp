@@ -1,15 +1,6 @@
 #include "ConBufferClass.h"
 #include <Windows.h>
 
-/*
-ConBufferClass();
-ConBufferClass(const ConBufferClass&);
-~ConBufferClass();
-
-int initialize();
-int activateBuffer();
-*/
-
 ConBufferClass::ConBufferClass()
 {
 }
@@ -25,13 +16,14 @@ ConBufferClass::~ConBufferClass()
 int ConBufferClass::Initialize()
 {
 	ConBufferClass::hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
-	ConBufferClass::hBuffer = CreateConsoleScreenBuffer(GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+	SetConsoleTitle(L"DevTitle - Declared in conbufferclass.cpp under Initialize()");
+	//ConBufferClass::hBuffer = CreateConsoleScreenBuffer(GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	ConBufferClass::beginCoords.X = 0;
 	ConBufferClass::beginCoords.Y = 0;
-	SetConsoleCursorPosition(hBuffer, beginCoords);
+	//SetConsoleCursorPosition(hBuffer, beginCoords);
 	return 0;
 }
-
+/*
 int ConBufferClass::SwapBuffer()
 {
 	if (ConBufferClass::hBuffActive)
@@ -46,26 +38,30 @@ int ConBufferClass::SwapBuffer()
 
 	return 0;
 }
+*/
+
 //COORD buffSize;
 //buffSize.X = sizeof(char*); buffSize.Y = 1
 //SMALL_RECT renderRect;
 //renderRect.Left = x; renderRect.Top = y; renderRect.Right = x + buffSize.X; renderRect.Bottom = y + buffSize.Y;
 //COORD buffCoord;
 //buffCoord.X = x; buffCoord.Y = y;
-int ConBufferClass::OutputScreen(CHAR_INFO charData[], int length, COORD buffCoord)
+int ConBufferClass::OutputScreen(CHAR_INFO* charData, int height, int width, COORD buffCoord)
 {
 	COORD buffSize;
 	SMALL_RECT renderRect;
 
-	buffSize.X = length;
-	buffSize.Y = 1;
+	buffSize.X = 32; // 9,3
+	buffSize.Y = 32;
+
+	
 
 	renderRect.Left = buffCoord.X;
 	renderRect.Top = buffCoord.Y;
 	renderRect.Right = buffCoord.X + buffSize.X;
 	renderRect.Bottom = buffCoord.Y + buffSize.Y;
-
-	WriteConsoleOutput(ConBufferClass::hBuffer, charData, buffSize, buffCoord, &renderRect);
+	
+	WriteConsoleOutput(ConBufferClass::hConsole, charData, buffSize, buffCoord, &renderRect);
 	
 	return 1;
 }

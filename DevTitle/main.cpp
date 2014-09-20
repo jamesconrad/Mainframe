@@ -37,7 +37,7 @@ int main()
 	bool running = true;
 	GenerationClass terrainGenerator;
 	WorldClass world;
-	terrainGenerator.Initialize(512, 512, 50982);
+	terrainGenerator.Initialize(32, 32, 50982);
 	
 	world.Initialize(terrainGenerator.Generate(), 32, 32);
 	world.Render(2, 2);
@@ -47,7 +47,7 @@ int main()
 	terrainGenerator.Save("savedata.txt", world.GetMap());
 	int worldFrameX = world.GetFrameX();
 	int worldFrameY = world.GetFrameY();
-
+	
 	while (running) 
 	{
 		//temp game loop
@@ -55,22 +55,18 @@ int main()
 		if (GetAsyncKeyState(VK_UP))
 		{
 			worldFrameY++;
-			Sleep(100);
 		}
 		if (GetAsyncKeyState(VK_DOWN))
 		{
 			worldFrameY--;
-			Sleep(100);
 		}
 		if (GetAsyncKeyState(VK_LEFT))
 		{
 			worldFrameX--;
-			Sleep(100);
 		}
 		if (GetAsyncKeyState(VK_RIGHT))
 		{
 			worldFrameX++;
-			Sleep(100);
 		}
 
 		world.ChangeFrame(worldFrameX, worldFrameY);
@@ -78,7 +74,7 @@ int main()
 		time(&now);
 		if (difftime(now, lastRender) >= 0.5)
 		{
-			world.Render(2,2);
+			world.Render(32,16);
 			time(&lastRender);
 		}
 

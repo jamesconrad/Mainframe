@@ -14,8 +14,8 @@ public:
 	~GenerationClass();
 
 	int Initialize(int, int, int);
-	CHAR_INFO * * Generate();
-	int Save(char *, CHAR_INFO * *);
+	CHAR_INFO * Generate();
+	int Save(char *, CHAR_INFO *);
 };
 
 //This is the class that creates the save file, and terrain.

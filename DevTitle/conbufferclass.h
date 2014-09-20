@@ -7,19 +7,18 @@
 
 class ConBufferClass {
 private:
-	HANDLE hBuffer,hConsole;
 	COORD beginCoords;
 	SMALL_RECT rect;
 	DWORD nWritten;
-	bool hBuffActive = false;
 public:
+	HANDLE hConsole;
+
 	ConBufferClass();
 	ConBufferClass(const ConBufferClass&);
 	~ConBufferClass();
 	
 	int Initialize();
-	int SwapBuffer();
-	int OutputScreen(CHAR_INFO *, int, COORD);
+	int OutputScreen(CHAR_INFO*, int, int, COORD);
 	int ClearConsole(HANDLE);
 };
 
