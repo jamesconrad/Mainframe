@@ -5,9 +5,17 @@
 
 class ConBufferClass {
 private:
-	COORD beginCoords;
-	SMALL_RECT rect;
+	COORD beginCoords; 
 	DWORD nWritten;
+
+	time_t now;
+	time_t lastRender;
+
+	CHAR_INFO * border;
+
+	int RenderBorder();
+	int InitiazlizeBorder();
+
 public:
 	HANDLE hConsole;
 

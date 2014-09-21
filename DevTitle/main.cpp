@@ -37,9 +37,9 @@ int main()
 	bool running = true;
 	GenerationClass terrainGenerator;
 	WorldClass world;
-	terrainGenerator.Initialize(32, 48, 50982);
+	terrainGenerator.Initialize(48, 32, 50982);
 	
-	world.Initialize(terrainGenerator.Generate(), 0, terrainGenerator.GetHeight(), terrainGenerator.GetWidth());
+	world.Initialize(terrainGenerator.Generate(), 0, terrainGenerator.GetWidth(), terrainGenerator.GetHeight());
 	world.Render();
 	
 	time(&lastRender);

@@ -1,5 +1,9 @@
 #include "ConBufferClass.h"
 #include <Windows.h>
+#include <ctime>
+
+#define SCREEN_HEIGHT 51
+#define SCREEN_WIDTH 83
 
 ConBufferClass::ConBufferClass()
 {
@@ -16,57 +20,43 @@ ConBufferClass::~ConBufferClass()
 int ConBufferClass::Initialize()
 {
 	ConBufferClass::hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTitle(L"DevTitle - Declared in conbufferclass.cpp under Initialize()");
-	//ConBufferClass::hBuffer = CreateConsoleScreenBuffer(GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+	SetConsoleTitle(L"Ascivilization");
+	ConBufferClass::InitiazlizeBorder();
+
 	ConBufferClass::beginCoords.X = 0;
 	ConBufferClass::beginCoords.Y = 0;
-	//SetConsoleCursorPosition(hBuffer, beginCoords);
+
+	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 	return 0;
 }
-/*
-int ConBufferClass::SwapBuffer()
-{
-	if (ConBufferClass::hBuffActive)
-	{
-		SetConsoleActiveScreenBuffer(ConBufferClass::hConsole);
-	}
-	else
-	{
-		SetConsoleActiveScreenBuffer(ConBufferClass::hBuffer);
-		ConBufferClass::hBuffActive = true;
-	}
 
-	return 0;
-}
-*/
-
-//COORD buffSize;
-//buffSize.X = sizeof(char*); buffSize.Y = 1
-//SMALL_RECT renderRect;
-//renderRect.Left = x; renderRect.Top = y; renderRect.Right = x + buffSize.X; renderRect.Bottom = y + buffSize.Y;
-//COORD buffCoord;
-//buffCoord.X = x; buffCoord.Y = y;
 int ConBufferClass::OutputScreen(CHAR_INFO* charData, int height, int width, COORD buffCoord)
 {
 	COORD buffSize;
 	SMALL_RECT renderRect;
-
 	buffSize.X = width;
 	buffSize.Y = height;
 
+	renderRect.Left = buffCoord.X + 1;
+	renderRect.Top = buffCoord.Y + 1;
+	renderRect.Right = buffCoord.X + buffSize.X + 1;
+	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
 	
+	time(&now);
+	if (difftime(now, lastRender) >= 0.1)
+	{
+		ConBufferClass::ClearConsole(ConBufferClass::hConsole);
+		ConBufferClass::RenderBorder();
+		WriteConsoleOutput(ConBufferClass::hConsole, charData, buffSize, buffCoord, &renderRect);
+		time(&lastRender);
+	}
 
-	renderRect.Left = buffCoord.X;
-	renderRect.Top = buffCoord.Y;
-	renderRect.Right = buffCoord.X + buffSize.X;
-	renderRect.Bottom = buffCoord.Y + buffSize.Y;
-	
-	WriteConsoleOutput(ConBufferClass::hConsole, charData, buffSize, buffCoord, &renderRect);
+	//WriteConsoleOutput(ConBufferClass::hConsole, charData, buffSize, buffCoord, &renderRect);
 	
 	return 1;
 }
 
-//The function cls(HANDLE) was taken from www.cplusplus.com/forum/beginner/1988/3/#msg10830 to solve the security issue of using a system(char*) call.
+//The function ClearConsole(HANDLE) was taken from www.cplusplus.com/forum/beginner/1988/3/#msg10830 to solve the security issue of using a system(char*) call.
 //"Grey Wolf" (2008, July, 8) "Console Closing Down - C++ Forum" Retrieved from www.cplusplus.com/forum/beginner/1988/3/#msg10830
 int ConBufferClass::ClearConsole(HANDLE hConsole)
 {
@@ -94,49 +84,37 @@ int ConBufferClass::ClearConsole(HANDLE hConsole)
 	return 1;
 }
 
-/*
+int ConBufferClass::InitiazlizeBorder()
+{
+	ConBufferClass::border = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*SCREEN_HEIGHT*SCREEN_WIDTH);
+	for (int index = 0; index <= SCREEN_HEIGHT*SCREEN_WIDTH; index++)
+	{//9619 for testing
+		if (index == 0) ConBufferClass::border[index].Char.UnicodeChar = 9556;
+		else if (index == SCREEN_WIDTH - 1) ConBufferClass::border[index].Char.UnicodeChar = 9559;
+		else if (index == SCREEN_HEIGHT*SCREEN_WIDTH - SCREEN_WIDTH) ConBufferClass::border[index].Char.UnicodeChar = 9562;
+		else if (index == SCREEN_HEIGHT*SCREEN_WIDTH - 1) ConBufferClass::border[index].Char.UnicodeChar = 9565;
+		else if (index == 49) ConBufferClass::border[index].Char.UnicodeChar = 9574;
+		else if (index == SCREEN_WIDTH * 33) ConBufferClass::border[index].Char.UnicodeChar = 9568;
+		else if (index == SCREEN_WIDTH * 34 - 1) ConBufferClass::border[index].Char.UnicodeChar = 9571;
+		else if (index == SCREEN_WIDTH * 33 + 49) ConBufferClass::border[index].Char.UnicodeChar = 9577;
+		//is it in row 1 or 33 or SCREEN_HEIGHT?
+		else if (index < SCREEN_WIDTH || (index > SCREEN_WIDTH * 33 && index < SCREEN_WIDTH * 34 - 1) || ((index > (SCREEN_HEIGHT - 1) * SCREEN_WIDTH && index < SCREEN_HEIGHT * SCREEN_WIDTH - 1))) ConBufferClass::border[index].Char.UnicodeChar = 9552;
+		//is it in col 49 and above the middle bar?
+		else if (index >= SCREEN_WIDTH && index % SCREEN_WIDTH == 49 && index < SCREEN_WIDTH * 34) ConBufferClass::border[index].Char.UnicodeChar = 9553;
+		//is it in col 1 or SCREEN_WIDTH
+		else if (index >= SCREEN_WIDTH && index <= SCREEN_WIDTH*SCREEN_HEIGHT && (index % SCREEN_WIDTH == 0 || index % SCREEN_WIDTH == SCREEN_WIDTH - 1)) ConBufferClass::border[index].Char.UnicodeChar = 9553;
+		else ConBufferClass::border[index].Char.UnicodeChar = 32;
 
-HANDLE hConsole, hBuffer;
-hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
-bool result;
-//Initialzing the Buffer, should be moved to a class
-hBuffer = CreateConsoleScreenBuffer(GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
-COORD beginCoords;
-beginCoords.X = 0;
-beginCoords.Y = 0;
-SetConsoleCursorPosition(hBuffer, beginCoords);
-DWORD nWritten;
-SetConsoleActiveScreenBuffer(hBuffer);
+		ConBufferClass::border[index].Attributes = 0x0004 | 0x0008;
+	}
+	return 1;
+}
 
-SMALL_RECT rect;
-
-rect.Left = 0;
-rect.Top = 0;
-rect.Right = 15;
-rect.Bottom = 1;
-
-COORD arrCoord;
-arrCoord.X = 15;
-arrCoord.Y = 1;
-
-CHAR_INFO outputData[15];
-for (int i = 0; i < 15; i++)
-outputData[i].Attributes = 0x0001 | 0x0002 | 0x0004;
-outputData[0].Char.UnicodeChar = 73;//73
-outputData[1].Char.UnicodeChar = 39;//39
-outputData[2].Char.UnicodeChar = 109;
-outputData[3].Char.UnicodeChar = 32;
-outputData[4].Char.UnicodeChar = 116;
-outputData[5].Char.UnicodeChar = 104;
-outputData[6].Char.UnicodeChar = 101;
-outputData[7].Char.UnicodeChar = 32;
-outputData[8].Char.UnicodeChar = 98;
-outputData[9].Char.UnicodeChar = 117;
-outputData[10].Char.UnicodeChar = 102;
-outputData[11].Char.UnicodeChar = 102;
-outputData[12].Char.UnicodeChar = 101;
-outputData[13].Char.UnicodeChar = 114;
-outputData[14].Char.UnicodeChar = 33;
-result = WriteConsoleOutput(hBuffer, outputData, arrCoord, beginCoords,  &rect);
-
-*/
+int ConBufferClass::RenderBorder()
+{
+	SMALL_RECT borderRect;
+	borderRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	WriteConsoleOutput(ConBufferClass::hConsole, ConBufferClass::border, { SCREEN_WIDTH, SCREEN_HEIGHT }, { 0, 0 }, &borderRect);
+	
+	return 1;
+}

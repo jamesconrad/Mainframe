@@ -25,7 +25,7 @@ CHAR_INFO* WorldClass::GetMap()
 {
 	return WorldClass::worldMap;
 }
-int WorldClass::Initialize(CHAR_INFO* generation, int frame, int height, int width)
+int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height)
 {
 	WorldClass::class_ConBuffer.Initialize();
 	WorldClass::class_UnitInfo.Initialize();
@@ -48,8 +48,8 @@ int WorldClass::UpdateTile(int x, int y, int newTile)
 
 int WorldClass::Render()
 {
-	class_ConBuffer.ClearConsole(class_ConBuffer.hConsole);
-	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::width, WorldClass::height, { 0 , 0 });
+	//class_ConBuffer.ClearConsole(class_ConBuffer.hConsole);
+	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::height, WorldClass::width, { 0 , 0 });
 	
 	
 	//Temp
@@ -130,52 +130,51 @@ int WorldClass::SpawnUnit(int id)
 int WorldClass::Tick()
 {
 	KEY_EVENT_RECORD keyPress;
-	while (true)
+	keyPress = class_InputClass.GetKeypress();
+	keyPress.bKeyDown == true;
+	keyPress.wVirtualKeyCode == VK_DOWN;
+	keyPress.dwControlKeyState == SHIFT_PRESSED;
+	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
-		keyPress = class_InputClass.GetKeypress();
-		keyPress.bKeyDown == true;
-		keyPress.wVirtualKeyCode == VK_DOWN;
-		keyPress.dwControlKeyState == SHIFT_PRESSED;
-		if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
+		if (WorldClass::frame - WorldClass::width > 0)
 		{
-			if (WorldClass::frame - WorldClass::width > 0)
-			{
-				if (keyPress.dwControlKeyState == SHIFT_PRESSED && WorldClass::frame - 10 * WorldClass::width > 0)
-					WorldClass::frame -= 10 * WorldClass::width;
-				else
-					WorldClass::frame -= WorldClass::width;
-			}
+			if (keyPress.dwControlKeyState == SHIFT_PRESSED && WorldClass::frame - 10 * WorldClass::width > 0)
+				WorldClass::frame -= 10 * WorldClass::width;
+			else
+				WorldClass::frame -= WorldClass::width;
 		}
-		if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
-		{
-			if (WorldClass::frame + WorldClass::width < WorldClass::height * WorldClass::width)
-			{
-				if (keyPress.dwControlKeyState == SHIFT_PRESSED && WorldClass::frame + 10 * WorldClass::width < WorldClass::height * WorldClass::width)
-					WorldClass::frame += 10 * WorldClass::width;
-				else
-					WorldClass::frame += WorldClass::width;
-			}
-		}
-		if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
-		{
-			if (WorldClass::frame % WorldClass::width != WorldClass::width - 1)
-			{
-				if (keyPress.dwControlKeyState == SHIFT_PRESSED && (WorldClass::frame + 10) % WorldClass::width != WorldClass::width - 1)
-					WorldClass::frame += 10;
-				else
-					WorldClass::frame++;
-			}
-		}
-		if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
-		{
-			if (WorldClass::frame % WorldClass::width != 0)
-			{
-				if (keyPress.dwControlKeyState == SHIFT_PRESSED && (WorldClass::frame - 10) % WorldClass::width != 0)
-					WorldClass::frame -= 10;
-				else
-					WorldClass::frame--;
-			}
-		}
-		WorldClass::Render();
 	}
+	if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
+	{
+		if (WorldClass::frame + WorldClass::width < WorldClass::height * WorldClass::width)
+		{
+			if (keyPress.dwControlKeyState == SHIFT_PRESSED && WorldClass::frame + 10 * WorldClass::width < WorldClass::height * WorldClass::width)
+				WorldClass::frame += 10 * WorldClass::width;
+			else
+				WorldClass::frame += WorldClass::width;
+		}
+	}
+	if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
+	{
+		if (WorldClass::frame % WorldClass::width != WorldClass::width - 1)
+		{
+			if (keyPress.dwControlKeyState == SHIFT_PRESSED && (WorldClass::frame + 10) % WorldClass::width != WorldClass::width - 1)
+				WorldClass::frame += 10;
+			else
+				WorldClass::frame++;
+		}
+	}
+	if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
+	{
+		if (WorldClass::frame % WorldClass::width != 0)
+		{
+			if (keyPress.dwControlKeyState == SHIFT_PRESSED && (WorldClass::frame - 10) % WorldClass::width != 0)
+				WorldClass::frame -= 10;
+			else
+				WorldClass::frame--;
+		}
+	}
+	WorldClass::Render();
+	
+	return 1;
 }
