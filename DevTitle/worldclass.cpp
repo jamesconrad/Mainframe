@@ -53,8 +53,10 @@ int WorldClass::Render()
 	
 	
 	//Temp
-	//Need to move map unless near edge.
-	SetConsoleCursorPosition(class_ConBuffer.hConsole, WorldClass::ConvertIndex(WorldClass::frame));
+	COORD frameCoords = WorldClass::ConvertIndex(WorldClass::frame);
+	frameCoords.X++;
+	frameCoords.Y++;
+	SetConsoleCursorPosition(class_ConBuffer.hConsole, frameCoords);
 
 	//COMPLETE REWORK, LEGACY CODE BELOW
 	//Note colouring system still needs to be impletmented
