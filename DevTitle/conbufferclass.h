@@ -3,8 +3,6 @@
 
 #include <Windows.h>
 
-
-
 class ConBufferClass {
 private:
 	COORD beginCoords;

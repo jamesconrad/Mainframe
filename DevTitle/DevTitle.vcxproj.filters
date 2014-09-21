@@ -36,6 +36,12 @@
     <ClCompile Include="conbufferclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="entityclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unitinfoclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clientclass.h">
@@ -54,6 +60,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="conbufferclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entityclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unitinfoclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

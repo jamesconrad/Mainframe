@@ -4,9 +4,8 @@ int changeFrame(int, int);
 int updateTile(int, int, int);
 int render();
 */
-#include "WorldClass.h"
+#include "worldclass.h"
 #include <iostream>
-#include <Windows.h>
 
 WorldClass::WorldClass()
 {
@@ -29,13 +28,14 @@ CHAR_INFO* WorldClass::GetMap()
 int WorldClass::Initialize(CHAR_INFO* generation, int frame, int height, int width)
 {
 	WorldClass::class_ConBuffer.Initialize();
+	WorldClass::class_UnitInfo.Initialize();
 	WorldClass::worldMap = generation;
 	WorldClass::frame = frame;
 	WorldClass::height = height;
 	WorldClass::width = width;
 
-	WorldClass::cursor.Char.UnicodeChar = 43;
-	WorldClass::cursor.Attributes = 0x0004 | 0x0008;
+	WorldClass::unitPositionIndex = (UnitData*)malloc(sizeof(UnitData*)*WorldClass::numOfUnits);
+
 	return 1;
 }
 
@@ -108,4 +108,19 @@ int WorldClass::ConvertCoord(COORD indexCoord)
 	index += indexCoord.X;
 
 	return index;
+}
+
+int WorldClass::SpawnUnit(int id)
+{
+	UnitData unitData = class_UnitInfo.GetUnitInfo(id);
+
+	UnitData * tmpIndex = (UnitData *)malloc((sizeof(UnitData)*WorldClass::numOfUnits));
+	tmpIndex = WorldClass::unitPositionIndex;
+	WorldClass::numOfUnits++;
+	WorldClass::unitPositionIndex = (UnitData *)malloc((sizeof(UnitData)*WorldClass::numOfUnits));
+	WorldClass::unitPositionIndex = tmpIndex;
+	free(tmpIndex);
+
+	WorldClass::unitPositionIndex[unitData.position] = unitData;
+	return 1;
 }

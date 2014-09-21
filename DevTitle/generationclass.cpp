@@ -1,9 +1,8 @@
-#include "GenerationClass.h"
+#include "generationclass.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include <Windows.h>
 GenerationClass::GenerationClass()
 {
 }
@@ -55,13 +54,12 @@ CHAR_INFO * GenerationClass::Generate()
 
 int GenerationClass::Save(char * filePath, CHAR_INFO * saveData)
 {
-	ofstream savefile;
+	std::ofstream savefile;
 	savefile.open(filePath);
 	for (int i = 0; i < GenerationClass::width * GenerationClass::height; i++)
 	{
 		savefile << saveData[i].Char.UnicodeChar;
 		savefile << saveData[i].Attributes; //This line converts the save file to some asain language.
-		savefile << endl;
 	}
 	savefile.flush();
 	savefile.close();

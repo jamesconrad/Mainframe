@@ -1,15 +1,21 @@
+#ifndef WORLDCLASS_H
+#define WORLDCLASS_H
+
 #include "conbufferclass.h"
-#include <Windows.h>
+#include "unitinfoclass.h"
+#include "entityclass.h"
 
 class WorldClass {
 private:
 	int frame;
 	CHAR_INFO* worldMap;
-	bool cursorRenderd = false;
+	CHAR_INFO * unitMap;
 	int height, width;
 
+	int numOfUnits;
+	UnitData * unitPositionIndex;
+	UnitInfoClass class_UnitInfo;
 	ConBufferClass class_ConBuffer;
-	CHAR_INFO cursor;
 public:
 	WorldClass();
 	WorldClass(const WorldClass&);
@@ -23,4 +29,6 @@ public:
 	int UpdateTile(int, int, int);
 	int Render();
 	int GetFrame();
+	int SpawnUnit(int id);
 };
+#endif
