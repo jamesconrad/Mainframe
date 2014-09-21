@@ -21,13 +21,12 @@ namespace
 }
 
 class UnitInfoClass {
+public:	
 	UnitData unit[8];
 
-public:
 	UnitInfoClass();
 	UnitInfoClass(const UnitInfoClass&);
 	~UnitInfoClass();
-	UnitData GetUnitInfo(int id);
 	int Initialize();
 };
 

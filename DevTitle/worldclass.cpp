@@ -112,7 +112,7 @@ int WorldClass::ConvertCoord(COORD indexCoord)
 
 int WorldClass::SpawnUnit(int id)
 {
-	UnitData unitData = class_UnitInfo.GetUnitInfo(id);
+	UnitData unitData = class_UnitInfo.unit[id];
 
 	UnitData * tmpIndex = (UnitData *)malloc((sizeof(UnitData)*WorldClass::numOfUnits));
 	tmpIndex = WorldClass::unitPositionIndex;
