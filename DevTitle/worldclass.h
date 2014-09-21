@@ -4,6 +4,7 @@
 #include "conbufferclass.h"
 #include "unitinfoclass.h"
 #include "entityclass.h"
+#include "inputclass.h"
 
 class WorldClass {
 private:
@@ -16,6 +17,7 @@ private:
 	UnitData * unitPositionIndex;
 	UnitInfoClass class_UnitInfo;
 	ConBufferClass class_ConBuffer;
+	InputClass class_InputClass;
 public:
 	WorldClass();
 	WorldClass(const WorldClass&);
@@ -30,5 +32,6 @@ public:
 	int Render();
 	int GetFrame();
 	int SpawnUnit(int id);
+	int Tick();
 };
 #endif

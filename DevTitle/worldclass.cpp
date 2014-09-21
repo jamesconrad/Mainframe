@@ -29,6 +29,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int height, int wid
 {
 	WorldClass::class_ConBuffer.Initialize();
 	WorldClass::class_UnitInfo.Initialize();
+	WorldClass::class_InputClass.Initialize();
 	WorldClass::worldMap = generation;
 	WorldClass::frame = frame;
 	WorldClass::height = height;
@@ -51,7 +52,8 @@ int WorldClass::Render()
 	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::width, WorldClass::height, { 0 , 0 });
 	
 	
-	
+	//Temp
+	//Need to move map unless near edge.
 	SetConsoleCursorPosition(class_ConBuffer.hConsole, WorldClass::ConvertIndex(WorldClass::frame));
 
 	//COMPLETE REWORK, LEGACY CODE BELOW
@@ -123,4 +125,57 @@ int WorldClass::SpawnUnit(int id)
 
 	WorldClass::unitPositionIndex[unitData.position] = unitData;
 	return 1;
+}
+
+int WorldClass::Tick()
+{
+	KEY_EVENT_RECORD keyPress;
+	while (true)
+	{
+		keyPress = class_InputClass.GetKeypress();
+		keyPress.bKeyDown == true;
+		keyPress.wVirtualKeyCode == VK_DOWN;
+		keyPress.dwControlKeyState == SHIFT_PRESSED;
+		if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
+		{
+			if (WorldClass::frame - WorldClass::width > 0)
+			{
+				if (keyPress.dwControlKeyState == SHIFT_PRESSED && WorldClass::frame - 10 * WorldClass::width > 0)
+					WorldClass::frame -= 10 * WorldClass::width;
+				else
+					WorldClass::frame -= WorldClass::width;
+			}
+		}
+		if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
+		{
+			if (WorldClass::frame + WorldClass::width < WorldClass::height * WorldClass::width)
+			{
+				if (keyPress.dwControlKeyState == SHIFT_PRESSED && WorldClass::frame + 10 * WorldClass::width < WorldClass::height * WorldClass::width)
+					WorldClass::frame += 10 * WorldClass::width;
+				else
+					WorldClass::frame += WorldClass::width;
+			}
+		}
+		if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
+		{
+			if (WorldClass::frame % WorldClass::width != WorldClass::width - 1)
+			{
+				if (keyPress.dwControlKeyState == SHIFT_PRESSED && (WorldClass::frame + 10) % WorldClass::width != WorldClass::width - 1)
+					WorldClass::frame += 10;
+				else
+					WorldClass::frame++;
+			}
+		}
+		if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
+		{
+			if (WorldClass::frame % WorldClass::width != 0)
+			{
+				if (keyPress.dwControlKeyState == SHIFT_PRESSED && (WorldClass::frame - 10) % WorldClass::width != 0)
+					WorldClass::frame -= 10;
+				else
+					WorldClass::frame--;
+			}
+		}
+		WorldClass::Render();
+	}
 }

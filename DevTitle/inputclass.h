@@ -1,4 +1,20 @@
+#ifndef INPUTCLASS_H
+#define INPUTCLASS_H
 
-class inputclass {
+#include <Windows.h>
 
+class InputClass {
+private:
+	HANDLE hConsole;
+	DWORD nLength;
+	DWORD * eventsRead;
+public:
+	InputClass();
+	InputClass(const InputClass&);
+	~InputClass();
+
+	int Initialize();
+	KEY_EVENT_RECORD GetKeypress();
 };
+
+#endif

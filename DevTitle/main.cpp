@@ -37,7 +37,7 @@ int main()
 	bool running = true;
 	GenerationClass terrainGenerator;
 	WorldClass world;
-	terrainGenerator.Initialize(32, 32, 50982);
+	terrainGenerator.Initialize(32, 48, 50982);
 	
 	world.Initialize(terrainGenerator.Generate(), 0, terrainGenerator.GetHeight(), terrainGenerator.GetWidth());
 	world.Render();
@@ -49,8 +49,9 @@ int main()
 	while (running) 
 	{
 		//temp game loop
-		
+		world.Tick();
 
+		/*
 		//Checks to see if can move left, or right, and does so
 		if (GetAsyncKeyState(VK_UP))
 		{
@@ -95,6 +96,7 @@ int main()
 
 		if (GetAsyncKeyState(VK_ESCAPE))
 			running = false;
+		*/
 	}
 	return 1;
 }
