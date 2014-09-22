@@ -19,7 +19,7 @@ int UnitInfoClass::Initialize()
 	BASE_CHAR_INFO.Attributes = 0x007;
 
 	//To add another unit
-	//UnitInfo::unit[unitID] = { unitCharacter , 0 , maxHP , HP, unitID , actions , attack , defense , range , type , 0 }
+	//UnitInfo::unit[unitID] = { unitCharacter , 0 , maxHP , HP, unitID , actions , attack , defense , range , type , 0, true }
 	UnitInfoClass::unit[0] = { BASE_CHAR_INFO, 0, 10, 10, 0, 1, 10, 100, 3, 0, 0 }; //Start base
 	UnitInfoClass::unit[0].charInfo.Char.UnicodeChar = 233;
 	UnitInfoClass::unit[0].charInfo.Attributes = 0x0007;

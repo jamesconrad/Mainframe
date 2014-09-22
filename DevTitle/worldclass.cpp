@@ -28,7 +28,7 @@ WorldClass::~WorldClass()
 
 CHAR_INFO* WorldClass::GetMap()
 {
-	return WorldClass::worldMap;
+	return worldMap;
 }
 int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height)
 {
@@ -43,8 +43,6 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	WorldClass::height = height;
 	WorldClass::width = width;
 	numOfUnits = 0;
-	
-	//class_EntityArray = (EntityClass*)malloc(sizeof(EntityClass*)*WorldClass::numOfUnits);
 
 	class_UnitInfo.Initialize();
 	class_InputClass.Initialize();
@@ -60,8 +58,8 @@ int WorldClass::UpdateTile(int x, int y, int newTile)
 
 int WorldClass::Render()
 {
-	//class_ConBuffer.ClearConsole(class_ConBuffer.hConsole);
-		
+	//Update Unit Position
+
 	//Temp
 	COORD frameCoords = ConvertIndex(frame);
 	frameCoords.X++;
@@ -105,7 +103,6 @@ int WorldClass::ConvertCoord(COORD indexCoord)
 int WorldClass::SpawnUnit(int id, int playerId, int index)
 {
 	UnitData unitData = class_UnitInfo.unit[id];
-	//class_EntityArray = (EntityClass *)malloc(sizeof(EntityClass)*(numOfUnits+1));
 	
 	unitData.playerID = playerId;
 	unitData.position = index;
@@ -116,7 +113,7 @@ int WorldClass::SpawnUnit(int id, int playerId, int index)
 	class_TempEntity.unitData.charInfo.Attributes = PLAYER_COLOUR_2;
 	
 	class_EntityArray.push_back(class_TempEntity);
-	class_EntityArray[numOfUnits].unitData = unitData;
+	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
 	unitMap[unitData.position].Char.UnicodeChar = class_TempEntity.unitData.charInfo.Char.UnicodeChar;
 	unitMap[unitData.position].Attributes = class_TempEntity.unitData.charInfo.Attributes;
 		
@@ -128,49 +125,88 @@ int WorldClass::Tick()
 {
 	KEY_EVENT_RECORD keyPress;
 	keyPress = class_InputClass.GetKeypress();
-	keyPress.bKeyDown == true;
-	keyPress.wVirtualKeyCode == VK_DOWN;
-	keyPress.dwControlKeyState == SHIFT_PRESSED;
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
-		if (WorldClass::frame - WorldClass::width > 0)
+		if (frame - width > 0)
 		{
-			WorldClass::frame -= WorldClass::width;
+			frame -= width;
 		}
 	}
-	if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
+	else if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
 	{
-		if (WorldClass::frame + WorldClass::width < WorldClass::height * WorldClass::width)
+		if (frame + width < height * width)
 		{
-			WorldClass::frame += WorldClass::width;
+			frame += width;
 		}
 	}
-	if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
+	else if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
 	{
-		if (WorldClass::frame % WorldClass::width != WorldClass::width - 1)
+		if (frame % width != width - 1)
 		{
-			WorldClass::frame++;
+			frame++;
 		}
 	}
-	if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
+	else if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
 	{
-		if (WorldClass::frame % WorldClass::width != 0)
+		if (frame % width != 0)
 		{
-			WorldClass::frame--;
+			frame--;
 		}
 	}
-	if (keyPress.wVirtualKeyCode == 0x53 && keyPress.bKeyDown == true) //S
+	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //S
 	{
-		WorldClass::SpawnUnit(7, 0, WorldClass::frame);
+		SpawnUnit(7, 0, frame);
+	}
+	//Need to check for colision with other entitys and map edges
+	else if (keyPress.wVirtualKeyCode == 0x57 && keyPress.bKeyDown == true) //W
+	{
+		for (int i = 0; i < numOfUnits; i++)
+		{
+			if (class_EntityArray[i].unitData.position == frame)
+			{
+				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+				class_EntityArray[i].unitData.position -= width;
+				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+			}
+		}
+	}
+	else if (keyPress.wVirtualKeyCode == 0x53 && keyPress.bKeyDown == true) //S
+	{
+		for (int i = 0; i < numOfUnits; i++)
+		{
+			if (class_EntityArray[i].unitData.position == frame)
+			{
+				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+				class_EntityArray[i].unitData.position += width;
+				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+			}
+		}
+	}
+	else if (keyPress.wVirtualKeyCode == 0x41 && keyPress.bKeyDown == true) //A
+	{
+		for (int i = 0; i < numOfUnits; i++)
+		{
+			if (class_EntityArray[i].unitData.position == frame)
+			{
+				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+				class_EntityArray[i].unitData.position -= 1;
+				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+			}
+		}
+	}
+	else if (keyPress.wVirtualKeyCode == 0x44 && keyPress.bKeyDown == true) //D
+	{
+		for (int i = 0; i < numOfUnits; i++)
+		{
+			if (class_EntityArray[i].unitData.position == frame)
+			{
+				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+				class_EntityArray[i].unitData.position += 1;
+				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+			}
+		}
 	}
 	WorldClass::Render();
 	
-	return 1;
-}
-
-int WorldClass::SetUnitData()
-{
-
-
 	return 1;
 }

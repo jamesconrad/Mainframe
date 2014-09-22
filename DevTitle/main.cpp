@@ -44,7 +44,7 @@ int main()
 	
 	time(&lastRender);
 
-	//terrainGenerator.Save("savedata.txt", world.GetMap());
+	terrainGenerator.Save("savedata.txt", world.GetMap());
 	while (true)
 	{
 		world.Tick();

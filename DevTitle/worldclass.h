@@ -20,7 +20,7 @@ private:
 	ConBufferClass class_ConBuffer;
 	InputClass class_InputClass;
 	std::vector<EntityClass> class_EntityArray;
-	//EntityClass * class_EntityArray;
+
 public:
 	WorldClass();
 	WorldClass(const WorldClass&);
@@ -36,6 +36,5 @@ public:
 	int GetFrame();
 	int SpawnUnit(int id, int playerId, int index);
 	int Tick();
-	int SetUnitData();
 };
 #endif
