@@ -38,65 +38,16 @@ int main()
 	GenerationClass terrainGenerator;
 	WorldClass world;
 	terrainGenerator.Initialize(48, 32, 50982);
-	
-	world.Initialize(terrainGenerator.Generate(), 0, terrainGenerator.GetWidth(), terrainGenerator.GetHeight());
+	CHAR_INFO * generation = terrainGenerator.Generate();
+	world.Initialize(generation, 0, terrainGenerator.GetWidth(), terrainGenerator.GetHeight());
 	world.Render();
 	
 	time(&lastRender);
 
-	terrainGenerator.Save("savedata.txt", world.GetMap());
-	
-	while (running) 
+	//terrainGenerator.Save("savedata.txt", world.GetMap());
+	while (true)
 	{
-		//temp game loop
 		world.Tick();
-
-		/*
-		//Checks to see if can move left, or right, and does so
-		if (GetAsyncKeyState(VK_UP))
-		{
-			if (world.GetFrame() - terrainGenerator.GetWidth() > 0)
-			{
-				world.ChangeFrame(world.GetFrame() - terrainGenerator.GetWidth());
-				Sleep(100);
-			}
-		}
-		if (GetAsyncKeyState(VK_DOWN))
-		{
-			if (world.GetFrame() + terrainGenerator.GetWidth() < terrainGenerator.GetHeight() * terrainGenerator.GetWidth())
-			{
-				world.ChangeFrame(world.GetFrame() + terrainGenerator.GetWidth());
-				Sleep(100);
-			}
-		}
-		if (GetAsyncKeyState(VK_LEFT))
-		{
-			if (world.GetFrame() % terrainGenerator.GetWidth() != 0)
-			{
-				world.ChangeFrame(world.GetFrame() - 1);
-				Sleep(100);
-			}
-		}
-		if (GetAsyncKeyState(VK_RIGHT))
-		{
-			if (world.GetFrame() % terrainGenerator.GetWidth() != terrainGenerator.GetWidth() - 1)
-			{
-				world.ChangeFrame(world.GetFrame() + 1);
-				Sleep(100);
-			}
-		}
-
-		time(&now);
-		if (difftime(now, lastRender) >= 0.1)
-		{
-			world.Render();
-			time(&lastRender);
-		}
-
-
-		if (GetAsyncKeyState(VK_ESCAPE))
-			running = false;
-		*/
 	}
 	return 1;
 }

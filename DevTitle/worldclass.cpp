@@ -32,27 +32,29 @@ CHAR_INFO* WorldClass::GetMap()
 }
 int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height)
 {
-	WorldClass::class_ConBuffer.Initialize();
-	WorldClass::class_UnitInfo.Initialize();
-	WorldClass::class_InputClass.Initialize();
-	WorldClass::worldMap = generation;
-	WorldClass::unitMap = generation; // (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*WorldClass::width*WorldClass::height);
-	for (int i = 0; i < WorldClass::width*WorldClass::height; i++)
-	{
-		//unitMap[i] = generation[i];
-	}
+	worldMap = generation;
+
+	class_ConBuffer.Initialize();
+	
+	unitMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*width*height);
+	
+	memcpy(unitMap, worldMap, sizeof(CHAR_INFO)*width*height);
 	WorldClass::frame = frame;
 	WorldClass::height = height;
 	WorldClass::width = width;
+	numOfUnits = 0;
 	
-	WorldClass::class_EntityArray = (EntityClass*)malloc(sizeof(EntityClass*)*WorldClass::numOfUnits);
+	//class_EntityArray = (EntityClass*)malloc(sizeof(EntityClass*)*WorldClass::numOfUnits);
+
+	class_UnitInfo.Initialize();
+	class_InputClass.Initialize();
 
 	return 1;
 }
 
 int WorldClass::UpdateTile(int x, int y, int newTile)
 {
-	WorldClass::worldMap[x].Char.AsciiChar = newTile;
+	worldMap[x].Char.AsciiChar = newTile;
 	return 1;
 }
 
@@ -61,38 +63,32 @@ int WorldClass::Render()
 	//class_ConBuffer.ClearConsole(class_ConBuffer.hConsole);
 		
 	//Temp
-	COORD frameCoords = WorldClass::ConvertIndex(WorldClass::frame);
+	COORD frameCoords = ConvertIndex(frame);
 	frameCoords.X++;
 	frameCoords.Y++;
 	SetConsoleCursorPosition(class_ConBuffer.hConsole, frameCoords);
 
-	//Setup the unitMap
-	for (int i = 0; i < numOfUnits; i++)
-	{
-		unitMap[WorldClass::class_EntityArray[numOfUnits].unitData.position] = WorldClass::class_EntityArray[numOfUnits].unitData.charInfo;
-	}
-
-	WorldClass::class_ConBuffer.OutputScreen(WorldClass::worldMap, WorldClass::unitMap, WorldClass::height, WorldClass::width, { 0, 0 });
+	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords);
 
 	return 1;
 }
 
 int WorldClass::GetFrame()
 {
-	return WorldClass::frame;
+	return frame;
 }
 
 int WorldClass::ChangeFrame(int newFrame)
 {
-	WorldClass::frame = newFrame;
+	frame = newFrame;
 	return 1;
 }
 
 COORD WorldClass::ConvertIndex(int index)
 {
 	COORD indexCoord;
-	indexCoord.Y = index / WorldClass::width;
-	indexCoord.X = index % WorldClass::width;
+	indexCoord.Y = index / width;
+	indexCoord.X = index % width;
 
 	return indexCoord;
 }
@@ -100,7 +96,7 @@ COORD WorldClass::ConvertIndex(int index)
 int WorldClass::ConvertCoord(COORD indexCoord)
 {
 	int index;
-	index = indexCoord.Y * WorldClass::width;
+	index = indexCoord.Y * width;
 	index += indexCoord.X;
 
 	return index;
@@ -109,17 +105,22 @@ int WorldClass::ConvertCoord(COORD indexCoord)
 int WorldClass::SpawnUnit(int id, int playerId, int index)
 {
 	UnitData unitData = class_UnitInfo.unit[id];
-
-	WorldClass::class_EntityArray = (EntityClass *)malloc(sizeof(EntityClass*)*WorldClass::numOfUnits);
-
+	//class_EntityArray = (EntityClass *)malloc(sizeof(EntityClass)*(numOfUnits+1));
+	
 	unitData.playerID = playerId;
 	unitData.position = index;
+
+	EntityClass class_TempEntity;
+
+	class_TempEntity.unitData = unitData;
+	class_TempEntity.unitData.charInfo.Attributes = PLAYER_COLOUR_2;
 	
-	WorldClass::class_EntityArray[numOfUnits].unitData = unitData;
-	WorldClass::class_EntityArray[numOfUnits].unitData.charInfo.Attributes = PLAYER_COLOUR_1;
-
-	WorldClass::unitMap[WorldClass::class_EntityArray[numOfUnits].unitData.position] = WorldClass::class_EntityArray[numOfUnits].unitData.charInfo;
-
+	class_EntityArray.push_back(class_TempEntity);
+	class_EntityArray[numOfUnits].unitData = unitData;
+	unitMap[unitData.position].Char.UnicodeChar = class_TempEntity.unitData.charInfo.Char.UnicodeChar;
+	unitMap[unitData.position].Attributes = class_TempEntity.unitData.charInfo.Attributes;
+		
+	numOfUnits++;
 	return numOfUnits;
 }
 

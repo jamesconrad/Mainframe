@@ -26,8 +26,8 @@ public:
 	~ConBufferClass();
 	
 	int Initialize();
-	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD);
-	int ClearConsole(HANDLE);
+	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD);
+	int ClearConsole(HANDLE, COORD);
 };
 
 /*

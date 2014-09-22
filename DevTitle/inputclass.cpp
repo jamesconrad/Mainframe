@@ -14,8 +14,8 @@ InputClass::~InputClass()
 
 int InputClass::Initialize()
 {
-	InputClass::hConsole = (HANDLE)GetStdHandle(STD_INPUT_HANDLE);
-	InputClass::nLength = 1;
+	hConsole = (HANDLE)GetStdHandle(STD_INPUT_HANDLE);
+	nLength = 1;
 	return 1;
 }
 

@@ -5,6 +5,7 @@
 #include "unitinfoclass.h"
 #include "entityclass.h"
 #include "inputclass.h"
+#include <vector>
 
 class WorldClass {
 private:
@@ -18,7 +19,8 @@ private:
 	UnitInfoClass class_UnitInfo;
 	ConBufferClass class_ConBuffer;
 	InputClass class_InputClass;
-	EntityClass * class_EntityArray;
+	std::vector<EntityClass> class_EntityArray;
+	//EntityClass * class_EntityArray;
 public:
 	WorldClass();
 	WorldClass(const WorldClass&);
