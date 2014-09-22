@@ -13,6 +13,8 @@ private:
 
 	CHAR_INFO * border;
 
+	bool unitsRendered;
+
 	int RenderBorder();
 	int InitiazlizeBorder();
 
@@ -24,7 +26,7 @@ public:
 	~ConBufferClass();
 	
 	int Initialize();
-	int OutputScreen(CHAR_INFO*, int, int, COORD);
+	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD);
 	int ClearConsole(HANDLE);
 };
 

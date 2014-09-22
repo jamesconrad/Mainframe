@@ -26,11 +26,13 @@ int ConBufferClass::Initialize()
 	ConBufferClass::beginCoords.X = 0;
 	ConBufferClass::beginCoords.Y = 0;
 
+	ConBufferClass::unitsRendered = false;
+
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 	return 0;
 }
 
-int ConBufferClass::OutputScreen(CHAR_INFO* charData, int height, int width, COORD buffCoord)
+int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int height, int width, COORD buffCoord)
 {
 	COORD buffSize;
 	SMALL_RECT renderRect;
@@ -43,11 +45,20 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, int height, int width, COO
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
 	
 	time(&now);
-	if (difftime(now, lastRender) >= 0.1)
+	if (difftime(now, lastRender) >= 1)
 	{
 		ConBufferClass::ClearConsole(ConBufferClass::hConsole);
 		ConBufferClass::RenderBorder();
-		WriteConsoleOutput(ConBufferClass::hConsole, charData, buffSize, buffCoord, &renderRect);
+		if (!ConBufferClass::unitsRendered)
+		{
+			WriteConsoleOutput(ConBufferClass::hConsole, unitData, buffSize, buffCoord, &renderRect);
+			ConBufferClass::unitsRendered = true;
+		}
+		else
+		{
+			WriteConsoleOutput(ConBufferClass::hConsole, charData, buffSize, buffCoord, &renderRect);
+			ConBufferClass::unitsRendered = false;
+		}
 		time(&lastRender);
 	}
 
@@ -98,6 +109,14 @@ int ConBufferClass::InitiazlizeBorder()
 			ConBufferClass::border[index].Char.UnicodeChar = 9565;
 		else if (index == 49) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9574;
+		//Hardcode of turn/gold box
+		else if (index == SCREEN_WIDTH * 2 + 49)
+			ConBufferClass::border[index].Char.UnicodeChar = 9568;
+		else if (index == SCREEN_WIDTH * 3 - 1)
+			ConBufferClass::border[index].Char.UnicodeChar = 9571;
+		else if (index >= SCREEN_WIDTH * 2 + 49 && index <= SCREEN_WIDTH * 3 - 2)
+			ConBufferClass::border[index].Char.UnicodeChar = 9552;
+
 		else if (index == SCREEN_WIDTH * 33) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9568;
 		else if (index == SCREEN_WIDTH * 34 - 1) 
@@ -105,7 +124,7 @@ int ConBufferClass::InitiazlizeBorder()
 		else if (index == SCREEN_WIDTH * 33 + 49) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9577;
 		//Hardcode of chatbox
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 4) - 1) 
+		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) - 1) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9571;
 		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3)) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9568;
@@ -117,32 +136,6 @@ int ConBufferClass::InitiazlizeBorder()
 			ConBufferClass::border[index].Char.UnicodeChar = 9553;
 		else if (index >= SCREEN_WIDTH * 48 + 1 && index <= SCREEN_WIDTH * 49 - 2) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9552;
-		//Chat:
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1)
-		{
-			ConBufferClass::border[index].Char.UnicodeChar = 67;
-			ConBufferClass::border[index].Attributes = 0x0007;
-		}
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 2)
-		{
-			ConBufferClass::border[index].Char.UnicodeChar = 104;
-			ConBufferClass::border[index].Attributes = 0x0007;
-		}
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 3)
-		{
-			ConBufferClass::border[index].Char.UnicodeChar = 97;
-			ConBufferClass::border[index].Attributes = 0x0007;
-		}
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 4)
-		{
-			ConBufferClass::border[index].Char.UnicodeChar = 116;
-			ConBufferClass::border[index].Attributes = 0x0007;
-		}
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 5)
-		{
-			ConBufferClass::border[index].Char.UnicodeChar = 58;
-			ConBufferClass::border[index].Attributes = 0x0007;
-		}
 		//is it in row 1 or 33 or SCREEN_HEIGHT?
 		else if (index < SCREEN_WIDTH || (index > SCREEN_WIDTH * 33 && index < SCREEN_WIDTH * 34 - 1) || (index > (SCREEN_HEIGHT - 1) * SCREEN_WIDTH && index < SCREEN_HEIGHT * SCREEN_WIDTH - 1)) 
 			ConBufferClass::border[index].Char.UnicodeChar = 9552;
@@ -154,10 +147,46 @@ int ConBufferClass::InitiazlizeBorder()
 			ConBufferClass::border[index].Char.UnicodeChar = 9553;
 		else 
 			ConBufferClass::border[index].Char.UnicodeChar = 32;
-		if (ConBufferClass::border[index].Attributes != 0x0007)
-			ConBufferClass::border[index].Attributes = 0x0004 | 0x0008;
+		
+		ConBufferClass::border[index].Attributes = 0x0004 | 0x0008;
 	}
+	//Time to fill in text
+	//Chat: text input starts at 4073
+	int string[4] = { 67, 104, 97, 116 };
+	for (int i = 0; i < 4; i++)
+	{
+		ConBufferClass::border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + i].Char.UnicodeChar = string[i];
+		ConBufferClass::border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + i].Attributes = 0x0007;
+	}
+	ConBufferClass::border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Char.UnicodeChar = 58;
+	ConBufferClass::border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Attributes = 0x0007;
+	//Turn: turn num starts at 139
+	string[0] = 84;
+	string[1] = 117;
+	string[2] = 114;
+	string[3] = 110;
+	for (int i = 0; i < 4; i++)
+	{
+		ConBufferClass::border[SCREEN_WIDTH + 50 + i].Char.UnicodeChar = string[i];
+		ConBufferClass::border[SCREEN_WIDTH + 50 + i].Attributes = 0x0007;
+	}
+	ConBufferClass::border[SCREEN_WIDTH + 50 + 4].Char.UnicodeChar = 58;
+	ConBufferClass::border[SCREEN_WIDTH + 50 + 4].Attributes = 0x0007;
+	//Gold: num starts at 154
+	string[0] = 71;
+	string[1] = 111;
+	string[2] = 108;
+	string[3] = 100;
+	for (int i = 0; i < 4; i++)
+	{
+		ConBufferClass::border[SCREEN_WIDTH + 65 + i].Char.UnicodeChar = string[i];
+		ConBufferClass::border[SCREEN_WIDTH + 65 + i].Attributes = 0x0007;
+	}
+	ConBufferClass::border[SCREEN_WIDTH + 65 + 4].Char.UnicodeChar = 58;
+	ConBufferClass::border[SCREEN_WIDTH + 65 + 4].Attributes = 0x0007;
+
 	return 1;
+	
 }
 
 int ConBufferClass::RenderBorder()

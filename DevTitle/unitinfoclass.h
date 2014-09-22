@@ -9,6 +9,7 @@ namespace
 	{
 		CHAR_INFO charInfo;
 		int playerID, //player number to determine unit colour and hostility
+			maxHP, //determins max health of unit and sets background accordingly
 			hp,  //determines health of unit and sets background accordingly
 			unitID,
 			actions, //dependant on unit one moved for every attempt made, attacking sets to 0
