@@ -21,7 +21,8 @@ namespace
 	};
 }
 
-class UnitInfoClass {
+class UnitInfoClass
+{
 public:	
 	UnitData unit[8];
 

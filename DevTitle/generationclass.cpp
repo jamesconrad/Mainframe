@@ -28,12 +28,12 @@ CHAR_INFO * GenerationClass::Generate()
 	//CHAR_INFO * * generating= (CHAR_INFO**)malloc(sizeof(CHAR_INFO*)*GenerationClass::height);
 	//for (int i = 0; i < GenerationClass::width; i++)
 	//	generating[i] = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*GenerationClass::width);
-	CHAR_INFO * generating = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*GenerationClass::width*GenerationClass::height);
+	CHAR_INFO *generating = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*width*height);
 	char rng;
 	char prevrng = '1';
 	int progress = 0;
-	srand(GenerationClass::seed);
-	for (int i = 0; i < GenerationClass::width * GenerationClass::height; i++) 
+	srand(seed);
+	for (int i = 0; i < width * height; i++) 
 	{
 		rng = (rand() % 10);
 		if (rand()%100 >= 80) 
@@ -52,14 +52,14 @@ CHAR_INFO * GenerationClass::Generate()
 	return generating;
 }
 
-int GenerationClass::Save(char * filePath, CHAR_INFO * saveData)
+int GenerationClass::Save(char * filePath, CHAR_INFO *saveData)
 {
 	std::ofstream savefile;
 	savefile.open(filePath);
-	for (int i = 0; i < GenerationClass::width * GenerationClass::height; i++)
+	for (int i = 0; i < width * height; i++)
 	{
 		savefile << saveData[i].Char.UnicodeChar;
-		savefile << saveData[i].Attributes; //This line converts the save file to some asain language.
+		savefile << saveData[i].Attributes;
 	}
 	savefile.flush();
 	savefile.close();
@@ -69,10 +69,10 @@ int GenerationClass::Save(char * filePath, CHAR_INFO * saveData)
 
 int GenerationClass::GetWidth() 
 {
-	return GenerationClass::width;
+	return width;
 }
 
 int GenerationClass::GetHeight()
 {
-	return GenerationClass::height;
+	return height;
 }

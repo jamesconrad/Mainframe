@@ -3,7 +3,8 @@
 
 #include <Windows.h>
 
-class InputClass {
+class InputClass 
+{
 private:
 	HANDLE hConsole;
 	DWORD nLength;

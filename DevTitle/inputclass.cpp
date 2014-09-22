@@ -23,7 +23,7 @@ KEY_EVENT_RECORD InputClass::GetKeypress()
 {
 	INPUT_RECORD inputRecord;
 	DWORD eventsRead;
-	ReadConsoleInput(InputClass::hConsole, &inputRecord, InputClass::nLength, &eventsRead);
+	ReadConsoleInput(hConsole, &inputRecord, nLength, &eventsRead);
 	int err = GetLastError();
 	return inputRecord.Event.KeyEvent;
 }

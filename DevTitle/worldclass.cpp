@@ -14,16 +14,13 @@
 
 WorldClass::WorldClass()
 {
-
 }
 WorldClass::WorldClass(const WorldClass&)
 {
-
 }
 
 WorldClass::~WorldClass()
 {
-
 }
 
 CHAR_INFO* WorldClass::GetMap()
@@ -50,17 +47,14 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	return 1;
 }
 
-int WorldClass::UpdateTile(int x, int y, int newTile)
+int WorldClass::UpdateTile(int index, CHAR_INFO newTile)
 {
-	worldMap[x].Char.AsciiChar = newTile;
+	worldMap[index] = newTile;
 	return 1;
 }
 
 int WorldClass::Render()
 {
-	//Update Unit Position
-
-	//Temp
 	COORD frameCoords = ConvertIndex(frame);
 	frameCoords.X++;
 	frameCoords.Y++;
