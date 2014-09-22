@@ -153,7 +153,7 @@ int WorldClass::Tick()
 			frame--;
 		}
 	}
-	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //S
+	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //Insert
 	{
 		SpawnUnit(7, 0, frame);
 	}
