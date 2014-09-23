@@ -10,7 +10,7 @@ public:
 	UnitData unitData;
 
 	EntityClass();
-	EntityClass(const EntityClass&);
+	/*EntityClass(const EntityClass&);*/
 	~EntityClass();
 	int Initialize(UnitData unitData);
 

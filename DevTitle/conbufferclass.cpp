@@ -20,7 +20,7 @@ ConBufferClass::~ConBufferClass()
 int ConBufferClass::Initialize()
 {
 	hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTitle(L"Ascivilization");
+	SetConsoleTitle(L"Mainframe");
 	InitiazlizeBorder();
 
 	beginCoords.X = 0;

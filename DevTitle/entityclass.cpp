@@ -5,9 +5,9 @@ EntityClass::EntityClass()
 {
 }
 
-EntityClass::EntityClass(const EntityClass&)
-{
-}
+//EntityClass::EntityClass(const EntityClass&)
+//{
+//}
 
 EntityClass::~EntityClass()
 {

@@ -15,6 +15,7 @@
 WorldClass::WorldClass()
 {
 }
+
 WorldClass::WorldClass(const WorldClass&)
 {
 }
@@ -108,9 +109,8 @@ int WorldClass::SpawnUnit(int id, int playerId, int index)
 	
 	class_EntityArray.push_back(class_TempEntity);
 	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
-	unitMap[unitData.position].Char.UnicodeChar = class_TempEntity.unitData.charInfo.Char.UnicodeChar;
-	unitMap[unitData.position].Attributes = class_TempEntity.unitData.charInfo.Attributes;
-		
+	unitMap[unitData.position] = class_TempEntity.unitData.charInfo;
+			
 	numOfUnits++;
 	return numOfUnits;
 }
@@ -119,9 +119,10 @@ int WorldClass::Tick()
 {
 	KEY_EVENT_RECORD keyPress;
 	keyPress = class_InputClass.GetKeypress();
+	bool collision = false;
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
-		if (frame - width > 0)
+		if (frame - width >= 0)
 		{
 			frame -= width;
 		}
@@ -158,9 +159,16 @@ int WorldClass::Tick()
 		{
 			if (class_EntityArray[i].unitData.position == frame)
 			{
-				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-				class_EntityArray[i].unitData.position -= width;
-				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+				for (int j = 0; j < numOfUnits; j++)
+				{
+					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position - width && class_EntityArray[i].unitData.position - width >= 0)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position -= width;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -170,9 +178,16 @@ int WorldClass::Tick()
 		{
 			if (class_EntityArray[i].unitData.position == frame)
 			{
-				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-				class_EntityArray[i].unitData.position += width;
-				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+				for (int j = 0; j < numOfUnits; j++)
+				{
+					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position + width &&  class_EntityArray[i].unitData.position + width < width*height)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position += width;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -182,9 +197,16 @@ int WorldClass::Tick()
 		{
 			if (class_EntityArray[i].unitData.position == frame)
 			{
-				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-				class_EntityArray[i].unitData.position -= 1;
-				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+				for (int j = 0; j < numOfUnits; j++)
+				{
+					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position - 1 && class_EntityArray[i].unitData.position % width != 0)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position -= 1;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -194,13 +216,19 @@ int WorldClass::Tick()
 		{
 			if (class_EntityArray[i].unitData.position == frame)
 			{
-				unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-				class_EntityArray[i].unitData.position += 1;
-				unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+				for (int j = 0; j < numOfUnits; j++)
+				{
+					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position + 1 && class_EntityArray[i].unitData.position % width != width - 1)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position += 1;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						break;
+					}
+				}
 			}
 		}
 	}
 	WorldClass::Render();
-	
 	return 1;
 }
