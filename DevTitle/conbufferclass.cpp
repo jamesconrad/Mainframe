@@ -56,7 +56,7 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
 	
 	time(&now);
-	if (difftime(now, lastRender) >= 0.0)
+	if (difftime(now, lastRender) >= 0.25)
 	{
 		ClearConsole(hConsole, frameCoords);
 		RenderBorder();

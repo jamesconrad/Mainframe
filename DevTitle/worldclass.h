@@ -49,7 +49,7 @@ private:
 
 	UnitData *unitPositionIndex;
 
-	KEY_EVENT_RECORD keyPress;
+	KEY_EVENT_RECORD keyPress, prevKeyPress;
 
 	HANDLE inputThread;
 

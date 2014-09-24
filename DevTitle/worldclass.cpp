@@ -1,17 +1,5 @@
 #include "worldclass.h"
 #include <iostream>
-#include <thread>
-
-#define PLAYER_COLOUR_0 0x0000 | 0x0008
-#define PLAYER_COLOUR_1 0x0001 | 0x0008
-#define PLAYER_COLOUR_2 0x0002 | 0x0008
-#define PLAYER_COLOUR_3 0x0003 | 0x0008
-#define PLAYER_COLOUR_4 0x0004 | 0x0008
-#define PLAYER_COLOUR_5 0x0005 | 0x0008
-#define PLAYER_COLOUR_6 0x0006 | 0x0008
-#define PLAYER_COLOUR_7 0x0007 | 0x0008
-
-
 
 WorldClass::WorldClass()
 {
@@ -34,9 +22,9 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	worldMap = generation;
 
 	class_ConBuffer.Initialize();
-	
+
 	unitMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*width*height);
-	
+
 	memcpy(unitMap, worldMap, sizeof(CHAR_INFO)*width*height);
 	WorldClass::frame = frame;
 	WorldClass::height = height;
@@ -55,8 +43,10 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	playerColour[6] = 0x0007 | 0x0008;
 
 	currentTurn = 1;
-
 	numOfPlayers = 6;
+
+	prevKeyPress = class_InputClass.GetKeypress();
+	keyPress = class_InputClass.GetKeypress();
 
 	return 1;
 }
@@ -111,7 +101,7 @@ int WorldClass::ConvertCoord(COORD indexCoord)
 int WorldClass::SpawnUnit(int id, int index)
 {
 	UnitData unitData = class_UnitInfo.unit[id];
-	
+
 	unitData.playerID = currentTurn;
 	unitData.position = index;
 
@@ -119,11 +109,11 @@ int WorldClass::SpawnUnit(int id, int index)
 
 	class_TempEntity.unitData = unitData;
 	class_TempEntity.unitData.charInfo.Attributes = playerColour[currentTurn];
-	
+
 	class_EntityArray.push_back(class_TempEntity);
 	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
 	unitMap[unitData.position] = class_TempEntity.unitData.charInfo;
-			
+
 	numOfUnits++;
 	return numOfUnits;
 }
@@ -148,13 +138,17 @@ int WorldClass::Tick()
 	keyPress = class_InputClass.GetKeypress();
 	WorldClass::CheckInput();
 	WorldClass::Render();
-	WorldClass::NextTurn();
 	return 1;
 }
 
 int WorldClass::CheckInput()
 {
 	bool collision = false;
+	if (keyPress.wVirtualKeyCode == VK_SPACE && keyPress.bKeyDown == true)
+	{
+		WorldClass::NextTurn();
+		Sleep(1000);
+	}
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
 		if (frame - width >= 0)
@@ -201,11 +195,12 @@ int WorldClass::CheckInput()
 						collision = true;
 					}
 				}
-				if (class_EntityArray[i].unitData.position - width >= 0 && !collision)
+				if (class_EntityArray[i].unitData.position - width >= 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
 				{
 					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
 					class_EntityArray[i].unitData.position -= width;
 					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+					--class_EntityArray[i].unitData.actions;
 				}
 			}
 		}
@@ -223,11 +218,12 @@ int WorldClass::CheckInput()
 						collision = true;
 					}
 				}
-				if (class_EntityArray[i].unitData.position + width < width*height && !collision)
+				if (class_EntityArray[i].unitData.position + width < width*height && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
 				{
 					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
 					class_EntityArray[i].unitData.position += width;
 					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+					--class_EntityArray[i].unitData.actions;
 				}
 			}
 		}
@@ -245,11 +241,12 @@ int WorldClass::CheckInput()
 						collision = true;
 					}
 				}
-				if (class_EntityArray[i].unitData.position % width != 0 && !collision)
+				if (class_EntityArray[i].unitData.position % width != 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
 				{
 					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
 					class_EntityArray[i].unitData.position -= 1;
 					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+					--class_EntityArray[i].unitData.actions;
 				}
 			}
 		}
@@ -267,15 +264,17 @@ int WorldClass::CheckInput()
 						collision = true;
 					}
 				}
-				if (class_EntityArray[i].unitData.position % width != width - 1 && !collision)
+				if (class_EntityArray[i].unitData.position % width != width - 1 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
 				{
 					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
 					class_EntityArray[i].unitData.position += 1;
 					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+					--class_EntityArray[i].unitData.actions;
 				}
 			}
 		}
 	}
+	prevKeyPress = keyPress;
 
 	return 1;
 }
