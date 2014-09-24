@@ -3,8 +3,6 @@
 #include <ctime>
 
 #include "worldclass.h"
-#include "clientclass.h"
-#include "serverclass.h"
 #include "generationclass.h"
 
 int main() 
