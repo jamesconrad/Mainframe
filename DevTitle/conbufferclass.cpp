@@ -21,6 +21,17 @@ int ConBufferClass::Initialize()
 {
 	hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTitle(L"Mainframe");
+	
+	playerColour[0] = 0x0001 | 0x0008;
+	playerColour[1] = 0x0002 | 0x0008;
+	playerColour[2] = 0x0003 | 0x0008;
+	playerColour[3] = 0x0004 | 0x0008;
+	playerColour[4] = 0x0005 | 0x0008;
+	playerColour[5] = 0x0006 | 0x0008;
+	playerColour[6] = 0x0007 | 0x0008;
+	
+
+	border = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*SCREEN_HEIGHT*SCREEN_WIDTH);
 	InitiazlizeBorder();
 
 	beginCoords.X = 0;
@@ -45,7 +56,7 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
 	
 	time(&now);
-	if (difftime(now, lastRender) >= 1)
+	if (difftime(now, lastRender) >= 0.0)
 	{
 		ClearConsole(hConsole, frameCoords);
 		RenderBorder();
@@ -93,9 +104,15 @@ int ConBufferClass::ClearConsole(HANDLE hConsole, COORD frameCoords)
 	return 1;
 }
 
+int ConBufferClass::UpdateBorderColour(int playerNum)
+{
+	for (int i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; ++i)
+		border[i].Attributes = playerColour[playerNum];
+	return 1;
+}
+
 int ConBufferClass::InitiazlizeBorder()
 {
-	border = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)*SCREEN_HEIGHT*SCREEN_WIDTH);
 	for (int index = 0; index <= SCREEN_HEIGHT*SCREEN_WIDTH; index++)
 	{//9619 for testing
 		if (index == 0) ConBufferClass::border[index].Char.UnicodeChar = 9556;
@@ -121,19 +138,19 @@ int ConBufferClass::InitiazlizeBorder()
 			border[index].Char.UnicodeChar = 9571;
 		else if (index == SCREEN_WIDTH * 33 + 49) 
 			border[index].Char.UnicodeChar = 9577;
-		//Hardcode of chatbox
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) - 1) 
-			border[index].Char.UnicodeChar = 9571;
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3)) 
-			border[index].Char.UnicodeChar = 9568;
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3) + 6) 
-			border[index].Char.UnicodeChar = 9574;
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 1) + 6) 
-			border[index].Char.UnicodeChar = 9577;
-		else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 6) 
-			border[index].Char.UnicodeChar = 9553;
-		else if (index >= SCREEN_WIDTH * 48 + 1 && index <= SCREEN_WIDTH * 49 - 2) 
-			border[index].Char.UnicodeChar = 9552;
+		////Hardcode of chatbox
+		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) - 1) 
+		//	border[index].Char.UnicodeChar = 9571;
+		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3)) 
+		//	border[index].Char.UnicodeChar = 9568;
+		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3) + 6) 
+		//	border[index].Char.UnicodeChar = 9574;
+		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 1) + 6) 
+		//	border[index].Char.UnicodeChar = 9577;
+		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 6) 
+		//	border[index].Char.UnicodeChar = 9553;
+		//else if (index >= SCREEN_WIDTH * 48 + 1 && index <= SCREEN_WIDTH * 49 - 2) 
+		//	border[index].Char.UnicodeChar = 9552;
 		//is it in row 1 or 33 or SCREEN_HEIGHT?
 		else if (index < SCREEN_WIDTH || (index > SCREEN_WIDTH * 33 && index < SCREEN_WIDTH * 34 - 1) || (index > (SCREEN_HEIGHT - 1) * SCREEN_WIDTH && index < SCREEN_HEIGHT * SCREEN_WIDTH - 1)) 
 			border[index].Char.UnicodeChar = 9552;
@@ -150,19 +167,17 @@ int ConBufferClass::InitiazlizeBorder()
 	}
 	//Time to fill in text
 	//Chat: text input starts at 4073
-	int string[4] = { 67, 104, 97, 116 };
+	/*int string[4] = { 67, 104, 97, 116 };
 	for (int i = 0; i < 4; i++)
 	{
 		border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + i].Char.UnicodeChar = string[i];
 		border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + i].Attributes = 0x0007;
 	}
 	border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Char.UnicodeChar = 58;
-	border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Attributes = 0x0007;
+	border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Attributes = 0x0007;*/
 	//Turn: turn num starts at 139
-	string[0] = 84;
-	string[1] = 117;
-	string[2] = 114;
-	string[3] = 110;
+	int string[4] = { 84, 117, 114, 110 };
+	
 	for (int i = 0; i < 4; i++)
 	{
 		border[SCREEN_WIDTH + 50 + i].Char.UnicodeChar = string[i];
@@ -171,17 +186,21 @@ int ConBufferClass::InitiazlizeBorder()
 	border[SCREEN_WIDTH + 50 + 4].Char.UnicodeChar = 58;
 	border[SCREEN_WIDTH + 50 + 4].Attributes = 0x0007;
 	//Gold: num starts at 154
-	string[0] = 71;
-	string[1] = 111;
-	string[2] = 108;
-	string[3] = 100;
-	for (int i = 0; i < 4; i++)
+	int stringq[7];
+	stringq[0] = 84;
+	stringq[1] = 104;
+	stringq[2] = 114;
+	stringq[3] = 101;
+	stringq[4] = 97;
+	stringq[5] = 100;
+	stringq[6] = 115;
+	for (int i = 0; i < 7; i++)
 	{
-		border[SCREEN_WIDTH + 65 + i].Char.UnicodeChar = string[i];
+		border[SCREEN_WIDTH + 65 + i].Char.UnicodeChar = stringq[i];
 		border[SCREEN_WIDTH + 65 + i].Attributes = 0x0007;
 	}
-	border[SCREEN_WIDTH + 65 + 4].Char.UnicodeChar = 58;
-	border[SCREEN_WIDTH + 65 + 4].Attributes = 0x0007;
+	border[SCREEN_WIDTH + 65 + 7].Char.UnicodeChar = 58;
+	border[SCREEN_WIDTH + 65 + 7].Attributes = 0x0007;
 
 	return 1;
 	

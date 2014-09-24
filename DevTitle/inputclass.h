@@ -6,9 +6,12 @@
 class InputClass 
 {
 private:
-	HANDLE hConsole;
-	DWORD nLength;
+	HANDLE hConsole, hThread;
+	DWORD nLength, eventsToRead;
 	DWORD * eventsRead;
+	INPUT_RECORD inputRecord;
+	KEY_EVENT_RECORD keyEventRecord;
+
 public:
 	InputClass();
 	InputClass(const InputClass&);

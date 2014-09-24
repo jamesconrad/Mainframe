@@ -16,14 +16,21 @@ int InputClass::Initialize()
 {
 	hConsole = (HANDLE)GetStdHandle(STD_INPUT_HANDLE);
 	nLength = 1;
+	FlushConsoleInputBuffer(hConsole);
 	return 1;
 }
 
 KEY_EVENT_RECORD InputClass::GetKeypress()
 {
-	INPUT_RECORD inputRecord;
 	DWORD eventsRead;
-	ReadConsoleInput(hConsole, &inputRecord, nLength, &eventsRead);
-	int err = GetLastError();
+
+	GetNumberOfConsoleInputEvents(hConsole, &eventsToRead);
+
+	if (eventsToRead >= 1)
+	{
+		ReadConsoleInput(hConsole, &inputRecord, nLength, &eventsRead);
+		
+	}
+	Sleep(75);
 	return inputRecord.Event.KeyEvent;
 }

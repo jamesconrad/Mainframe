@@ -8,6 +8,8 @@ class ConBufferClass
 public:
 	HANDLE hConsole;
 
+	int playerColour[7];
+
 	ConBufferClass();
 	ConBufferClass(const ConBufferClass&);
 	~ConBufferClass();
@@ -15,6 +17,7 @@ public:
 
 	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD);
 	int ClearConsole(HANDLE, COORD);
+	int UpdateBorderColour(int playerNum);
 private:
 	COORD beginCoords; 
 	DWORD nWritten;

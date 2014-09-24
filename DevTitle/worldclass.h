@@ -29,17 +29,29 @@ public:
 	int Render();
 	int Tick();	
 
-	int SpawnUnit(int id, int playerId, int index);
+	int SpawnUnit(int id, int index);
+
+	int NextTurn();
+	int CheckInput();
+	
 
 private:
-	int frame;
-	int height, width;
-	int numOfUnits;
-	
+	int frame,
+	 height, width,
+	 numOfUnits,
+	 numOfPlayers,
+	 currentTurn,
+	 playerColour[7],
+	 turnCounter;
+
 	CHAR_INFO *worldMap;
 	CHAR_INFO *unitMap;
 
 	UnitData *unitPositionIndex;
+
+	KEY_EVENT_RECORD keyPress;
+
+	HANDLE inputThread;
 
 	UnitInfoClass class_UnitInfo;
 	ConBufferClass class_ConBuffer;
