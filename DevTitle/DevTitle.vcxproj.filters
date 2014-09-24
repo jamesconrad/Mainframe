@@ -18,12 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="clientclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="serverclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="worldclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -44,12 +38,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="clientclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="serverclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="worldclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
