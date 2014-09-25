@@ -43,6 +43,7 @@ private:
 	 currentTurn,
 	 playerColour[7],
 	 turnCounter;
+	bool moveUnit, attackUnit;
 
 	CHAR_INFO *worldMap;
 	CHAR_INFO *unitMap;
