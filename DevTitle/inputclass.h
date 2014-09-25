@@ -10,7 +10,7 @@ private:
 	DWORD nLength, eventsToRead;
 	DWORD * eventsRead;
 	INPUT_RECORD inputRecord;
-	KEY_EVENT_RECORD keyEventRecord;
+	KEY_EVENT_RECORD prevKeyEventRecord;
 
 public:
 	InputClass();
@@ -19,6 +19,7 @@ public:
 
 	int Initialize();
 	KEY_EVENT_RECORD GetKeypress();
+	KEY_EVENT_RECORD GetKeypressWait();
 };
 
 #endif

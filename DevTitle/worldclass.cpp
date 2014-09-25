@@ -181,100 +181,103 @@ int WorldClass::CheckInput()
 	{
 		SpawnUnit(7, frame);
 	}
-	//Need to check for colision with other entitys and map edges
-	else if (keyPress.wVirtualKeyCode == 0x57 && keyPress.bKeyDown == true) //W
-	{
-		for (int i = 0; i < numOfUnits; i++)
+	//else if (keyPress.wVirtualKeyCode == 0x4D && keyPress.bKeyDown == true)
+	//{
+		//keyPress = class_InputClass.GetKeypressWait();
+		//Need to check for colision with other entitys and map edges
+		if (keyPress.wVirtualKeyCode == 0x57 && keyPress.bKeyDown == true) //W
 		{
-			if (class_EntityArray[i].unitData.position == frame)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int j = 0; j < numOfUnits; j++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position - width)
+					for (int j = 0; j < numOfUnits; j++)
 					{
-						collision = true;
+						if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position - width)
+						{
+							collision = true;
+						}
 					}
-				}
-				if (class_EntityArray[i].unitData.position - width >= 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-				{
-					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-					class_EntityArray[i].unitData.position -= width;
-					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-					--class_EntityArray[i].unitData.actions;
+					if (class_EntityArray[i].unitData.position - width >= 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position -= width;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						--class_EntityArray[i].unitData.actions;
+					}
 				}
 			}
 		}
-	}
-	else if (keyPress.wVirtualKeyCode == 0x53 && keyPress.bKeyDown == true) //S
-	{
-		for (int i = 0; i < numOfUnits; i++)
+		else if (keyPress.wVirtualKeyCode == 0x53 && keyPress.bKeyDown == true) //S
 		{
-			if (class_EntityArray[i].unitData.position == frame)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int j = 0; j < numOfUnits; j++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position + width)
+					for (int j = 0; j < numOfUnits; j++)
 					{
-						collision = true;
+						if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position + width)
+						{
+							collision = true;
+						}
 					}
-				}
-				if (class_EntityArray[i].unitData.position + width < width*height && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-				{
-					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-					class_EntityArray[i].unitData.position += width;
-					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-					--class_EntityArray[i].unitData.actions;
+					if (class_EntityArray[i].unitData.position + width < width*height && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position += width;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						--class_EntityArray[i].unitData.actions;
+					}
 				}
 			}
 		}
-	}
-	else if (keyPress.wVirtualKeyCode == 0x41 && keyPress.bKeyDown == true) //A
-	{
-		for (int i = 0; i < numOfUnits; i++)
+		else if (keyPress.wVirtualKeyCode == 0x41 && keyPress.bKeyDown == true) //A
 		{
-			if (class_EntityArray[i].unitData.position == frame)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int j = 0; j < numOfUnits; j++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position - 1)
+					for (int j = 0; j < numOfUnits; j++)
 					{
-						collision = true;
+						if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position - 1)
+						{
+							collision = true;
+						}
 					}
-				}
-				if (class_EntityArray[i].unitData.position % width != 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-				{
-					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-					class_EntityArray[i].unitData.position -= 1;
-					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-					--class_EntityArray[i].unitData.actions;
+					if (class_EntityArray[i].unitData.position % width != 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position -= 1;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						--class_EntityArray[i].unitData.actions;
+					}
 				}
 			}
 		}
-	}
-	else if (keyPress.wVirtualKeyCode == 0x44 && keyPress.bKeyDown == true) //D
-	{
-		for (int i = 0; i < numOfUnits; i++)
+		else if (keyPress.wVirtualKeyCode == 0x44 && keyPress.bKeyDown == true) //D
 		{
-			if (class_EntityArray[i].unitData.position == frame)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int j = 0; j < numOfUnits; j++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position + 1)
+					for (int j = 0; j < numOfUnits; j++)
 					{
-						collision = true;
+						if (class_EntityArray[j].unitData.position != class_EntityArray[i].unitData.position + 1)
+						{
+							collision = true;
+						}
 					}
-				}
-				if (class_EntityArray[i].unitData.position % width != width - 1 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-				{
-					unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-					class_EntityArray[i].unitData.position += 1;
-					unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-					--class_EntityArray[i].unitData.actions;
+					if (class_EntityArray[i].unitData.position % width != width - 1 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
+					{
+						unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
+						class_EntityArray[i].unitData.position += 1;
+						unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+						--class_EntityArray[i].unitData.actions;
+					}
 				}
 			}
 		}
-	}
-	prevKeyPress = keyPress;
+	//}
 
 	return 1;
 }
