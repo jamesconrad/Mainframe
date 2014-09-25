@@ -11,7 +11,7 @@ UnitInfoClass::UnitInfoClass(const UnitInfoClass&)
 UnitInfoClass::~UnitInfoClass()
 {
 }
-//Geethan's here
+
 int UnitInfoClass::Initialize()
 {
 	CHAR_INFO BASE_CHAR_INFO;
