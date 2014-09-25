@@ -48,6 +48,8 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	prevKeyPress = class_InputClass.GetKeypress();
 	keyPress = class_InputClass.GetKeypress();
 
+	SpawnUnit(0, 789);
+
 	return 1;
 }
 
@@ -109,7 +111,7 @@ int WorldClass::SpawnUnit(int id, int index)
 
 	class_TempEntity.unitData = unitData;
 	class_TempEntity.unitData.charInfo.Attributes = playerColour[currentTurn];
-
+	
 	class_EntityArray.push_back(class_TempEntity);
 	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
 	unitMap[unitData.position] = class_TempEntity.unitData.charInfo;
@@ -181,9 +183,9 @@ int WorldClass::CheckInput()
 	{
 		SpawnUnit(7, frame);
 	}
-	//else if (keyPress.wVirtualKeyCode == 0x4D && keyPress.bKeyDown == true)
-	//{
-		//keyPress = class_InputClass.GetKeypressWait();
+	else if (keyPress.wVirtualKeyCode == 0x4D && keyPress.bKeyDown == true)//M
+	{
+		keyPress = class_InputClass.GetKeypressWait();
 		//Need to check for colision with other entitys and map edges
 		if (keyPress.wVirtualKeyCode == 0x57 && keyPress.bKeyDown == true) //W
 		{
@@ -277,7 +279,7 @@ int WorldClass::CheckInput()
 				}
 			}
 		}
-	//}
+	}
 
 	return 1;
 }

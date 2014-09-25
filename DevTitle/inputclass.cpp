@@ -15,7 +15,7 @@ InputClass::~InputClass()
 int InputClass::Initialize()
 {
 	hConsole = (HANDLE)GetStdHandle(STD_INPUT_HANDLE);
-	nLength = 2;
+	nLength = 1;
 	FlushConsoleInputBuffer(hConsole);
 	return 1;
 }
@@ -39,6 +39,7 @@ KEY_EVENT_RECORD InputClass::GetKeypress()
 KEY_EVENT_RECORD InputClass::GetKeypressWait()
 {
 	DWORD eventsRead;
+
 	ReadConsoleInput(hConsole, &inputRecord, nLength, &eventsRead);
 	return inputRecord.Event.KeyEvent;
 }
