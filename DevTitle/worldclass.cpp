@@ -190,7 +190,7 @@ int WorldClass::CheckInput()
 					{
 						for (int j = 0; j < numOfUnits; j++)
 						{
-							for (int k = 0; k < class_EntityArray[i].unitData.range; ++i)
+							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
@@ -247,7 +247,7 @@ int WorldClass::CheckInput()
 					{
 						for (int j = 0; j < numOfUnits; j++)
 						{
-							for (int k = 0; k < class_EntityArray[i].unitData.range; ++i)
+							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + 8 * k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
@@ -304,7 +304,7 @@ int WorldClass::CheckInput()
 					{
 						for (int j = 0; j < numOfUnits; j++)
 						{
-							for (int k = 0; k < class_EntityArray[i].unitData.range; ++i)
+							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
@@ -361,7 +361,7 @@ int WorldClass::CheckInput()
 					{
 						for (int j = 0; j < numOfUnits; j++)
 						{
-							for (int k = 0; k < class_EntityArray[i].unitData.range; ++i)
+							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - 8 * k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{

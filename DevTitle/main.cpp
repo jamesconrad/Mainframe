@@ -7,17 +7,12 @@
 
 int main() 
 {
-	time_t now = time(&now);
-	time_t lastRender;
 	bool running = true;
 	GenerationClass terrainGenerator;
 	WorldClass world;
 	terrainGenerator.Initialize(48, 32, 1337);
 	CHAR_INFO * generation = terrainGenerator.Generate();
 	world.Initialize(generation, 0, terrainGenerator.GetWidth(), terrainGenerator.GetHeight());
-	world.Render();
-	
-	time(&lastRender);
 
 	terrainGenerator.Save("savedata.txt", world.GetMap());
 	while (true)
