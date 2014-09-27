@@ -5,6 +5,7 @@
 #include "unitinfoclass.h"
 #include "entityclass.h"
 #include "inputclass.h"
+#include "modelloader.h"
 #include <vector>
 
 class WorldClass 
@@ -30,6 +31,7 @@ public:
 	int Tick();	
 
 	int SpawnUnit(int id, int index);
+	int UpdateHealthBg(int index);
 
 	int NextTurn();
 	int CheckInput();

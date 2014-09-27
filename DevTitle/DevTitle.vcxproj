@@ -87,6 +87,7 @@
     <ClCompile Include="generationclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="modelloader.cpp" />
     <ClCompile Include="unitinfoclass.cpp" />
     <ClCompile Include="worldclass.cpp" />
   </ItemGroup>
@@ -95,6 +96,7 @@
     <ClInclude Include="entityclass.h" />
     <ClInclude Include="generationclass.h" />
     <ClInclude Include="inputclass.h" />
+    <ClInclude Include="modelloader.h" />
     <ClInclude Include="unitinfoclass.h" />
     <ClInclude Include="worldclass.h" />
   </ItemGroup>

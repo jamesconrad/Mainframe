@@ -135,6 +135,44 @@ int WorldClass::NextTurn()
 
 	class_ConBuffer.UpdateBorderColour(currentTurn);
 
+	for (int i = 0; i < numOfUnits; ++i)
+	{
+		if (class_EntityArray[i].unitData.playerID == currentTurn)
+		{
+			class_EntityArray[i].unitData.actions = class_EntityArray[i].unitData.maxActions;
+		}
+	}
+
+	return 1;
+}
+
+int WorldClass::UpdateHealthBg(int index)
+{
+	double hpMod;
+	if (class_EntityArray[index].unitData.hp <= 0) //Get rid of the unit by moving it to the bottom right corner
+	{
+		class_EntityArray[index].unitData.charInfo = worldMap[width*height];
+		class_EntityArray[index].unitData.position = width*height;
+		unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
+		class_EntityArray[index].unitData.maxActions = 0;
+	}
+	else
+	{
+		hpMod = class_EntityArray[index].unitData.hp / class_EntityArray[index].unitData.maxHP;
+
+		if (hpMod <= 0.25)
+			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID] | 0x0040;
+		else if (hpMod <= 0.5)
+			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID] | 0x0030;
+		else if (hpMod <= 0.75)
+			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID] | 0x0020;
+		else
+			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID];
+
+		unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
+	}
+
+
 	return 1;
 }
 
@@ -194,10 +232,15 @@ int WorldClass::CheckInput()
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense >= 0)
+									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
 									{
 										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										break;
+										UpdateHealthBg(j);
+									}
+									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
+									{
+										--class_EntityArray[j].unitData.hp;
+										UpdateHealthBg(j);
 									}
 									else {}
 										//no damage done
@@ -251,10 +294,15 @@ int WorldClass::CheckInput()
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + 8 * k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense >= 0)
+									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
 									{
 										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										break;
+										UpdateHealthBg(j);
+									}
+									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
+									{
+										--class_EntityArray[j].unitData.hp;
+										UpdateHealthBg(j);
 									}
 									else {}
 									//no damage done
@@ -308,10 +356,15 @@ int WorldClass::CheckInput()
 							{
 								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense >= 0)
+									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
 									{
 										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										break;
+										UpdateHealthBg(j);
+									}
+									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
+									{
+										--class_EntityArray[j].unitData.hp;
+										UpdateHealthBg(j);
 									}
 									else {}
 									//no damage done
@@ -363,12 +416,17 @@ int WorldClass::CheckInput()
 						{
 							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
 							{
-								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - 8 * k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
+								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID)
 								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense >= 0)
+									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
 									{
 										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										break;
+										UpdateHealthBg(j);
+									}
+									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
+									{
+										--class_EntityArray[j].unitData.hp;
+										UpdateHealthBg(j);
 									}
 									else {}
 									//no damage done
@@ -390,7 +448,7 @@ int WorldClass::CheckInput()
 	}
 	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //Insert
 	{
-		SpawnUnit(7, frame);
+		SpawnUnit(2, frame);
 	}
 	else if (keyPress.wVirtualKeyCode == 0x4D && keyPress.bKeyDown == true) //Movement
 	{

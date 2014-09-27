@@ -13,6 +13,7 @@ namespace
 			hp,  //determines health of unit and sets background accordingly
 			unitID,
 			actions, //dependant on unit one moved for every attempt made, attacking sets to 0
+			maxActions,
 			attack, //damage dealt on attack
 			defense, //defenise - attack = damage dealt
 			range, // range of attack, hits first unit in way

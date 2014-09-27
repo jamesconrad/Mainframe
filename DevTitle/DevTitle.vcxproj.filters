@@ -36,6 +36,9 @@
     <ClCompile Include="unitinfoclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="modelloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="worldclass.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="unitinfoclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="modelloader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

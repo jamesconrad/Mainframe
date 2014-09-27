@@ -52,14 +52,13 @@ CHAR_INFO * GenerationClass::Generate()
 	return generating;
 }
 
-int GenerationClass::Save(char * filePath, CHAR_INFO *saveData)
+int GenerationClass::Save(char* filePath, CHAR_INFO* saveData)
 {
 	std::ofstream savefile;
-	savefile.open(filePath);
-	for (int i = 0; i < width * height; i++)
+	savefile.open(filePath, std::ios::out | std::ios::binary);
+	for (int i = 0; i < width * height; ++i)
 	{
-		savefile << saveData[i].Char.UnicodeChar;
-		savefile << saveData[i].Attributes;
+		savefile << saveData[i].Char.UnicodeChar << saveData[i].Attributes;
 	}
 	savefile.flush();
 	savefile.close();
