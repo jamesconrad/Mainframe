@@ -68,8 +68,12 @@ int WorldClass::Render()
 	frameCoords.X++;
 	frameCoords.Y++;
 	SetConsoleCursorPosition(class_ConBuffer.hConsole, frameCoords);
-
-	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords);
+	for (int i = 0; i < numOfUnits; ++i)
+	{
+		if (frame == class_EntityArray[i].unitData.position)
+			class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords, class_EntityArray[i]);
+	}
+	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords, frame);
 
 	return 1;
 }
@@ -448,7 +452,7 @@ int WorldClass::CheckInput()
 	}
 	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //Insert
 	{
-		SpawnUnit(2, frame);
+		SpawnUnit(7, frame);
 	}
 	else if (keyPress.wVirtualKeyCode == 0x4D && keyPress.bKeyDown == true) //Movement
 	{

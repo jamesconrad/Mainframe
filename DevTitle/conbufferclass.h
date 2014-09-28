@@ -2,6 +2,7 @@
 #define CONBUFFERCLASS_H
 
 #include <Windows.h>
+#include "entityclass.h"
 
 class ConBufferClass 
 {
@@ -15,7 +16,8 @@ public:
 	~ConBufferClass();
 	int Initialize();
 
-	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD);
+	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD, EntityClass selectedUnit);
+	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD, int frame);
 	int ClearConsole(HANDLE, COORD);
 	int UpdateBorderColour(int playerNum);
 private:
@@ -25,10 +27,19 @@ private:
 	time_t now;
 	time_t lastRender;
 
-	CHAR_INFO *border;
+	CHAR_INFO *border,
+		*unitInfo,
+		*unitModel,
+		*unitActions,
+		*converted;
 
 	int RenderBorder();
-	int InitiazlizeBorder();
+	int RenderUnitInfo(EntityClass unit);
+	int RenderUnitInfo(CHAR_INFO terrainTile);
+	int InitializeBorder();
+	int InitializeUnitInfo();
+
+	CHAR_INFO* IntToCharInfo(int num);
 
 	bool unitsRendered;
 };
