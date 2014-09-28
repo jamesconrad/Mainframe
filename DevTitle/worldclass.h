@@ -26,7 +26,7 @@ public:
 	int GetFrame();
 
 	int UpdateTile(int index, CHAR_INFO);
-	
+
 	int Render();
 	int Tick();	
 

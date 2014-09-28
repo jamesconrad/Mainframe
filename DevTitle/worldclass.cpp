@@ -155,6 +155,7 @@ int WorldClass::UpdateHealthBg(int index)
 	double hpMod;
 	if (class_EntityArray[index].unitData.hp <= 0) //Get rid of the unit by moving it to the bottom right corner
 	{
+		unitMap[class_EntityArray[index].unitData.position] = worldMap[class_EntityArray[index].unitData.position];
 		class_EntityArray[index].unitData.charInfo = worldMap[width*height];
 		class_EntityArray[index].unitData.position = width*height;
 		unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
@@ -173,7 +174,8 @@ int WorldClass::UpdateHealthBg(int index)
 		else
 			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID];
 
-		unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
+		if (class_EntityArray[index].unitData.hp > 0)
+			unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
 	}
 
 
