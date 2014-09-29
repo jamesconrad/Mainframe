@@ -2,8 +2,6 @@
 #define MODELLOADER_H
 
 #include <Windows.h>
-#include <iostream>
-#include <fstream>
 
 class ModelLoaderClass
 {
