@@ -387,7 +387,7 @@ int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 int ConBufferClass::InitializeUnitInfo()
 {
 	unitInfo = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 8 * 32);
-	unitModel = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 32 * 24);
+	unitModel = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 29 * 32);
 	unitActions = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 1 * 1);
 	for (int index = 0; index <= 8 * 32; index++)
 	{

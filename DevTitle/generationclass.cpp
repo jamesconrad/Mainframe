@@ -54,14 +54,14 @@ CHAR_INFO * GenerationClass::Generate()
 
 int GenerationClass::Save(char* filePath, CHAR_INFO* saveData)
 {
-	std::ofstream savefile;
-	savefile.open(filePath, std::ios::out | std::ios::binary);
-	for (int i = 0; i < width * height; ++i)
-	{
-		savefile << saveData[i].Char.UnicodeChar << saveData[i].Attributes;
-	}
+	char* memoryBuffer = (char*)malloc(sizeof(CHAR_INFO)*width*height);
+	std::ofstream savefile("map", std::ios::binary);
+
+	memcpy(memoryBuffer, saveData, sizeof(CHAR_INFO)*width*height);
+	savefile.write(memoryBuffer, sizeof(memoryBuffer));
 	savefile.flush();
 	savefile.close();
+	free(memoryBuffer);
 	return 1;
 }
 
