@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include "entityclass.h"
+#include "modelloader.h"
 
 class ConBufferClass 
 {
@@ -23,6 +24,8 @@ public:
 private:
 	COORD beginCoords; 
 	DWORD nWritten;
+
+	ModelLoaderClass class_ModelLoader;
 
 	time_t now;
 	time_t lastRender;

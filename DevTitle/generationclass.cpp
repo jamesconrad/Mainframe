@@ -54,14 +54,9 @@ CHAR_INFO * GenerationClass::Generate()
 
 int GenerationClass::Save(char* filePath, CHAR_INFO* saveData)
 {
-	char* memoryBuffer = (char*)malloc(sizeof(CHAR_INFO)*width*height);
-	std::ofstream savefile("map", std::ios::binary);
-
-	memcpy(memoryBuffer, saveData, sizeof(CHAR_INFO)*width*height);
-	savefile.write(memoryBuffer, sizeof(memoryBuffer));
-	savefile.flush();
-	savefile.close();
-	free(memoryBuffer);
+	FILE *saveFile;
+	saveFile = fopen("map", "wb");
+	fwrite(saveData, sizeof(CHAR_INFO), width*height, saveFile);
 	return 1;
 }
 

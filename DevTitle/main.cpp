@@ -14,7 +14,7 @@ int main()
 	CHAR_INFO * generation = terrainGenerator.Generate();
 	world.Initialize(generation, 0, terrainGenerator.GetWidth(), terrainGenerator.GetHeight());
 
-	terrainGenerator.Save("savedata.txt", world.GetMap());
+	terrainGenerator.Save("map", world.GetMap());
 	while (true)
 	{
 		world.Tick();

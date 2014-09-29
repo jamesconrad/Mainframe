@@ -1,3 +1,6 @@
+#ifndef MODELLOADER_H
+#define MODELLOADER_H
+
 #include <Windows.h>
 #include <iostream>
 #include <fstream>
@@ -18,3 +21,5 @@ public:
 	CHAR_INFO* GetModel(int modelNum);
 
 };
+
+#endif

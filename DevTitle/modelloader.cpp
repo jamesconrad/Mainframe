@@ -26,14 +26,9 @@ int ModelLoaderClass::Initialize()
 
 CHAR_INFO* ModelLoaderClass::GetModel(int modelNum)
 {
-	char* memoryBuffer = (char*)malloc(sizeof(CHAR_INFO)*width*height);
-
-	std::ifstream load("model", std::ios::binary);
-
-	load >> memoryBuffer;
-	memcpy(modelCharInfo, memoryBuffer, sizeof(CHAR_INFO)*width*height);
-
-	free(memoryBuffer);
+	FILE *saveFile;
+	saveFile = fopen("map", "rb");
+	fread(modelCharInfo, sizeof(CHAR_INFO), width*height, saveFile);
 
 	return modelCharInfo;
 }
