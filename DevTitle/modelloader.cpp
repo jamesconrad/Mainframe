@@ -1,4 +1,5 @@
 #include "modelloader.h"
+#include <fstream>
 
 ModelLoaderClass::ModelLoaderClass()
 {

@@ -6,7 +6,6 @@
 class ModelLoaderClass
 {
 private:
-	std::ifstream modelFile;
 	int width, height;
 	CHAR_INFO* modelCharInfo;
 

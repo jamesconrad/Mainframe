@@ -1,4 +1,5 @@
 #include "generationclass.h"
+#include <fstream>
 
 GenerationClass::GenerationClass()
 {
