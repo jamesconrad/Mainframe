@@ -1,4 +1,4 @@
-#include "ConBufferClass.h"
+#include "conbufferclass.h"
 #include <Windows.h>
 #include <ctime>
 #include "entityclass.h"
@@ -41,6 +41,7 @@ int ConBufferClass::Initialize()
 
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 
+	numChar = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	converted = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 
 	class_ModelLoader.Initialize();
@@ -341,28 +342,26 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 	renderRect.Right = 59 + 20;
 	renderRect.Bottom = 28 + 8;
 
-	CHAR_INFO *tmp = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
-	tmp = IntToCharInfo(unit.unitData.hp);
+	numChar = IntToCharInfo(unit.unitData.hp);
 	for (int i = 0; i < 4; ++i)
 	{
-		unitInfo[9 + i].Char.UnicodeChar = tmp[i].Char.UnicodeChar;
+		unitInfo[9 + i].Char.UnicodeChar = numChar[i].Char.UnicodeChar;
 	}
-	tmp = IntToCharInfo(unit.unitData.attack);
+	numChar = IntToCharInfo(unit.unitData.attack);
 	for (int i = 0; i < 4; ++i)
 	{
-		unitInfo[41 + i].Char.UnicodeChar = tmp[i].Char.UnicodeChar;
+		unitInfo[41 + i].Char.UnicodeChar = numChar[i].Char.UnicodeChar;
 	}
-	tmp = IntToCharInfo(unit.unitData.defense);
+	numChar = IntToCharInfo(unit.unitData.defense);
 	for (int i = 0; i < 4; ++i)
 	{
-		unitInfo[73 + i].Char.UnicodeChar = tmp[i].Char.UnicodeChar;
+		unitInfo[73 + i].Char.UnicodeChar = numChar[i].Char.UnicodeChar;
 	}
-	tmp = IntToCharInfo(unit.unitData.actions);
+	numChar = IntToCharInfo(unit.unitData.actions);
 	for (int i = 0; i < 4; ++i)
 	{
-		unitInfo[105 + i].Char.UnicodeChar = tmp[i].Char.UnicodeChar;
+		unitInfo[105 + i].Char.UnicodeChar = numChar[i].Char.UnicodeChar;
 	}
-	free(tmp);
 
 	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
 

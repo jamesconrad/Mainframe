@@ -19,7 +19,6 @@ public:
 
 	int Initialize();
 	KEY_EVENT_RECORD GetKeypress();
-	KEY_EVENT_RECORD GetKeypressWait();
 };
 
 #endif

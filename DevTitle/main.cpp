@@ -1,6 +1,5 @@
 #include <iostream>
 #include <Windows.h>
-#include <ctime>
 
 #include "worldclass.h"
 #include "generationclass.h"

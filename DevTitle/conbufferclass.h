@@ -34,7 +34,8 @@ private:
 		*unitInfo,
 		*unitModel,
 		*unitActions,
-		*converted;
+		*converted,
+		*numChar;
 
 	int RenderBorder();
 	int RenderUnitInfo(EntityClass unit);

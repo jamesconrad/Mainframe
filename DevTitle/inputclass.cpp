@@ -35,15 +35,3 @@ KEY_EVENT_RECORD InputClass::GetKeypress()
 	Sleep(75);
 	return inputRecord.Event.KeyEvent;
 }
-
-KEY_EVENT_RECORD InputClass::GetKeypressWait()
-{
-	DWORD eventsRead;
-	INPUT_RECORD tmpInput;
-	tmpInput.EventType = MOUSE_EVENT;
-	while (tmpInput.EventType != KEY_EVENT)
-	{
-		ReadConsoleInput(hConsole, &tmpInput, nLength, &eventsRead);
-	}
-	return tmpInput.Event.KeyEvent;
-}
