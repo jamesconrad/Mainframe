@@ -8,7 +8,7 @@
 #include "modelloader.h"
 #include <vector>
 
-class WorldClass 
+class WorldClass
 {
 public:
 	WorldClass();
@@ -19,32 +19,36 @@ public:
 
 	COORD ConvertIndex(int);
 	int ConvertCoord(COORD);
-	
+
 	int Initialize(CHAR_INFO*, int, int, int);
-	
+
 	int ChangeFrame(int);
 	int GetFrame();
 
 	int UpdateTile(int index, CHAR_INFO);
 
 	int Render();
-	int Tick();	
+	int Tick();
 
 	int SpawnUnit(int id, int index);
 	int UpdateHealthBg(int index);
+	
+	int PassCurrentPlayerThreads();
+	int PassTurns();
 
 	int NextTurn();
 	int CheckInput();
-	
+
 
 private:
 	int frame,
-	 height, width,
-	 numOfUnits,
-	 numOfPlayers,
-	 currentTurn,
-	 playerColour[7],
-	 turnCounter;
+		height, width,
+		numOfUnits,
+		numOfPlayers,
+		currentTurn,
+		playerColour[7],
+		playerThreads[7],
+		turnCounter;
 	bool moveUnit, attackUnit;
 
 	CHAR_INFO *worldMap;

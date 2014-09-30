@@ -51,6 +51,9 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	prevKeyPress = class_InputClass.GetKeypress();
 	keyPress = class_InputClass.GetKeypress();
 
+	for (int i = 0; i < numOfPlayers; ++i)
+		playerThreads[i] = 3;
+
 	SpawnUnit(0, 789);
 
 	return 1;
@@ -74,6 +77,7 @@ int WorldClass::Render()
 			class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords, class_EntityArray[i]);
 	}
 	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords, frame);
+	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
 
 	return 1;
 }
@@ -185,8 +189,8 @@ int WorldClass::UpdateHealthBg(int index)
 int WorldClass::Tick()
 {
 	keyPress = class_InputClass.GetKeypress();
-	WorldClass::CheckInput();
-	WorldClass::Render();
+	CheckInput();
+	Render();
 	return 1;
 }
 
@@ -249,7 +253,7 @@ int WorldClass::CheckInput()
 										UpdateHealthBg(j);
 									}
 									else {}
-										//no damage done
+									//no damage done
 								}
 							}
 						}
@@ -464,6 +468,27 @@ int WorldClass::CheckInput()
 	{
 		attackUnit = true;
 	}
-	
+	else if (keyPress.wVirtualKeyCode == 0x51 && keyPress.bKeyDown == true) //Spawn unitID+1 (Q)
+	{
+		for (int i = 0; i < numOfUnits; ++i)
+		{
+			if (frame == class_EntityArray[i].unitData.position && class_EntityArray[i].unitData.playerID == currentTurn)
+			{
+				if (class_EntityArray[i].unitData.threadCost + playerThreads[currentTurn] >= 0)
+					SpawnUnit(class_EntityArray[i].unitData.unitID + 1, frame + width);
+			}
+		}
+	}
+	else if (keyPress.wVirtualKeyCode == 0x57 && keyPress.bKeyDown == true) //Spawn unitID+2 (W)
+	{
+		for (int i = 0; i < numOfUnits; ++i)
+		{
+			if (frame == class_EntityArray[i].unitData.position && class_EntityArray[i].unitData.playerID == currentTurn)
+			{
+				if (class_EntityArray[i].unitData.threadCost + playerThreads[currentTurn] >= 0)
+					SpawnUnit(class_EntityArray[i].unitData.unitID + 2, frame + width);
+			}
+		}
+	}
 	return 1;
 }

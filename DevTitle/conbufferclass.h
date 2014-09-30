@@ -5,7 +5,7 @@
 #include "entityclass.h"
 #include "modelloader.h"
 
-class ConBufferClass 
+class ConBufferClass
 {
 public:
 	HANDLE hConsole;
@@ -19,10 +19,12 @@ public:
 
 	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD, EntityClass selectedUnit);
 	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD, int frame);
+	int RenderExtraInfo(int playerThreads, int turnCounter);
+
 	int ClearConsole(HANDLE, COORD);
 	int UpdateBorderColour(int playerNum);
 private:
-	COORD beginCoords; 
+	COORD beginCoords;
 	DWORD nWritten;
 
 	ModelLoaderClass class_ModelLoader;

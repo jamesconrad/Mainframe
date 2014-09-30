@@ -437,3 +437,26 @@ int ConBufferClass::InitializeUnitInfo()
 
 	return 1;
 }
+
+int ConBufferClass::RenderExtraInfo(int playerThreads, int turnCounter)
+{
+	CHAR_INFO* tmp;
+	tmp = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
+	SMALL_RECT renderRect;
+	renderRect.Left = 56;
+	renderRect.Top = 1;
+	renderRect.Right = 59;
+	renderRect.Bottom = 2;
+
+	tmp = IntToCharInfo(turnCounter);
+	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
+	
+	renderRect.Left += 18;
+	renderRect.Right += 18;
+	tmp = IntToCharInfo(playerThreads);
+	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
+	
+	
+
+	return 1;
+}
