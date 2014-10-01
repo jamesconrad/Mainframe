@@ -30,7 +30,7 @@ int UnitInfoClass::Initialize()
 
 	unit[3] = { BASE_CHAR_INFO, 0, 4, 4, 3, 1, 1, 0, 4, 0, 0, 0, 1}; //General resource building
 	unit[3].charInfo.Char.UnicodeChar = 8801;
-	unit[4] = { BASE_CHAR_INFO, 0, 4, 4, 4, 1, 1, 0, 4, 0, 0, 0, 1 }; // General upgrade building
+	unit[4] = { BASE_CHAR_INFO, 0, 4, 4, 4, 1, 1, 0, 4, 0, 0, 0, -1 }; // General upgrade building
 	unit[4].charInfo.Char.UnicodeChar = 177;
 	unit[7] = { BASE_CHAR_INFO, 0, 1, 1, 7, 100, 100, 1000, 1000, 100, 1, 0 , -1000}; //Unit for Land testing
 	unit[7].charInfo.Char.UnicodeChar = 8734;

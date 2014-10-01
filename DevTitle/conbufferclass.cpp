@@ -272,7 +272,7 @@ CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 	int tmp;
 	for (int i = 0; i < 4; ++i)
 	{
-		converted[i].Char.UnicodeChar = 32;
+		converted[i].Char.UnicodeChar = 48;
 		converted[i].Attributes = 0x0007;
 	}
 	if (num < 1000)

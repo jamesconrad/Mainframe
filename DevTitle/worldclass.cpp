@@ -492,18 +492,18 @@ int WorldClass::CheckInput()
 			{
 				if (class_EntityArray[i].unitData.type == 0)
 				{
-					if (class_EntityArray[i].unitData.threadCost + playerThreads[currentTurn] >= 0)
+					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost + playerThreads[currentTurn] >= 0)
 					{
-						playerThreads[currentTurn] += class_EntityArray[i].unitData.threadCost;
+						playerThreads[currentTurn] += class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost;
 						SpawnUnit(class_EntityArray[i].unitData.unitID + 1, frame + width);
 						class_EntityArray[i].unitData.actions = 0;
 					}
 				}
 				else if (class_EntityArray[i].unitData.type == 1)
 				{
-					if (class_EntityArray[i].unitData.threadCost + playerThreads[currentTurn] >= 0)
+					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost + playerThreads[currentTurn] >= 0)
 					{
-						playerThreads[currentTurn] += class_EntityArray[i].unitData.threadCost;
+						playerThreads[currentTurn] += class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost;
 						SpawnUnit(3, frame + width);
 						class_EntityArray[i].unitData.actions = 0;
 					}
@@ -519,20 +519,20 @@ int WorldClass::CheckInput()
 			{
 				if (class_EntityArray[i].unitData.type == 0)
 				{
-					if (class_EntityArray[i].unitData.threadCost + playerThreads[currentTurn] >= 0)
+					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost + playerThreads[currentTurn] >= 0)//Convert to unitinfo[unitID+2]
 					{
-						playerThreads[currentTurn] += class_EntityArray[i].unitData.threadCost;
+						playerThreads[currentTurn] += class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost;
 						SpawnUnit(class_EntityArray[i].unitData.unitID + 2, frame + width);
 						class_EntityArray[i].unitData.actions = 0;
 					}
-					else if (class_EntityArray[i].unitData.type == 1)
+				}
+				else if (class_EntityArray[i].unitData.type == 1)
+				{
+					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost + playerThreads[currentTurn] >= 0)
 					{
-						if (class_EntityArray[i].unitData.threadCost + playerThreads[currentTurn] >= 0)
-						{
-							playerThreads[currentTurn] += class_EntityArray[i].unitData.threadCost;
-							SpawnUnit(4, frame + width);
-							class_EntityArray[i].unitData.actions = 0;
-						}
+						playerThreads[currentTurn] = playerThreads[currentTurn] + class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost;
+						SpawnUnit(4, frame + width);
+						class_EntityArray[i].unitData.actions = 0;
 					}
 				}
 			}
