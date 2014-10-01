@@ -43,10 +43,9 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	playerColour[3] = 0x0004 | 0x0008;
 	playerColour[4] = 0x0005 | 0x0008;
 	playerColour[5] = 0x0006 | 0x0008;
-	playerColour[6] = 0x0007 | 0x0008;
 
-	currentTurn = 1;
-	numOfPlayers = 6;
+	currentTurn = 0;
+	numOfPlayers = 5;
 
 	prevKeyPress = class_InputClass.GetKeypress();
 	keyPress = class_InputClass.GetKeypress();
@@ -54,7 +53,15 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	for (int i = 0; i < numOfPlayers; ++i)
 		playerThreads[i] = 3;
 
-	SpawnUnit(0, 789);
+	for (int i = 0; i <= numOfPlayers; ++i)
+	{
+		SpawnUnit(0, rand() % (width*height));
+		++currentTurn;
+	}
+	currentTurn = 0;
+	class_ConBuffer.UpdateBorderColour(currentTurn);
+
+	
 
 	return 1;
 }

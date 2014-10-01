@@ -29,7 +29,6 @@ int ConBufferClass::Initialize()
 	playerColour[3] = 0x0004 | 0x0008;
 	playerColour[4] = 0x0005 | 0x0008;
 	playerColour[5] = 0x0006 | 0x0008;
-	playerColour[6] = 0x0007 | 0x0008;
 	
 	InitializeBorder();
 	InitializeUnitInfo();
