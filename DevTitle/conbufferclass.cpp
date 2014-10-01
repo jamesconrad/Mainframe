@@ -37,9 +37,17 @@ int ConBufferClass::Initialize()
 	beginCoords.X = 0;
 	beginCoords.Y = 0;
 
+	SMALL_RECT screenSize;
+	screenSize.Left = 0;
+	screenSize.Right = SCREEN_WIDTH-1;
+	screenSize.Top = 0;
+	screenSize.Bottom = SCREEN_HEIGHT-1;
+
 	unitsRendered = false;
 
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
+	SetConsoleWindowInfo(hConsole, true, &screenSize);
+	int err = GetLastError();
 
 	numChar = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	converted = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
@@ -265,7 +273,7 @@ CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 	int tmp;
 	for (int i = 0; i < 4; ++i)
 	{
-		converted[i].Char.UnicodeChar = 48;
+		converted[i].Char.UnicodeChar = 32;
 		converted[i].Attributes = 0x0007;
 	}
 	if (num < 1000)
@@ -328,7 +336,7 @@ CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 		converted[3].Char.UnicodeChar = tmp;
 	}
 	else
-		converted[0].Char.UnicodeChar = 48;
+		converted[3].Char.UnicodeChar = 48;
 
 	return converted;
 }
