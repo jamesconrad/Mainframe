@@ -60,6 +60,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	}
 	currentTurn = 0;
 	class_ConBuffer.UpdateBorderColour(currentTurn);
+	turnCounter = 1;
 
 	
 
