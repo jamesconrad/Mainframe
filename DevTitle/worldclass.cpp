@@ -21,8 +21,9 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 {
 	worldMap = generation;
 
-	moveUnit = true;
-	attackUnit = true;
+	moveUnit = false;
+	attackUnit = false;
+	frameChanged = true;
 
 	class_ConBuffer.Initialize();
 
@@ -62,7 +63,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	class_ConBuffer.UpdateBorderColour(currentTurn);
 	turnCounter = 1;
 
-	
+
 
 	return 1;
 }
@@ -78,7 +79,12 @@ int WorldClass::Render()
 	COORD frameCoords = ConvertIndex(frame);
 	frameCoords.X++;
 	frameCoords.Y++;
-	SetConsoleCursorPosition(class_ConBuffer.hConsole, frameCoords);
+	if (frameChanged)
+	{
+		SetConsoleCursorPosition(class_ConBuffer.hConsole, frameCoords);
+		frameChanged = false;
+	}
+
 	for (int i = 0; i < numOfUnits; ++i)
 	{
 		if (frame == class_EntityArray[i].unitData.position)
@@ -213,6 +219,7 @@ int WorldClass::CheckInput()
 	//Attack needs to check for map edges
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
+		frameChanged = true;
 		if (frame - width >= 0)
 		{
 			if (moveUnit)
@@ -277,6 +284,7 @@ int WorldClass::CheckInput()
 	}
 	else if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
 	{
+		frameChanged = true;
 		if (frame + width < height * width)
 		{
 			if (moveUnit)
@@ -341,6 +349,7 @@ int WorldClass::CheckInput()
 	}
 	else if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
 	{
+		frameChanged = true;
 		if (frame % width != width - 1)
 		{
 			if (moveUnit)
@@ -405,6 +414,7 @@ int WorldClass::CheckInput()
 	}
 	else if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
 	{
+		frameChanged = true;
 		if (frame % width != 0)
 		{
 			if (moveUnit)

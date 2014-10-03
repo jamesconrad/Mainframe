@@ -71,7 +71,6 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	time(&now);
 	if (difftime(now, lastRender) >= 0.25)
 	{
-		ClearConsole(hConsole, frameCoords);
 		RenderBorder();
 		RenderUnitInfo(selectedUnit);
 		if (!unitsRendered)
@@ -104,7 +103,6 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	time(&now);
 	if (difftime(now, lastRender) >= 0.25)
 	{
-		ClearConsole(hConsole, frameCoords);
 		RenderBorder();
 		RenderUnitInfo(charData[frame]);
 		if (!unitsRendered)
@@ -119,34 +117,6 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 		}
 		time(&lastRender);
 	}
-
-	return 1;
-}
-
-//The function ClearConsole(HANDLE) was taken from www.cplusplus.com/forum/beginner/1988/3/#msg10830 to solve the security issue of using a system(char*) call.
-//"Grey Wolf" (2008, July, 8) "Console Closing Down - C++ Forum" Retrieved from www.cplusplus.com/forum/beginner/1988/3/#msg10830
-int ConBufferClass::ClearConsole(HANDLE hConsole, COORD frameCoords)
-{
-	COORD coordScreen = { 0, 0 };
-	DWORD cCharsWritten;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	DWORD dwConSize;
-
-	if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
-		return 0;
-
-	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-
-	if (!FillConsoleOutputCharacter(hConsole, (TCHAR) ' ', dwConSize, coordScreen, &cCharsWritten))
-		return 0;
-
-	if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
-		return 0;
-
-	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten))
-		return 0;
-
-	SetConsoleCursorPosition(hConsole, frameCoords);
 
 	return 1;
 }

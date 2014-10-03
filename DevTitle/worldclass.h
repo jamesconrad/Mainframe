@@ -49,7 +49,9 @@ private:
 		playerColour[7],
 		playerThreads[7],
 		turnCounter;
-	bool moveUnit, attackUnit;
+	bool moveUnit, 
+		attackUnit, 
+		frameChanged;
 
 	CHAR_INFO *worldMap;
 	CHAR_INFO *unitMap;
