@@ -80,7 +80,8 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 		}
 		else
 		{
-			WriteConsoleOutput(hConsole, charData, buffSize, buffCoord, &renderRect);
+			//Changed to only render unit data
+			WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
 			unitsRendered = false;
 		}
 		time(&lastRender);
@@ -112,7 +113,8 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 		}
 		else
 		{
-			WriteConsoleOutput(hConsole, charData, buffSize, buffCoord, &renderRect);
+			//Changed to only render units
+			WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
 			unitsRendered = false;
 		}
 		time(&lastRender);

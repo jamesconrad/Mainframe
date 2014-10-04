@@ -1,5 +1,6 @@
 #include "worldclass.h"
 #include <iostream>
+#pragma comment (lib,"Winmm.lib")
 
 WorldClass::WorldClass()
 {
@@ -37,6 +38,8 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 
 	class_UnitInfo.Initialize();
 	class_InputClass.Initialize();
+	class_AudioClass.Load(L"DST-3rdBallad.mp3");
+	class_AudioClass.Play();
 
 	playerColour[0] = 0x0001 | 0x0008;
 	playerColour[1] = 0x0002 | 0x0008;

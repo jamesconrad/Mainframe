@@ -6,6 +6,7 @@
 #include "entityclass.h"
 #include "inputclass.h"
 #include "modelloader.h"
+#include "audioclass.h"
 #include <vector>
 
 class WorldClass
@@ -62,6 +63,7 @@ private:
 
 	HANDLE inputThread;
 
+	AudioClass class_AudioClass;
 	UnitInfoClass class_UnitInfo;
 	ConBufferClass class_ConBuffer;
 	InputClass class_InputClass;
