@@ -38,6 +38,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 
 	class_UnitInfo.Initialize();
 	class_InputClass.Initialize();
+
 	class_AudioClass.Load(L"DST-3rdBallad.mp3");
 	class_AudioClass.Play();
 
@@ -181,6 +182,8 @@ int WorldClass::UpdateHealthBg(int index)
 		class_EntityArray[index].unitData.position = width*height;
 		unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
 		class_EntityArray[index].unitData.maxActions = 0;
+		wavPlayer.Load(L"death1.wav");
+		wavPlayer.Play();
 	}
 	else
 	{

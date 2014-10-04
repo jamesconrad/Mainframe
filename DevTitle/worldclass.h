@@ -64,6 +64,7 @@ private:
 	HANDLE inputThread;
 
 	AudioClass class_AudioClass;
+	AudioClass wavPlayer;
 	UnitInfoClass class_UnitInfo;
 	ConBufferClass class_ConBuffer;
 	InputClass class_InputClass;
