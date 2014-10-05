@@ -53,7 +53,7 @@ int ConBufferClass::Initialize()
 	return 0;
 }
 
-int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int height, int width, COORD buffCoord, COORD frameCoords, EntityClass selectedUnit)
+int ConBufferClass::OutputScreen(CHAR_INFO* unitData, int height, int width, COORD buffCoord, int frame, EntityClass selectedUnit)
 {
 	COORD buffSize;
 	SMALL_RECT renderRect;
@@ -70,7 +70,7 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 
 	return 1;
 }
-int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int height, int width, COORD buffCoord, COORD frameCoords, int frame)
+int ConBufferClass::OutputScreen(CHAR_INFO* worldMap, CHAR_INFO* unitData, int height, int width, COORD buffCoord, int frame)
 {
 	COORD buffSize;
 	SMALL_RECT renderRect;
@@ -82,7 +82,7 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	renderRect.Right = buffCoord.X + buffSize.X + 1;
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
 	
-	RenderUnitInfo(charData[frame]);
+	RenderUnitInfo(worldMap[frame]);
 	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
 	
 	return 1;
@@ -300,11 +300,34 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 
 int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 {
-	for (int index = 0; index <= SCREEN_HEIGHT*SCREEN_WIDTH; index++)
-	{
+	/*
+	SMALL_RECT renderRect;
 
-	}
+	renderRect.Left = 59;
+	renderRect.Top = 28;
+	renderRect.Right = 59 + 20;
+	renderRect.Bottom = 28 + 8;
 
+	//hp
+	unitInfo[9].Char.UnicodeChar = 1;
+	//att
+	unitInfo[41].Char.UnicodeChar = 1;
+	//def
+	unitInfo[73].Char.UnicodeChar = 1;
+	//act
+	unitInfo[105].Char.UnicodeChar = 1;
+	
+
+	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
+
+	renderRect.Left = 51;
+	renderRect.Top = 3;
+	renderRect.Right = 51 + 29;
+	renderRect.Bottom = 3 + 32;
+
+	unitModel = class_ModelLoader.GetModel(1);
+	WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
+	*/
 	return 1;
 }
 

@@ -90,9 +90,9 @@ int WorldClass::Render()
 	for (int i = 0; i < numOfUnits; ++i)
 	{
 		if (frame == class_EntityArray[i].unitData.position)
-			class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords, class_EntityArray[i]);
+			class_ConBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, class_EntityArray[i]);
 	}
-	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frameCoords, frame);
+	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
 	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
 
 	return 1;
@@ -162,9 +162,9 @@ int WorldClass::NextTurn()
 	for (int i = 0; i < numOfUnits; ++i)
 	{
 		if (frame == class_EntityArray[i].unitData.position)
-			class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, WorldClass::ConvertIndex(frame), class_EntityArray[i]);
+			class_ConBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, class_EntityArray[i]);
 	}
-	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, WorldClass::ConvertIndex(frame), frame);
+	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
 	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
 
 	for (int i = 0; i < numOfUnits; ++i)

@@ -17,8 +17,8 @@ public:
 	~ConBufferClass();
 	int Initialize();
 
-	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD, EntityClass selectedUnit);
-	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, COORD, int frame);
+	int OutputScreen(CHAR_INFO*, int, int, COORD, int frame, EntityClass selectedUnit);
+	int OutputScreen(CHAR_INFO*, CHAR_INFO*, int, int, COORD, int frame);
 	int RenderExtraInfo(int playerThreads, int turnCounter);
 
 	int ClearConsole(HANDLE, COORD);
