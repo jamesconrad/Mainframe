@@ -29,9 +29,6 @@ private:
 
 	ModelLoaderClass class_ModelLoader;
 
-	time_t now;
-	time_t lastRender;
-
 	CHAR_INFO *border,
 		*unitInfo,
 		*unitModel,
@@ -46,8 +43,6 @@ private:
 	int InitializeUnitInfo();
 
 	CHAR_INFO* IntToCharInfo(int num);
-
-	bool unitsRendered;
 };
 
 #endif

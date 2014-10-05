@@ -66,9 +66,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	currentTurn = 0;
 	class_ConBuffer.UpdateBorderColour(currentTurn);
 	turnCounter = 1;
-
-
-
+	
 	return 1;
 }
 
@@ -159,7 +157,15 @@ int WorldClass::NextTurn()
 	else
 		++currentTurn;
 
-	class_ConBuffer.UpdateBorderColour(currentTurn);
+	class_ConBuffer.UpdateBorderColour(currentTurn); 
+
+	for (int i = 0; i < numOfUnits; ++i)
+	{
+		if (frame == class_EntityArray[i].unitData.position)
+			class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, WorldClass::ConvertIndex(frame), class_EntityArray[i]);
+	}
+	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, WorldClass::ConvertIndex(frame), frame);
+	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
 
 	for (int i = 0; i < numOfUnits; ++i)
 	{

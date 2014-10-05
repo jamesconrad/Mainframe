@@ -1,6 +1,5 @@
 #include "conbufferclass.h"
 #include <Windows.h>
-#include <ctime>
 #include "entityclass.h"
 
 #define SCREEN_HEIGHT 51
@@ -42,8 +41,6 @@ int ConBufferClass::Initialize()
 	screenSize.Top = 0;
 	screenSize.Bottom = SCREEN_HEIGHT-1;
 
-	unitsRendered = false;
-
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 	SetConsoleWindowInfo(hConsole, true, &screenSize);
 	int err = GetLastError();
@@ -67,26 +64,10 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	renderRect.Top = buffCoord.Y + 1;
 	renderRect.Right = buffCoord.X + buffSize.X + 1;
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
-	
-	time(&now);
-	if (difftime(now, lastRender) >= 0.25)
-	{
-		RenderBorder();
-		RenderUnitInfo(selectedUnit);
-		if (!unitsRendered)
-		{
-			WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
-			unitsRendered = true;
-		}
-		else
-		{
-			//Changed to only render unit data
-			WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
-			unitsRendered = false;
-		}
-		time(&lastRender);
-	}
-	
+
+	RenderUnitInfo(selectedUnit);
+	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
+
 	return 1;
 }
 int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int height, int width, COORD buffCoord, COORD frameCoords, int frame)
@@ -100,26 +81,10 @@ int ConBufferClass::OutputScreen(CHAR_INFO* charData, CHAR_INFO* unitData, int h
 	renderRect.Top = buffCoord.Y + 1;
 	renderRect.Right = buffCoord.X + buffSize.X + 1;
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
-
-	time(&now);
-	if (difftime(now, lastRender) >= 0.25)
-	{
-		RenderBorder();
-		RenderUnitInfo(charData[frame]);
-		if (!unitsRendered)
-		{
-			WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
-			unitsRendered = true;
-		}
-		else
-		{
-			//Changed to only render units
-			WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
-			unitsRendered = false;
-		}
-		time(&lastRender);
-	}
-
+	
+	RenderUnitInfo(charData[frame]);
+	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
+	
 	return 1;
 }
 
@@ -130,6 +95,9 @@ int ConBufferClass::UpdateBorderColour(int playerNum)
 		if (border[i].Char.UnicodeChar >= 9550 && border[i].Char.UnicodeChar <= 9580)
 		border[i].Attributes = playerColour[playerNum];
 	}
+
+	RenderBorder();
+
 	return 1;
 }
 
@@ -162,20 +130,6 @@ int ConBufferClass::InitializeBorder()
 			border[index].Char.UnicodeChar = 9571;
 		else if (index == SCREEN_WIDTH * 33 + 49) 
 			border[index].Char.UnicodeChar = 9577;
-		////Hardcode of chatbox
-		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) - 1) 
-		//	border[index].Char.UnicodeChar = 9571;
-		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3)) 
-		//	border[index].Char.UnicodeChar = 9568;
-		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 3) + 6) 
-		//	border[index].Char.UnicodeChar = 9574;
-		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 1) + 6) 
-		//	border[index].Char.UnicodeChar = 9577;
-		//else if (index == SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 6) 
-		//	border[index].Char.UnicodeChar = 9553;
-		//else if (index >= SCREEN_WIDTH * 48 + 1 && index <= SCREEN_WIDTH * 49 - 2) 
-		//	border[index].Char.UnicodeChar = 9552;
-		//is it in row 1 or 33 or SCREEN_HEIGHT?
 		else if (index < SCREEN_WIDTH || (index > SCREEN_WIDTH * 33 && index < SCREEN_WIDTH * 34 - 1) || (index > (SCREEN_HEIGHT - 1) * SCREEN_WIDTH && index < SCREEN_HEIGHT * SCREEN_WIDTH - 1)) 
 			border[index].Char.UnicodeChar = 9552;
 		//is it in col 49 and above the middle bar?
@@ -189,17 +143,6 @@ int ConBufferClass::InitializeBorder()
 		
 		border[index].Attributes = 0x0004 | 0x0008;
 	}
-	//Time to fill in text
-	//Chat: text input starts at 4073
-	/*int string[4] = { 67, 104, 97, 116 };
-	for (int i = 0; i < 4; i++)
-	{
-		border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + i].Char.UnicodeChar = string[i];
-		border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + i].Attributes = 0x0007;
-	}
-	border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Char.UnicodeChar = 58;
-	border[SCREEN_WIDTH * (SCREEN_HEIGHT - 2) + 1 + 4].Attributes = 0x0007;*/
-	//Turn: turn num starts at 139
 	int string[4] = { 84, 117, 114, 110 };
 	
 	for (int i = 0; i < 4; i++)
