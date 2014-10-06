@@ -8,6 +8,7 @@ AudioClass::AudioClass()
 	pimex = NULL;
 	piba = NULL;
 	ready = false;
+	currentFile = NULL;
 }
 
 AudioClass::~AudioClass()
@@ -49,19 +50,23 @@ void AudioClass::Shutdown()
 
 bool AudioClass::Load(LPCWSTR szFile)
 {
-	Shutdown();
-	CoInitialize(NULL);
-	if (SUCCEEDED(CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void**)&this->pigb)))
+	if (currentFile != szFile)
 	{
-		pigb->QueryInterface(IID_IMediaControl, (void**)&pimc);
-		pigb->QueryInterface(IID_IMediaEventEx, (void**)&pimex);
-		pigb->QueryInterface(IID_IBasicAudio, (void**)&piba);
-
-		HRESULT hr = pigb->RenderFile(szFile, NULL);
-		if (SUCCEEDED(hr))
+		Shutdown();
+		CoInitialize(NULL);
+		if (SUCCEEDED(CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void**)&this->pigb)))
 		{
-			ready = true;
+			pigb->QueryInterface(IID_IMediaControl, (void**)&pimc);
+			pigb->QueryInterface(IID_IMediaEventEx, (void**)&pimex);
+			pigb->QueryInterface(IID_IBasicAudio, (void**)&piba);
+
+			HRESULT hr = pigb->RenderFile(szFile, NULL);
+			if (SUCCEEDED(hr))
+			{
+				ready = true;
+			}
 		}
+		return ready;
 	}
 	return ready;
 }

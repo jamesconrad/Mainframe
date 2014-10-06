@@ -30,6 +30,7 @@ private:
 	IMediaControl* pimc;
 	IMediaEventEx* pimex;
 	IBasicAudio* piba;
+	LPCWSTR currentFile;
 	bool ready;
 };
 
