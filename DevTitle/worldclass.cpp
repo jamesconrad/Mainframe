@@ -460,9 +460,9 @@ int WorldClass::CheckInput()
 					{
 						for (int j = 0; j < numOfUnits; j++)
 						{
-							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
+							for (int k = 1; k <= class_EntityArray[i].unitData.range; k++)
 							{
-								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID && class_EntityArray[i].unitData.actions > 0)
+								if (class_EntityArray[j].unitData.position == (class_EntityArray[i].unitData.position - k) && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID && class_EntityArray[i].unitData.actions > 0)
 								{
 									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
 									{

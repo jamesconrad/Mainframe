@@ -21,14 +21,14 @@ int ConBufferClass::Initialize()
 {
 	hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTitle(L"Mainframe");
-	
+
 	playerColour[0] = 0x0001 | 0x0008;
 	playerColour[1] = 0x0002 | 0x0008;
 	playerColour[2] = 0x0003 | 0x0008;
 	playerColour[3] = 0x0004 | 0x0008;
 	playerColour[4] = 0x0005 | 0x0008;
 	playerColour[5] = 0x0006 | 0x0008;
-	
+
 	InitializeBorder();
 	InitializeUnitInfo();
 
@@ -37,9 +37,9 @@ int ConBufferClass::Initialize()
 
 	SMALL_RECT screenSize;
 	screenSize.Left = 0;
-	screenSize.Right = SCREEN_WIDTH-1;
+	screenSize.Right = SCREEN_WIDTH - 1;
 	screenSize.Top = 0;
-	screenSize.Bottom = SCREEN_HEIGHT-1;
+	screenSize.Bottom = SCREEN_HEIGHT - 1;
 
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 	SetConsoleWindowInfo(hConsole, true, &screenSize);
@@ -81,10 +81,39 @@ int ConBufferClass::OutputScreen(CHAR_INFO* worldMap, CHAR_INFO* unitData, int h
 	renderRect.Top = buffCoord.Y + 1;
 	renderRect.Right = buffCoord.X + buffSize.X + 1;
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
-	
+
+	CHAR_INFO* tmp = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
+	tmp[0] = unitData[frame + width + 1];
+	tmp[1] = unitData[frame + width - 1];
+	tmp[2] = unitData[frame - width + 1];
+	tmp[3] = unitData[frame - width - 1];
+
+	if ((frame + 1) % width != 0)
+	{
+		unitData[frame + width + 1].Char.UnicodeChar = '\\';
+		unitData[frame - width + 1].Char.UnicodeChar = '/';
+	unitData[frame + width + 1].Attributes = 0x0007 | 0x0008;
+	unitData[frame - width + 1].Attributes = 0x0007 | 0x0008;
+	}
+
+	if ((frame + 1) % width - 1 != 0)
+	{
+		unitData[frame - width - 1].Char.UnicodeChar = '\\';
+		unitData[frame + width - 1].Char.UnicodeChar = '/';
+	unitData[frame + width - 1].Attributes = 0x0007 | 0x0008;
+	unitData[frame - width - 1].Attributes = 0x0007 | 0x0008;
+	}
+
 	RenderUnitInfo(worldMap[frame]);
 	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
-	
+
+	unitData[frame + width + 1] = tmp[0];
+	unitData[frame + width - 1] = tmp[1];
+	unitData[frame - width + 1] = tmp[2];
+	unitData[frame - width - 1] = tmp[3];
+
+	free(tmp);
+
 	return 1;
 }
 
@@ -93,7 +122,7 @@ int ConBufferClass::UpdateBorderColour(int playerNum)
 	for (int i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; ++i)
 	{
 		if (border[i].Char.UnicodeChar >= 9550 && border[i].Char.UnicodeChar <= 9580)
-		border[i].Attributes = playerColour[playerNum];
+			border[i].Attributes = playerColour[playerNum];
 	}
 
 	RenderBorder();
@@ -108,13 +137,13 @@ int ConBufferClass::InitializeBorder()
 	for (int index = 0; index <= SCREEN_HEIGHT*SCREEN_WIDTH; index++)
 	{//9619 for testing
 		if (index == 0) ConBufferClass::border[index].Char.UnicodeChar = 9556;
-		else if (index == SCREEN_WIDTH - 1) 
+		else if (index == SCREEN_WIDTH - 1)
 			border[index].Char.UnicodeChar = 9559;
-		else if (index == SCREEN_HEIGHT*SCREEN_WIDTH - SCREEN_WIDTH) 
+		else if (index == SCREEN_HEIGHT*SCREEN_WIDTH - SCREEN_WIDTH)
 			border[index].Char.UnicodeChar = 9562;
-		else if (index == SCREEN_HEIGHT*SCREEN_WIDTH - 1) 
+		else if (index == SCREEN_HEIGHT*SCREEN_WIDTH - 1)
 			border[index].Char.UnicodeChar = 9565;
-		else if (index == 49) 
+		else if (index == 49)
 			border[index].Char.UnicodeChar = 9574;
 		//Hardcode of turn/gold box
 		else if (index == SCREEN_WIDTH * 2 + 49)
@@ -124,27 +153,27 @@ int ConBufferClass::InitializeBorder()
 		else if (index >= SCREEN_WIDTH * 2 + 49 && index <= SCREEN_WIDTH * 3 - 2)
 			border[index].Char.UnicodeChar = 9552;
 
-		else if (index == SCREEN_WIDTH * 33) 
+		else if (index == SCREEN_WIDTH * 33)
 			border[index].Char.UnicodeChar = 9568;
-		else if (index == SCREEN_WIDTH * 34 - 1) 
+		else if (index == SCREEN_WIDTH * 34 - 1)
 			border[index].Char.UnicodeChar = 9571;
-		else if (index == SCREEN_WIDTH * 33 + 49) 
+		else if (index == SCREEN_WIDTH * 33 + 49)
 			border[index].Char.UnicodeChar = 9577;
-		else if (index < SCREEN_WIDTH || (index > SCREEN_WIDTH * 33 && index < SCREEN_WIDTH * 34 - 1) || (index > (SCREEN_HEIGHT - 1) * SCREEN_WIDTH && index < SCREEN_HEIGHT * SCREEN_WIDTH - 1)) 
+		else if (index < SCREEN_WIDTH || (index > SCREEN_WIDTH * 33 && index < SCREEN_WIDTH * 34 - 1) || (index >(SCREEN_HEIGHT - 1) * SCREEN_WIDTH && index < SCREEN_HEIGHT * SCREEN_WIDTH - 1))
 			border[index].Char.UnicodeChar = 9552;
 		//is it in col 49 and above the middle bar?
-		else if (index >= SCREEN_WIDTH && index % SCREEN_WIDTH == 49 && index < SCREEN_WIDTH * 34) 
+		else if (index >= SCREEN_WIDTH && index % SCREEN_WIDTH == 49 && index < SCREEN_WIDTH * 34)
 			border[index].Char.UnicodeChar = 9553;
 		//is it in col 1 or SCREEN_WIDTH
-		else if (index >= SCREEN_WIDTH && index <= SCREEN_WIDTH*SCREEN_HEIGHT && (index % SCREEN_WIDTH == 0 || index % SCREEN_WIDTH == SCREEN_WIDTH - 1)) 
+		else if (index >= SCREEN_WIDTH && index <= SCREEN_WIDTH*SCREEN_HEIGHT && (index % SCREEN_WIDTH == 0 || index % SCREEN_WIDTH == SCREEN_WIDTH - 1))
 			border[index].Char.UnicodeChar = 9553;
-		else 
+		else
 			border[index].Char.UnicodeChar = 32;
-		
+
 		border[index].Attributes = 0x0004 | 0x0008;
 	}
 	int string[4] = { 84, 117, 114, 110 };
-	
+
 	for (int i = 0; i < 4; i++)
 	{
 		border[SCREEN_WIDTH + 50 + i].Char.UnicodeChar = string[i];
@@ -170,7 +199,7 @@ int ConBufferClass::InitializeBorder()
 	border[SCREEN_WIDTH + 65 + 7].Attributes = 0x0007;
 
 	return 1;
-	
+
 }
 
 int ConBufferClass::RenderBorder()
@@ -178,7 +207,7 @@ int ConBufferClass::RenderBorder()
 	SMALL_RECT borderRect;
 	borderRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	WriteConsoleOutput(hConsole, border, { SCREEN_WIDTH, SCREEN_HEIGHT }, { 0, 0 }, &borderRect);
-	
+
 	return 1;
 }
 
@@ -202,7 +231,7 @@ CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 	}
 	if (num > 9999 || num < -999)
 		return converted;
-	if (num > 0) 
+	if (num > 0)
 	{
 		if (num >= 1000)
 		{
@@ -316,7 +345,7 @@ int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 	unitInfo[73].Char.UnicodeChar = 1;
 	//act
 	unitInfo[105].Char.UnicodeChar = 1;
-	
+
 
 	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
 
@@ -395,13 +424,13 @@ int ConBufferClass::RenderExtraInfo(int playerThreads, int turnCounter)
 
 	tmp = IntToCharInfo(turnCounter);
 	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
-	
+
 	renderRect.Left += 18;
 	renderRect.Right += 18;
 	tmp = IntToCharInfo(playerThreads);
 	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
-	
-	
+
+
 
 	return 1;
 }
