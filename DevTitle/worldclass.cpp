@@ -91,6 +91,7 @@ int WorldClass::Render()
 	{
 		if (frame == class_EntityArray[i].unitData.position)
 			class_ConBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, class_EntityArray[i]);
+
 	}
 	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
 	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
@@ -142,6 +143,10 @@ int WorldClass::SpawnUnit(int id, int index)
 	class_EntityArray.push_back(class_TempEntity);
 	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
 	unitMap[unitData.position] = class_TempEntity.unitData.charInfo;
+
+	//Set actions to 0 for this turn only
+	class_EntityArray[numOfUnits].unitData.actions = 0;
+
 
 	numOfUnits++;
 	return numOfUnits;
@@ -452,7 +457,7 @@ int WorldClass::CheckInput()
 					}
 				}
 			}
-			if (attackUnit)
+			if (attackUnit)// i = selected unit j = targeted unit k = distance
 			{
 				for (int i = 0; i < numOfUnits; i++)
 				{

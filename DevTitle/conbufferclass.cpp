@@ -65,8 +65,37 @@ int ConBufferClass::OutputScreen(CHAR_INFO* unitData, int height, int width, COO
 	renderRect.Right = buffCoord.X + buffSize.X + 1;
 	renderRect.Bottom = buffCoord.Y + buffSize.Y + 1;
 
+	CHAR_INFO* tmp = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
+	tmp[0] = unitData[frame + width + 1];
+	tmp[1] = unitData[frame + width - 1];
+	tmp[2] = unitData[frame - width + 1];
+	tmp[3] = unitData[frame - width - 1];
+
+	if ((frame + 1) % width != 0)
+	{
+		unitData[frame + width + 1].Char.UnicodeChar = '\\';
+		unitData[frame - width + 1].Char.UnicodeChar = '/';
+		unitData[frame + width + 1].Attributes = 0x0007 | 0x0008;
+		unitData[frame - width + 1].Attributes = 0x0007 | 0x0008;
+	}
+
+	if ((frame + 1) % width - 1 != 0)
+	{
+		unitData[frame - width - 1].Char.UnicodeChar = '\\';
+		unitData[frame + width - 1].Char.UnicodeChar = '/';
+		unitData[frame + width - 1].Attributes = 0x0007 | 0x0008;
+		unitData[frame - width - 1].Attributes = 0x0007 | 0x0008;
+	}
+
 	RenderUnitInfo(selectedUnit);
 	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
+
+	unitData[frame + width + 1] = tmp[0];
+	unitData[frame + width - 1] = tmp[1];
+	unitData[frame - width + 1] = tmp[2];
+	unitData[frame - width - 1] = tmp[3];
+
+	free(tmp);
 
 	return 1;
 }
@@ -92,16 +121,16 @@ int ConBufferClass::OutputScreen(CHAR_INFO* worldMap, CHAR_INFO* unitData, int h
 	{
 		unitData[frame + width + 1].Char.UnicodeChar = '\\';
 		unitData[frame - width + 1].Char.UnicodeChar = '/';
-	unitData[frame + width + 1].Attributes = 0x0007 | 0x0008;
-	unitData[frame - width + 1].Attributes = 0x0007 | 0x0008;
+		unitData[frame + width + 1].Attributes = 0x0007 | 0x0008;
+		unitData[frame - width + 1].Attributes = 0x0007 | 0x0008;
 	}
 
 	if ((frame + 1) % width - 1 != 0)
 	{
 		unitData[frame - width - 1].Char.UnicodeChar = '\\';
 		unitData[frame + width - 1].Char.UnicodeChar = '/';
-	unitData[frame + width - 1].Attributes = 0x0007 | 0x0008;
-	unitData[frame - width - 1].Attributes = 0x0007 | 0x0008;
+		unitData[frame + width - 1].Attributes = 0x0007 | 0x0008;
+		unitData[frame - width - 1].Attributes = 0x0007 | 0x0008;
 	}
 
 	RenderUnitInfo(worldMap[frame]);
