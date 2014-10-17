@@ -7,6 +7,7 @@
 #include "inputclass.h"
 #include "modelloader.h"
 #include "audioclass.h"
+#include "aiclass.h"
 #include <vector>
 
 class WorldClass
