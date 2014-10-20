@@ -66,7 +66,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	currentTurn = 0;
 	class_ConBuffer.UpdateBorderColour(currentTurn);
 	turnCounter = 1;
-	
+
 	return 1;
 }
 
@@ -132,6 +132,7 @@ int WorldClass::SpawnUnit(int id, int index)
 {
 	UnitData unitData = class_UnitInfo.unit[id];
 
+
 	unitData.playerID = currentTurn;
 	unitData.position = index;
 
@@ -141,6 +142,7 @@ int WorldClass::SpawnUnit(int id, int index)
 	class_TempEntity.unitData.charInfo.Attributes = playerColour[currentTurn];
 
 	class_EntityArray.push_back(class_TempEntity);
+	class_EntityArray[numOfUnits].Initialize(width, height, worldMap, unitMap);
 	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
 	unitMap[unitData.position] = class_TempEntity.unitData.charInfo;
 
@@ -162,7 +164,7 @@ int WorldClass::NextTurn()
 	else
 		++currentTurn;
 
-	class_ConBuffer.UpdateBorderColour(currentTurn); 
+	class_ConBuffer.UpdateBorderColour(currentTurn);
 
 	for (int i = 0; i < numOfUnits; ++i)
 	{
@@ -237,268 +239,114 @@ int WorldClass::CheckInput()
 	//Adjusted movement and attack
 	//check to see if unit belongs to player before calling the actual move/attack
 
-//	To attack
-//	UpdateHealthBg(class_EntityClass[SELECTED_UNIT].Attack(DIRECTION))
+	//	To attack
+	//	UpdateHealthBg(class_EntityClass[SELECTED_UNIT].Attack(DIRECTION))
 
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
-		frameChanged = true;
-		if (frame - width >= 0)
+		if (moveUnit)
 		{
-			if (moveUnit)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int i = 0; i < numOfUnits; i++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - width)
-							{
-								collision = true;
-							}
-						}
-						if (class_EntityArray[i].unitData.position - width >= 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-						{
-							unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-							class_EntityArray[i].unitData.position -= width;
-							unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-							--class_EntityArray[i].unitData.actions;
-						}
-					}
+					class_EntityArray[i].MoveUnit('U', &class_EntityArray);
 				}
 			}
-			if (attackUnit)
-			{
-				for (int i = 0; i < numOfUnits; i++)
-				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
-							{
-								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID && class_EntityArray[i].unitData.actions > 0)
-								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
-									{
-										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
-									{
-										--class_EntityArray[j].unitData.hp;
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else {}
-									//no damage done
-								}
-							}
-						}
-					}
-				}
-			}
-			frame -= width;
-			moveUnit = false;
-			attackUnit = false;
 		}
+		if (attackUnit)
+		{
+			for (int i = 0; i < numOfUnits; i++)
+			{
+				if (class_EntityArray[i].unitData.position == frame)
+				{
+					this->UpdateHealthBg(class_EntityArray[i].AttackUnit('U', &class_EntityArray));
+				}
+			}
+		}
+		frame -= width;
+		moveUnit = false;
+		attackUnit = false;
 	}
 	else if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
 	{
-		frameChanged = true;
-		if (frame + width < height * width)
+		if (moveUnit)
 		{
-			if (moveUnit)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int i = 0; i < numOfUnits; i++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + width)
-							{
-								collision = true;
-							}
-						}
-						if (class_EntityArray[i].unitData.position + width < width*height && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-						{
-							unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-							class_EntityArray[i].unitData.position += width;
-							unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-							--class_EntityArray[i].unitData.actions;
-						}
-					}
+					class_EntityArray[i].MoveUnit('D', &class_EntityArray);
 				}
 			}
-			if (attackUnit)
-			{
-				for (int i = 0; i < numOfUnits; i++)
-				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
-							{
-								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + 8 * k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID && class_EntityArray[i].unitData.actions > 0)
-								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
-									{
-										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
-									{
-										--class_EntityArray[j].unitData.hp;
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else {}
-									//no damage done
-								}
-							}
-						}
-					}
-				}
-			}
-			frame += width;
-			moveUnit = false;
-			attackUnit = false;
 		}
+		if (attackUnit)
+		{
+			for (int i = 0; i < numOfUnits; i++)
+			{
+				if (class_EntityArray[i].unitData.position == frame)
+				{
+					this->UpdateHealthBg(class_EntityArray[i].MoveUnit('D', &class_EntityArray));
+				}
+			}
+		}
+		frame += width;
+		moveUnit = false;
+		attackUnit = false;
 	}
 	else if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
 	{
-		frameChanged = true;
-		if (frame % width != width - 1)
+		if (moveUnit)
 		{
-			if (moveUnit)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int i = 0; i < numOfUnits; i++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + 1)
-							{
-								collision = true;
-							}
-						}
-						if (class_EntityArray[i].unitData.position % width != width - 1 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-						{
-							unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-							class_EntityArray[i].unitData.position += 1;
-							unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-							--class_EntityArray[i].unitData.actions;
-						}
-					}
+					class_EntityArray[i].MoveUnit('R', &class_EntityArray);
 				}
 			}
-			if (attackUnit)
-			{
-				for (int i = 0; i < numOfUnits; i++)
-				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							for (int k = 1; k <= class_EntityArray[i].unitData.range; ++k)
-							{
-								if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position + k && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID && class_EntityArray[i].unitData.actions > 0)
-								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
-									{
-										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
-									{
-										--class_EntityArray[j].unitData.hp;
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else {}
-									//no damage done
-								}
-							}
-						}
-					}
-				}
-			}
-			frame++;
-			moveUnit = false;
-			attackUnit = false;
 		}
+		if (attackUnit)
+		{
+			for (int i = 0; i < numOfUnits; i++)
+			{
+				if (class_EntityArray[i].unitData.position == frame)
+				{
+					this->UpdateHealthBg(class_EntityArray[i].AttackUnit('R', &class_EntityArray));
+				}
+			}
+		}
+		frame++;
+		moveUnit = false;
+		attackUnit = false;
+
 	}
 	else if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
 	{
-		frameChanged = true;
-		if (frame % width != 0)
+		if (moveUnit)
 		{
-			if (moveUnit)
+			for (int i = 0; i < numOfUnits; i++)
 			{
-				for (int i = 0; i < numOfUnits; i++)
+				if (class_EntityArray[i].unitData.position == frame)
 				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							if (class_EntityArray[j].unitData.position == class_EntityArray[i].unitData.position - 1)
-							{
-								collision = true;
-							}
-						}
-						if (class_EntityArray[i].unitData.position % width != 0 && !collision && class_EntityArray[i].unitData.actions > 0 && class_EntityArray[i].unitData.playerID == currentTurn)
-						{
-							unitMap[class_EntityArray[i].unitData.position] = worldMap[class_EntityArray[i].unitData.position];
-							class_EntityArray[i].unitData.position -= 1;
-							unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
-							--class_EntityArray[i].unitData.actions;
-						}
-					}
+					class_EntityArray[i].MoveUnit('L', &class_EntityArray);
 				}
 			}
-			if (attackUnit)// i = selected unit j = targeted unit k = distance
-			{
-				for (int i = 0; i < numOfUnits; i++)
-				{
-					if (class_EntityArray[i].unitData.position == frame)
-					{
-						for (int j = 0; j < numOfUnits; j++)
-						{
-							for (int k = 1; k <= class_EntityArray[i].unitData.range; k++)
-							{
-								if (class_EntityArray[j].unitData.position == (class_EntityArray[i].unitData.position - k) && class_EntityArray[j].unitData.playerID != class_EntityArray[i].unitData.playerID && class_EntityArray[i].unitData.actions > 0)
-								{
-									if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense > 0)
-									{
-										class_EntityArray[j].unitData.hp -= (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense);
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else if (class_EntityArray[i].unitData.attack - class_EntityArray[j].unitData.defense == 0)
-									{
-										--class_EntityArray[j].unitData.hp;
-										UpdateHealthBg(j);
-										class_EntityArray[i].unitData.actions = 0;
-									}
-									else {}
-									//no damage done
-								}
-							}
-						}
-					}
-				}
-			}
-			frame--;
-			moveUnit = false;
-			attackUnit = false;
 		}
+		if (attackUnit)// i = selected unit j = targeted unit k = distance
+		{
+			for (int i = 0; i < numOfUnits; i++)
+			{
+				if (class_EntityArray[i].unitData.position == frame)
+				{
+					this->UpdateHealthBg(class_EntityArray[i].AttackUnit('L', &class_EntityArray));
+				}
+			}
+		}
+		frame--;
+		moveUnit = false;
+		attackUnit = false;
+
 	}
 	else if (keyPress.wVirtualKeyCode == VK_ESCAPE && keyPress.bKeyDown == true)//Escape
 	{

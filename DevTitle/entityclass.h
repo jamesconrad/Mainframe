@@ -19,7 +19,7 @@ public:
 	EntityClass();
 	/*EntityClass(const EntityClass&);*/
 	~EntityClass();
-	int Initialize(UnitData unitData, int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap);
+	int Initialize(/*UnitData unitData,*/ int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap);
 
 	int MoveUnit(char direction, std::vector<EntityClass> *entityArray);
 	int AttackUnit(char direction, std::vector<EntityClass> *entityArray);

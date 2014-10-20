@@ -21,9 +21,9 @@ int EntityClass::SetUnitData(UnitData unitData)
 }
 
 
-int EntityClass::Initialize(UnitData unitData, int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap)
+int EntityClass::Initialize(/*UnitData unitData, */int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap)
 {
-	EntityClass::unitData = unitData;
+	//EntityClass::unitData = unitData;
 	this->worldWidth = worldWidth;
 	this->worldHeight = worldHeight;
 	this->worldMap = worldMap;
