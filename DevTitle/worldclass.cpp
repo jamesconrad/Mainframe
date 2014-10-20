@@ -234,6 +234,12 @@ int WorldClass::CheckInput()
 		Sleep(1000);
 	}
 	//Attack needs to check for map edges
+	//Adjusted movement and attack
+	//check to see if unit belongs to player before calling the actual move/attack
+
+//	To attack
+//	UpdateHealthBg(class_EntityClass[SELECTED_UNIT].Attack(DIRECTION))
+
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
 		frameChanged = true;
