@@ -19,7 +19,10 @@ namespace
 			range, // range of attack, hits first unit in way
 			type, //0 = building, 1 = land, 2 = air, 3 = water
 			position, //index number of unit
-			threadCost;
+			threadCost,
+			ability1,
+			ability2,
+			ability3;
 	};
 }
 

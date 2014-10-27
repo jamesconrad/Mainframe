@@ -227,3 +227,13 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 	}
 	return 1;
 }
+
+int EntityClass::UseAbility(int num, EntityClass *entity)
+{
+	if (num == 1)
+	{
+
+	}
+
+	return 1;
+}

@@ -45,6 +45,9 @@
     <ClCompile Include="aiclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="abilityinfoclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="worldclass.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="aiclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="abilityinfoclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #define THREATSCALAR_AVGDMG 2
 #define THREATSCALAR_AVGDEF 2
 #define THREATSCALAR_AVGDISTANCE 2
+#define THREATSCALAR_ECNOMOY 2
 /*
 AIClass::AIClass()
 {
@@ -113,7 +114,8 @@ int AIClass::CalculateTarget(const std::vector<EntityClass> *class_EntityArray)
 		avgUnitDmg = 0,
 		avgUnitDef = 0,
 		avgThreat = 0,
-		avgDistance = 0;
+		avgDistance = 0,
+		economy = 0;
 
 	COORD unitPosition;
 
@@ -137,6 +139,8 @@ int AIClass::CalculateTarget(const std::vector<EntityClass> *class_EntityArray)
 				unitPosition.Y = class_EntityArray->at(j).unitData.position / mapWidth;
 				unitPosition.X = class_EntityArray->at(j).unitData.position % mapWidth;
 
+				economy -= class_EntityArray->at(j).unitData.threadCost;
+
 				avgDistance += sqrt(pow((unitPosition.X - homeBase.X), 2) * pow((unitPosition.Y - homeBase.Y), 2));
 			}
 		}
@@ -154,7 +158,8 @@ int AIClass::CalculateTarget(const std::vector<EntityClass> *class_EntityArray)
 			avgMissHP * THREATSCALAR_MISSINGHP + 
 			avgDistance * THREATSCALAR_AVGDISTANCE + 
 			avgUnitDef * THREATSCALAR_AVGDEF + 
-			avgUnitDmg * THREATSCALAR_AVGDMG;
+			avgUnitDmg * THREATSCALAR_AVGDMG + 
+			economy * THREATSCALAR_ECNOMOY;
 
 		//reset values
 		avgMissHP = avgUnitDef = avgUnitDmg = avgDistance = numOfUnits = 0;
@@ -184,5 +189,5 @@ int AIClass::CalculateTarget(const std::vector<EntityClass> *class_EntityArray)
 		}
 	}
 
-	return 1;
+	return currentPlayerTarget;
 }

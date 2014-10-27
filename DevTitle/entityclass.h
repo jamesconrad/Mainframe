@@ -23,6 +23,7 @@ public:
 
 	int MoveUnit(char direction, std::vector<EntityClass> *entityArray);
 	int AttackUnit(char direction, std::vector<EntityClass> *entityArray);
+	int UseAbility(int num, EntityClass *entity);
 
 	int SetUnitData(UnitData unitData);
 };

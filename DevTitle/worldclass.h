@@ -34,6 +34,7 @@ public:
 
 	int SpawnUnit(int id, int index);
 	int UpdateHealthBg(int index);
+	int UpdateUnitMap();
 	
 	int PassCurrentPlayerThreads();
 	int PassTurns();

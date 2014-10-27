@@ -79,6 +79,9 @@ int WorldClass::UpdateTile(int index, CHAR_INFO newTile)
 int WorldClass::Render()
 {
 	COORD frameCoords = ConvertIndex(frame);
+
+	UpdateUnitMap();
+
 	frameCoords.X++;
 	frameCoords.Y++;
 	if (frameChanged)
@@ -152,6 +155,14 @@ int WorldClass::SpawnUnit(int id, int index)
 
 	numOfUnits++;
 	return numOfUnits;
+}
+
+int WorldClass::UpdateUnitMap()
+{
+	for (int i = 0; i < numOfUnits; i++)
+		unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+
+	return 1;
 }
 
 int WorldClass::NextTurn()

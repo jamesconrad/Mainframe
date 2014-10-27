@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="abilityinfoclass.cpp" />
     <ClCompile Include="aiclass.cpp" />
     <ClCompile Include="audioclass.cpp" />
     <ClCompile Include="conbufferclass.cpp" />
@@ -96,6 +97,7 @@
     <ClCompile Include="worldclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="abilityinfoclass.h" />
     <ClInclude Include="aiclass.h" />
     <ClInclude Include="audioclass.h" />
     <ClInclude Include="conbufferclass.h" />
