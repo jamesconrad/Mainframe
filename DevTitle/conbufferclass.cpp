@@ -350,8 +350,8 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 	renderRect.Right = 51 + 29;
 	renderRect.Bottom = 3 + 32;
 
-	unitModel = class_ModelLoader.GetModel(1);
-	WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
+	//unitModel = class_ModelLoader.GetModel(1);
+	//WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
 
 	return 1;
 }
