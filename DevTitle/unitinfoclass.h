@@ -22,7 +22,8 @@ namespace
 			threadCost,
 			ability1,
 			ability2,
-			ability3;
+			ability3,
+			resourcesPerTurn;
 	};
 }
 

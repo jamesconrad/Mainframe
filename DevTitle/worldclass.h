@@ -30,6 +30,7 @@ public:
 	int UpdateTile(int index, CHAR_INFO);
 
 	int Render();
+	int Update(int index);
 	int Tick();
 
 	int SpawnUnit(int id, int index);
@@ -44,17 +45,11 @@ public:
 
 
 private:
-	int frame,
-		height, width,
-		numOfUnits,
-		numOfPlayers,
-		currentTurn,
-		playerColour[7],
-		playerThreads[7],
-		turnCounter;
-	bool moveUnit, 
-		attackUnit, 
-		frameChanged;
+	int frame, height, width,
+		numOfUnits, numOfPlayers, currentTurn,
+		playerColour[7], playerThreads[7], turnCounter;
+
+	bool moveUnit, attackUnit, frameChanged;
 
 	CHAR_INFO *worldMap;
 	CHAR_INFO *unitMap;
@@ -65,11 +60,11 @@ private:
 
 	HANDLE inputThread;
 
-	AudioClass class_AudioClass;
+	AudioClass _audioClass;
 	AudioClass wavPlayer;
-	UnitInfoClass class_UnitInfo;
-	ConBufferClass class_ConBuffer;
-	InputClass class_InputClass;
-	std::vector<EntityClass> class_EntityArray;
+	UnitInfoClass _unitInfo;
+	ConBufferClass _conBuffer;
+	InputClass _inputClass;
+	std::vector<EntityClass> _entityArray;
 };
 #endif

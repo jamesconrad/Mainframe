@@ -26,7 +26,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	attackUnit = false;
 	frameChanged = true;
 
-	class_ConBuffer.Initialize();
+	_conBuffer.Initialize();
 
 	unitMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*width*height);
 
@@ -36,11 +36,11 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	WorldClass::width = width;
 	numOfUnits = 0;
 
-	class_UnitInfo.Initialize();
-	class_InputClass.Initialize();
+	_unitInfo.Initialize();
+	_inputClass.Initialize();
 
-	class_AudioClass.Load(L"DST-3rdBallad.mp3");
-	class_AudioClass.Play();
+	_audioClass.Load(L"DST-3rdBallad.mp3");
+	_audioClass.Play();
 
 	playerColour[0] = 0x0001 | 0x0008;
 	playerColour[1] = 0x0002 | 0x0008;
@@ -52,8 +52,8 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	currentTurn = 0;
 	numOfPlayers = 5;
 
-	prevKeyPress = class_InputClass.GetKeypress();
-	keyPress = class_InputClass.GetKeypress();
+	prevKeyPress = _inputClass.GetKeypress();
+	keyPress = _inputClass.GetKeypress();
 
 	for (int i = 0; i < numOfPlayers; ++i)
 		playerThreads[i] = 3;
@@ -64,7 +64,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 		++currentTurn;
 	}
 	currentTurn = 0;
-	class_ConBuffer.UpdateBorderColour(currentTurn);
+	_conBuffer.UpdateBorderColour(currentTurn);
 	turnCounter = 1;
 
 	return 1;
@@ -80,24 +80,24 @@ int WorldClass::Render()
 {
 	COORD frameCoords = ConvertIndex(frame);
 
-	UpdateUnitMap();
+	//UpdateUnitMap();
 
 	frameCoords.X++;
 	frameCoords.Y++;
 	if (frameChanged)
 	{
-		SetConsoleCursorPosition(class_ConBuffer.hConsole, frameCoords);
+		SetConsoleCursorPosition(_conBuffer.hConsole, frameCoords);
 		frameChanged = false;
 	}
 
 	for (int i = 0; i < numOfUnits; ++i)
 	{
-		if (frame == class_EntityArray[i].unitData.position)
-			class_ConBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, class_EntityArray[i]);
+		if (frame == _entityArray[i].unitData.position)
+			_conBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, _entityArray[i]);
 
 	}
-	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
-	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
+	_conBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
+	_conBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
 
 	return 1;
 }
@@ -133,24 +133,24 @@ int WorldClass::ConvertCoord(COORD indexCoord)
 
 int WorldClass::SpawnUnit(int id, int index)
 {
-	UnitData unitData = class_UnitInfo.unit[id];
+	UnitData unitData = _unitInfo.unit[id];
 
 
 	unitData.playerID = currentTurn;
 	unitData.position = index;
 
-	EntityClass class_TempEntity;
+	EntityClass tempEntity;
 
-	class_TempEntity.unitData = unitData;
-	class_TempEntity.unitData.charInfo.Attributes = playerColour[currentTurn];
+	tempEntity.unitData = unitData;
+	tempEntity.unitData.charInfo.Attributes = playerColour[currentTurn];
 
-	class_EntityArray.push_back(class_TempEntity);
-	class_EntityArray[numOfUnits].Initialize(width, height, worldMap, unitMap);
-	class_EntityArray[numOfUnits].unitData = class_TempEntity.unitData;
-	unitMap[unitData.position] = class_TempEntity.unitData.charInfo;
+	_entityArray.push_back(tempEntity);
+	_entityArray[numOfUnits].Initialize(width, height, worldMap, unitMap);
+	_entityArray[numOfUnits].unitData = tempEntity.unitData;
+	unitMap[unitData.position] = tempEntity.unitData.charInfo;
 
 	//Set actions to 0 for this turn only
-	class_EntityArray[numOfUnits].unitData.actions = 0;
+	_entityArray[numOfUnits].unitData.actions = 0;
 
 
 	numOfUnits++;
@@ -160,7 +160,7 @@ int WorldClass::SpawnUnit(int id, int index)
 int WorldClass::UpdateUnitMap()
 {
 	for (int i = 0; i < numOfUnits; i++)
-		unitMap[class_EntityArray[i].unitData.position] = class_EntityArray[i].unitData.charInfo;
+		unitMap[_entityArray[i].unitData.position] = _entityArray[i].unitData.charInfo;
 
 	return 1;
 }
@@ -175,21 +175,30 @@ int WorldClass::NextTurn()
 	else
 		++currentTurn;
 
-	class_ConBuffer.UpdateBorderColour(currentTurn);
-
-	for (int i = 0; i < numOfUnits; ++i)
+	for (int i = 0; i < numOfUnits; i++)
 	{
-		if (frame == class_EntityArray[i].unitData.position)
-			class_ConBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, class_EntityArray[i]);
-	}
-	class_ConBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
-	class_ConBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
-
-	for (int i = 0; i < numOfUnits; ++i)
-	{
-		if (class_EntityArray[i].unitData.playerID == currentTurn)
+		if (_entityArray[i].unitData.playerID == currentTurn)
 		{
-			class_EntityArray[i].unitData.actions = class_EntityArray[i].unitData.maxActions;
+			playerThreads[currentTurn] += _entityArray[i].unitData.resourcesPerTurn;
+		}
+	}
+	
+
+	_conBuffer.UpdateBorderColour(currentTurn);
+
+	for (int i = 0; i < numOfUnits; ++i)
+	{
+		if (frame == _entityArray[i].unitData.position)
+			_conBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, _entityArray[i]);
+	}
+	_conBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
+	_conBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
+
+	for (int i = 0; i < numOfUnits; ++i)
+	{
+		if (_entityArray[i].unitData.playerID == currentTurn)
+		{
+			_entityArray[i].unitData.actions = _entityArray[i].unitData.maxActions;
 		}
 	}
 
@@ -199,31 +208,31 @@ int WorldClass::NextTurn()
 int WorldClass::UpdateHealthBg(int index)
 {
 	double hpMod;
-	if (class_EntityArray[index].unitData.hp <= 0) //Get rid of the unit by moving it to the bottom right corner
+	if (_entityArray[index].unitData.hp <= 0) //Get rid of the unit by moving it to the bottom right corner
 	{
-		unitMap[class_EntityArray[index].unitData.position] = worldMap[class_EntityArray[index].unitData.position];
-		class_EntityArray[index].unitData.charInfo = worldMap[width*height];
-		class_EntityArray[index].unitData.position = width*height;
-		unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
-		class_EntityArray[index].unitData.maxActions = 0;
+		unitMap[_entityArray[index].unitData.position] = worldMap[_entityArray[index].unitData.position];
+		_entityArray[index].unitData.charInfo = worldMap[width*height];
+		_entityArray[index].unitData.position = width*height;
+		unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
+		_entityArray[index].unitData.maxActions = 0;
 		wavPlayer.Load(L"death1.wav");
 		wavPlayer.Play();
 	}
 	else
 	{
-		hpMod = class_EntityArray[index].unitData.hp / class_EntityArray[index].unitData.maxHP;
+		hpMod = _entityArray[index].unitData.hp / _entityArray[index].unitData.maxHP;
 
 		if (hpMod <= 0.25)
-			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID] | 0x0040;
+			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0040;
 		else if (hpMod <= 0.5)
-			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID] | 0x0030;
+			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0030;
 		else if (hpMod <= 0.75)
-			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID] | 0x0020;
+			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0020;
 		else
-			class_EntityArray[index].unitData.charInfo.Attributes = playerColour[class_EntityArray[index].unitData.playerID];
+			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID];
 
-		if (class_EntityArray[index].unitData.hp > 0)
-			unitMap[class_EntityArray[index].unitData.position] = class_EntityArray[index].unitData.charInfo;
+		if (_entityArray[index].unitData.hp > 0)
+			unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
 	}
 
 
@@ -232,15 +241,25 @@ int WorldClass::UpdateHealthBg(int index)
 
 int WorldClass::Tick()
 {
-	keyPress = class_InputClass.GetKeypress();
-	CheckInput();
+	//Need to add an Update function	
+	Update(CheckInput());
 	Render();
+	return 1;
+}
+
+int WorldClass::Update(int index)
+{
+	UpdateUnitMap();
+	UpdateHealthBg(index);
+
 	return 1;
 }
 
 int WorldClass::CheckInput()
 {
+	keyPress = _inputClass.GetKeypress();
 	bool collision = false;
+	int returnVal = 0;
 	if (keyPress.wVirtualKeyCode == VK_SPACE && keyPress.bKeyDown == true)
 	{
 		WorldClass::NextTurn();
@@ -251,7 +270,7 @@ int WorldClass::CheckInput()
 	//check to see if unit belongs to player before calling the actual move/attack
 
 	//	To attack
-	//	UpdateHealthBg(class_EntityClass[SELECTED_UNIT].Attack(DIRECTION))
+	//	UpdateHealthBg(_entityClass[SELECTED_UNIT].Attack(DIRECTION))
 
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
@@ -259,9 +278,9 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					class_EntityArray[i].MoveUnit('U', &class_EntityArray);
+					_entityArray[i].MoveUnit('U', &_entityArray);
 				}
 			}
 		}
@@ -269,9 +288,10 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					this->UpdateHealthBg(class_EntityArray[i].AttackUnit('U', &class_EntityArray));
+					//this->UpdateHealthBg(_entityArray[i].AttackUnit('U', &_entityArray));
+					return _entityArray[i].AttackUnit('U', &_entityArray);
 				}
 			}
 		}
@@ -285,9 +305,9 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					class_EntityArray[i].MoveUnit('D', &class_EntityArray);
+					_entityArray[i].MoveUnit('D', &_entityArray);
 				}
 			}
 		}
@@ -295,9 +315,10 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					this->UpdateHealthBg(class_EntityArray[i].MoveUnit('D', &class_EntityArray));
+					//this->UpdateHealthBg(_entityArray[i].MoveUnit('D', &_entityArray));
+					return _entityArray[i].MoveUnit('D', &_entityArray);
 				}
 			}
 		}
@@ -311,9 +332,9 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					class_EntityArray[i].MoveUnit('R', &class_EntityArray);
+					_entityArray[i].MoveUnit('R', &_entityArray);
 				}
 			}
 		}
@@ -321,9 +342,10 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					this->UpdateHealthBg(class_EntityArray[i].AttackUnit('R', &class_EntityArray));
+					//this->UpdateHealthBg(_entityArray[i].AttackUnit('R', &_entityArray));
+					return _entityArray[i].AttackUnit('R', &_entityArray);
 				}
 			}
 		}
@@ -338,9 +360,9 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					class_EntityArray[i].MoveUnit('L', &class_EntityArray);
+					_entityArray[i].MoveUnit('L', &_entityArray);
 				}
 			}
 		}
@@ -348,9 +370,10 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (class_EntityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame)
 				{
-					this->UpdateHealthBg(class_EntityArray[i].AttackUnit('L', &class_EntityArray));
+					this->UpdateHealthBg(_entityArray[i].AttackUnit('L', &_entityArray));
+					return _entityArray[i].AttackUnit('L', &_entityArray);
 				}
 			}
 		}
@@ -380,24 +403,24 @@ int WorldClass::CheckInput()
 	{
 		for (int i = 0; i < numOfUnits; ++i)
 		{
-			if (frame == class_EntityArray[i].unitData.position && class_EntityArray[i].unitData.playerID == currentTurn)
+			if (frame == _entityArray[i].unitData.position && _entityArray[i].unitData.playerID == currentTurn)
 			{
-				if (class_EntityArray[i].unitData.type == 0)
+				if (_entityArray[i].unitData.type == 0)
 				{
-					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost + playerThreads[currentTurn] >= 0)
+					if (_unitInfo.unit[_entityArray[i].unitData.unitID + 1].threadCost + playerThreads[currentTurn] >= 0)
 					{
-						playerThreads[currentTurn] += class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost;
-						SpawnUnit(class_EntityArray[i].unitData.unitID + 1, frame + width);
-						class_EntityArray[i].unitData.actions = 0;
+						playerThreads[currentTurn] += _unitInfo.unit[_entityArray[i].unitData.unitID + 1].threadCost;
+						SpawnUnit(_entityArray[i].unitData.unitID + 1, frame + width);
+						_entityArray[i].unitData.actions = 0;
 					}
 				}
-				else if (class_EntityArray[i].unitData.type == 1)
+				else if (_entityArray[i].unitData.type == 1)
 				{
-					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost + playerThreads[currentTurn] >= 0)
+					if (_unitInfo.unit[_entityArray[i].unitData.unitID + 1].threadCost + playerThreads[currentTurn] >= 0)
 					{
-						playerThreads[currentTurn] += class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 1].threadCost;
+						playerThreads[currentTurn] += _unitInfo.unit[_entityArray[i].unitData.unitID + 1].threadCost;
 						SpawnUnit(3, frame + width);
-						class_EntityArray[i].unitData.actions = 0;
+						_entityArray[i].unitData.actions = 0;
 					}
 				}
 			}
@@ -407,24 +430,24 @@ int WorldClass::CheckInput()
 	{
 		for (int i = 0; i < numOfUnits; ++i)
 		{
-			if (frame == class_EntityArray[i].unitData.position && class_EntityArray[i].unitData.playerID == currentTurn)
+			if (frame == _entityArray[i].unitData.position && _entityArray[i].unitData.playerID == currentTurn)
 			{
-				if (class_EntityArray[i].unitData.type == 0)
+				if (_entityArray[i].unitData.type == 0)
 				{
-					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost + playerThreads[currentTurn] >= 0)//Convert to unitinfo[unitID+2]
+					if (_unitInfo.unit[_entityArray[i].unitData.unitID + 2].threadCost + playerThreads[currentTurn] >= 0)//Convert to unitinfo[unitID+2]
 					{
-						playerThreads[currentTurn] += class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost;
-						SpawnUnit(class_EntityArray[i].unitData.unitID + 2, frame + width);
-						class_EntityArray[i].unitData.actions = 0;
+						playerThreads[currentTurn] += _unitInfo.unit[_entityArray[i].unitData.unitID + 2].threadCost;
+						SpawnUnit(_entityArray[i].unitData.unitID + 2, frame + width);
+						_entityArray[i].unitData.actions = 0;
 					}
 				}
-				else if (class_EntityArray[i].unitData.type == 1)
+				else if (_entityArray[i].unitData.type == 1)
 				{
-					if (class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost + playerThreads[currentTurn] >= 0)
+					if (_unitInfo.unit[_entityArray[i].unitData.unitID + 2].threadCost + playerThreads[currentTurn] >= 0)
 					{
-						playerThreads[currentTurn] = playerThreads[currentTurn] + class_UnitInfo.unit[class_EntityArray[i].unitData.unitID + 2].threadCost;
+						playerThreads[currentTurn] = playerThreads[currentTurn] + _unitInfo.unit[_entityArray[i].unitData.unitID + 2].threadCost;
 						SpawnUnit(4, frame + width);
-						class_EntityArray[i].unitData.actions = 0;
+						_entityArray[i].unitData.actions = 0;
 					}
 				}
 			}

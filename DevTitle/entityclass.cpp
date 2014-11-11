@@ -37,81 +37,84 @@ int EntityClass::MoveUnit(char dir, std::vector<EntityClass> *entityArray)
 	//check to see if space is occupied
 	if (dir == 'U')
 	{
-		if (this->unitData.position - worldWidth >= 0)
+		if (unitData.position - worldWidth >= 0)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == this->unitData.position - worldWidth)
+				if (entityArray->at(j).unitData.position == unitData.position - worldWidth)
 				{
 					collision = true;
 				}
 			}
-			if (this->unitData.position - worldWidth >= 0 && !collision && this->unitData.actions > 0)
+			if (unitData.position - worldWidth >= 0 && !collision && unitData.actions > 0)
 			{
-				unitMap[this->unitData.position] = worldMap[this->unitData.position];
-				this->unitData.position -= worldWidth;
-				unitMap[this->unitData.position] = this->unitData.charInfo;
-				this->unitData.actions--;
+				unitMap[unitData.position] = worldMap[unitData.position];
+				unitData.position -= worldWidth;
+				unitMap[unitData.position] = unitData.charInfo;
+				unitData.actions--;
 			}
 		}
 	}
 	else if (dir == 'D')
 	{
-		if (this->unitData.position + worldWidth < worldHeight * worldWidth)
+		if (unitData.position + worldWidth < worldHeight * worldWidth)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == this->unitData.position + worldWidth)
+				if (entityArray->at(j).unitData.position == unitData.position + worldWidth)
 				{
 					collision = true;
 				}
 			}
-			if (this->unitData.position + worldWidth < worldWidth*worldHeight && !collision && this->unitData.actions > 0)
+			if (unitData.position + worldWidth < worldWidth*worldHeight && !collision && unitData.actions > 0)
 			{
-				unitMap[this->unitData.position] = worldMap[this->unitData.position];
-				this->unitData.position += worldWidth;
-				unitMap[this->unitData.position] = this->unitData.charInfo;
-				this->unitData.actions--;
+				unitMap[unitData.position] = worldMap[unitData.position];
+
+				unitData.position += worldWidth;
+
+				unitMap[unitData.position] = unitData.charInfo;
+
+				unitData.actions--;
 			}
 		}
 	}
 	else if (dir == 'L')
 	{
-		if (this->unitData.position % worldWidth != 0)
+		if (unitData.position % worldWidth != 0)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == this->unitData.position - 1)
+				if (entityArray->at(j).unitData.position == unitData.position - 1)
 				{
 					collision = true;
 				}
 			}
-			if (this->unitData.position % worldWidth != 0 && !collision && this->unitData.actions > 0)
+			if (unitData.position % worldWidth != 0 && !collision && unitData.actions > 0)
 			{
-				unitMap[this->unitData.position] = worldMap[this->unitData.position];
-				this->unitData.position -= 1;
-				unitMap[this->unitData.position] = this->unitData.charInfo;
-				this->unitData.actions--;
+				unitMap[unitData.position] = worldMap[unitData.position];
+				unitData.position -= 1;
+				unitMap[unitData.position] = unitData.charInfo;
+				unitData.actions--;
 			}
 		}
 	}
 	else if (dir == 'R')
 	{
-		if (this->unitData.position % worldWidth != worldWidth - 1)
+		if (unitData.position % worldWidth != worldWidth - 1)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == this->unitData.position + 1)
+				if (entityArray->at(j).unitData.position == unitData.position + 1)
 				{
 					collision = true;
 				}
 			}
-			if (this->unitData.position % worldWidth != worldWidth - 1 && !collision && this->unitData.actions > 0)
+			if (unitData.position % worldWidth != worldWidth - 1 && !collision && unitData.actions > 0)
 			{
-				unitMap[this->unitData.position] = worldMap[this->unitData.position];
-				this->unitData.position += 1;
-				unitMap[this->unitData.position] = this->unitData.charInfo;
-				this->unitData.actions--;
+				unitMap[unitData.position] = worldMap[unitData.position];
+				unitData.position += 1;
+				unitMap[unitData.position] = unitData.charInfo;
+				unitData.actions--;
 			}
 		}
 	}
@@ -123,22 +126,22 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 {
 	if (dir == 'U')
 	{
-		for (int k = 1; k <= this->unitData.range; k++)
+		for (int k = 1; k <= unitData.range; k++)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == (this->unitData.position - (k * 48)) && entityArray->at(j).unitData.playerID != this->unitData.playerID && this->unitData.actions > 0)
+				if (entityArray->at(j).unitData.position == (unitData.position - (k * 48)) && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
 				{
-					if (this->unitData.attack - entityArray->at(j).unitData.defense > 0)
+					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
 					{
-						entityArray->at(j).unitData.hp -= (this->unitData.attack - entityArray->at(j).unitData.defense);
-						this->unitData.actions = 0;
+						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
+						unitData.actions = 0;
 						return j;
 					}
-					else if (this->unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
 					{
 						entityArray->at(j).unitData.hp--;
-						this->unitData.actions = 0;
+						unitData.actions = 0;
 						return j;
 					}
 					else {}
@@ -149,22 +152,22 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 	}
 	else if (dir == 'L')
 	{
-		for (int k = 1; k <= this->unitData.range; k++)
+		for (int k = 1; k <= unitData.range; k++)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == (this->unitData.position - k) && entityArray->at(j).unitData.playerID != this->unitData.playerID && this->unitData.actions > 0)
+				if (entityArray->at(j).unitData.position == (unitData.position - k) && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
 				{
-					if (this->unitData.attack - entityArray->at(j).unitData.defense > 0)
+					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
 					{
-						entityArray->at(j).unitData.hp -= (this->unitData.attack - entityArray->at(j).unitData.defense);
-						this->unitData.actions = 0;
+						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
+						unitData.actions = 0;
 						return j;
 					}
-					else if (this->unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
 					{
 						entityArray->at(j).unitData.hp--;
-						this->unitData.actions = 0;
+						unitData.actions = 0;
 						return j;
 					}
 					else {}
@@ -175,22 +178,22 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 	}
 	else if (dir == 'R')
 	{
-		for (int k = 1; k <= this->unitData.range; k++)
+		for (int k = 1; k <= unitData.range; k++)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == this->unitData.position + k && entityArray->at(j).unitData.playerID != this->unitData.playerID && this->unitData.actions > 0)
+				if (entityArray->at(j).unitData.position == unitData.position + k && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
 				{
-					if (this->unitData.attack - entityArray->at(j).unitData.defense > 0)
+					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
 					{
-						entityArray->at(j).unitData.hp -= (this->unitData.attack - entityArray->at(j).unitData.defense);
-						this->unitData.actions = 0;
+						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
+						unitData.actions = 0;
 						return j;
 					}
-					else if (this->unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
 					{
 						entityArray->at(j).unitData.hp--;
-						this->unitData.actions = 0;
+						unitData.actions = 0;
 						return j;
 					}
 					else {}
@@ -201,22 +204,22 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 	}
 	else if (dir == 'D')
 	{
-		for (int k = 1; k <= this->unitData.range; k++)
+		for (int k = 1; k <= unitData.range; k++)
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
-				if (entityArray->at(j).unitData.position == (this->unitData.position + (48 * k)) && entityArray->at(j).unitData.playerID != this->unitData.playerID && this->unitData.actions > 0)
+				if (entityArray->at(j).unitData.position == (unitData.position + (48 * k)) && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
 				{
-					if (this->unitData.attack - entityArray->at(j).unitData.defense > 0)
+					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
 					{
-						entityArray->at(j).unitData.hp -= (this->unitData.attack - entityArray->at(j).unitData.defense);
-						this->unitData.actions = 0;
+						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
+						unitData.actions = 0;
 						return j;
 					}
-					else if (this->unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
 					{
 						entityArray->at(j).unitData.hp--;
-						this->unitData.actions = 0;
+						unitData.actions = 0;
 						return j;
 					}
 					else {}
