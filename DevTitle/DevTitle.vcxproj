@@ -92,6 +92,7 @@
     <ClCompile Include="main.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="menuclass.cpp" />
     <ClCompile Include="modelloader.cpp" />
     <ClCompile Include="unitinfoclass.cpp" />
     <ClCompile Include="worldclass.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="entityclass.h" />
     <ClInclude Include="generationclass.h" />
     <ClInclude Include="inputclass.h" />
+    <ClInclude Include="menuclass.h" />
     <ClInclude Include="modelloader.h" />
     <ClInclude Include="unitinfoclass.h" />
     <ClInclude Include="worldclass.h" />
