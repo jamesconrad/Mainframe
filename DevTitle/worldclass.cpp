@@ -18,10 +18,11 @@ CHAR_INFO* WorldClass::GetMap()
 {
 	return worldMap;
 }
-int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height)
+int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height, int numOfPlayers, int numOfUnits)
 {
 	worldMap = generation;
 
+	isInGame = true;
 	moveUnit = false;
 	attackUnit = false;
 	frameChanged = true;
@@ -31,10 +32,10 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	unitMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*width*height);
 
 	memcpy(unitMap, worldMap, sizeof(CHAR_INFO)*width*height);
-	WorldClass::frame = frame;
-	WorldClass::height = height;
-	WorldClass::width = width;
-	numOfUnits = 0;
+	this->frame = frame;
+	this->height = height;
+	this->width = width;
+	this->numOfUnits = numOfUnits;
 
 	_unitInfo.Initialize();
 	_inputClass.Initialize();
@@ -50,19 +51,33 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	playerColour[5] = 0x0006 | 0x0008;
 
 	currentTurn = 0;
-	numOfPlayers = 5;
+	this->numOfPlayers = numOfPlayers;
+
+	playerThreads = (int*)malloc(sizeof(int)*numOfPlayers);
+	alivePlayers = (int*)malloc(sizeof(int)*numOfPlayers);
 
 	prevKeyPress = _inputClass.GetKeypress();
 	keyPress = _inputClass.GetKeypress();
 
 	for (int i = 0; i < numOfPlayers; ++i)
+	{
 		playerThreads[i] = 3;
+		alivePlayers[i] = true;
+	}
 
+	int rng, done = -1;
+	bool validDist = true;
+	int dist = sqrt(pow(width, 2) + pow(height, 2)), tmpDist;
 	for (int i = 0; i <= numOfPlayers; ++i)
 	{
-		SpawnUnit(0, rand() % (width*height));
+		do
+			rng = rand() % (width*height);
+		while (unitMap[rng].Attributes == 0x0001);
+
+		SpawnUnit(0, rng % (width*height));
 		++currentTurn;
 	}
+
 	currentTurn = 0;
 	_conBuffer.UpdateBorderColour(currentTurn);
 	turnCounter = 1;
@@ -182,7 +197,7 @@ int WorldClass::NextTurn()
 			playerThreads[currentTurn] += _entityArray[i].unitData.resourcesPerTurn;
 		}
 	}
-	
+
 
 	_conBuffer.UpdateBorderColour(currentTurn);
 
@@ -241,7 +256,6 @@ int WorldClass::UpdateHealthBg(int index)
 
 int WorldClass::Tick()
 {
-	//Need to add an Update function	
 	Update(CheckInput());
 	Render();
 	return 1;
@@ -249,10 +263,53 @@ int WorldClass::Tick()
 
 int WorldClass::Update(int index)
 {
+	//Check to see if they can make a move
+	bool outOfMoves = true;
+	for (int i = 0; i < numOfUnits; i++)
+	{
+		if (_entityArray[i].unitData.playerID == currentTurn)
+		{
+			if (_entityArray[i].unitData.actions != 0 && _entityArray[i].unitData.hp != 0)
+				outOfMoves = false;
+		}
+	}
+
+	//Check to see if alive
+	for (int i = 0; i < numOfUnits; i++)
+	{
+		if (_entityArray[i].unitData.unitID == 0 && _entityArray[i].unitData.hp <= 0)
+			alivePlayers[_entityArray[i].unitData.playerID] = false;
+	}
+
+	//Game over if only alive
+	bool lastStanding = true;
+	for (int i = 0; i < numOfPlayers; i++)
+	{
+		if (alivePlayers[i] = true && i != currentTurn)
+			lastStanding = false;
+	}
+	//Exit game if only person left
+	if (lastStanding)
+	{
+		isInGame = false;
+		winner = currentTurn;
+	}
+
+	//Next turn if dead or out of moves
+	if (outOfMoves || alivePlayers[currentTurn])
+		NextTurn();
+
+
+
 	UpdateUnitMap();
 	UpdateHealthBg(index);
 
 	return 1;
+}
+
+bool WorldClass::InGame()
+{
+	return isInGame;
 }
 
 int WorldClass::CheckInput()
@@ -263,7 +320,7 @@ int WorldClass::CheckInput()
 	if (keyPress.wVirtualKeyCode == VK_SPACE && keyPress.bKeyDown == true)
 	{
 		WorldClass::NextTurn();
-		Sleep(1000);
+		//Sleep(1000);
 	}
 	//Attack needs to check for map edges
 	//Adjusted movement and attack
@@ -280,6 +337,7 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					moveUnit = false;
 					_entityArray[i].MoveUnit('U', &_entityArray);
 				}
 			}
@@ -290,14 +348,13 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('U', &_entityArray));
 					return _entityArray[i].AttackUnit('U', &_entityArray);
 				}
 			}
 		}
 		frame -= width;
-		moveUnit = false;
-		attackUnit = false;
 	}
 	else if (keyPress.wVirtualKeyCode == VK_DOWN && keyPress.bKeyDown == true)
 	{
@@ -307,6 +364,7 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					moveUnit = false;
 					_entityArray[i].MoveUnit('D', &_entityArray);
 				}
 			}
@@ -317,14 +375,13 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].MoveUnit('D', &_entityArray));
 					return _entityArray[i].MoveUnit('D', &_entityArray);
 				}
 			}
 		}
 		frame += width;
-		moveUnit = false;
-		attackUnit = false;
 	}
 	else if (keyPress.wVirtualKeyCode == VK_RIGHT && keyPress.bKeyDown == true)
 	{
@@ -334,6 +391,7 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					moveUnit = false;
 					_entityArray[i].MoveUnit('R', &_entityArray);
 				}
 			}
@@ -344,14 +402,13 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('R', &_entityArray));
 					return _entityArray[i].AttackUnit('R', &_entityArray);
 				}
 			}
 		}
 		frame++;
-		moveUnit = false;
-		attackUnit = false;
 
 	}
 	else if (keyPress.wVirtualKeyCode == VK_LEFT && keyPress.bKeyDown == true)
@@ -362,6 +419,7 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
+					moveUnit = false;
 					_entityArray[i].MoveUnit('L', &_entityArray);
 				}
 			}
@@ -372,20 +430,20 @@ int WorldClass::CheckInput()
 			{
 				if (_entityArray[i].unitData.position == frame)
 				{
-					this->UpdateHealthBg(_entityArray[i].AttackUnit('L', &_entityArray));
+					attackUnit = false;
+					//this->UpdateHealthBg(_entityArray[i].AttackUnit('L', &_entityArray));
 					return _entityArray[i].AttackUnit('L', &_entityArray);
 				}
 			}
 		}
 		frame--;
-		moveUnit = false;
-		attackUnit = false;
 
 	}
 	else if (keyPress.wVirtualKeyCode == VK_ESCAPE && keyPress.bKeyDown == true)//Escape
 	{
 		moveUnit = false;
 		attackUnit = false;
+		exit(0);
 	}
 	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //Insert
 	{
@@ -453,6 +511,106 @@ int WorldClass::CheckInput()
 			}
 		}
 	}
+	return 1;
+}
+
+int WorldClass::Save()
+{
+	FILE *saveFile;
+	saveFile = fopen("map", "wb");
+	fwrite(worldMap, sizeof(CHAR_INFO), width*height, saveFile);
+
+	//Blank the file
+	saveFile = fopen("units", "wb");
+	//Actually do the writing
+	saveFile = fopen("units", "ab");
+	for (int i = 0; i < numOfUnits; i++)
+		fwrite(&_entityArray[i], sizeof(EntityClass), 1, saveFile);
+	
+	saveFile = fopen("misc", "w");
+	fwrite(&numOfPlayers, sizeof(int), 1, saveFile);
+	saveFile = fopen("misc", "a");
+	fwrite(&numOfUnits, sizeof(int), 1, saveFile);
+	fwrite(&width, sizeof(int), 1, saveFile);
+	fwrite(&height, sizeof(int), 1, saveFile);
+	fwrite(&turnCounter, sizeof(int), 1, saveFile);
+	fwrite(&currentTurn, sizeof(int), 1, saveFile);
+	for (int i = 0; i < numOfPlayers; i++)
+		fwrite(&playerThreads[i], sizeof(int), 1, saveFile);
+
+	return 1;
+}
+
+int WorldClass::Load()
+{
+	FILE *saveFile;
+	saveFile = fopen("misc", "r");
+	fread(&numOfPlayers, sizeof(int), 1, saveFile);
+	fread(&numOfUnits, sizeof(int), 1, saveFile);
+	fread(&width, sizeof(int), 1, saveFile);
+	fread(&height, sizeof(int), 1, saveFile);
+	fread(&turnCounter, sizeof(int), 1, saveFile);
+	fread(&currentTurn, sizeof(int), 1, saveFile);
+	playerThreads = (int*)malloc(sizeof(int)*numOfPlayers);
+	for (int i = 0; i < numOfPlayers; i++)
+		fread(&playerThreads[i], sizeof(int), 1, saveFile);
+
+
+	saveFile = fopen("map", "rb");
+	CHAR_INFO* tmpMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*width*height);
+	fread(tmpMap, sizeof(CHAR_INFO), width*height, saveFile);
+
+	saveFile = fopen("units", "rb");
+	EntityClass* tmpEntArr = (EntityClass*)malloc(sizeof(EntityClass)*numOfUnits);
+	for (int i = 0; i < numOfUnits; i++)
+		fread(&tmpEntArr[i], sizeof(EntityClass), 1, saveFile);
+	for (int i = 0; i < numOfUnits; i++)
+		_entityArray.push_back(tmpEntArr[i]);
+	free(tmpEntArr);
+
+	//Initialize(tmpMap, 1, width, height, numOfPlayers, numOfUnits);
+
+	//Reuse portions of Initialize();
+
+	worldMap = tmpMap;
+
+	isInGame = true;
+	moveUnit = false;
+	attackUnit = false;
+	frameChanged = true;
+
+	_conBuffer.Initialize();
+
+	unitMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*width*height);
+
+	memcpy(unitMap, worldMap, sizeof(CHAR_INFO)*width*height);
+	frame = 0;
+
+	_unitInfo.Initialize();
+	_inputClass.Initialize();
+
+	_audioClass.Load(L"DST-3rdBallad.mp3");
+	_audioClass.Play();
+
+	playerColour[0] = 0x0001 | 0x0008;
+	playerColour[1] = 0x0002 | 0x0008;
+	playerColour[2] = 0x0003 | 0x0008;
+	playerColour[3] = 0x0004 | 0x0008;
+	playerColour[4] = 0x0005 | 0x0008;
+	playerColour[5] = 0x0006 | 0x0008;
+
+	alivePlayers = (int*)malloc(sizeof(int)*numOfPlayers);
+
+	prevKeyPress = _inputClass.GetKeypress();
+	keyPress = _inputClass.GetKeypress();
+
+	for (int i = 0; i < numOfPlayers; ++i)
+	{
+		alivePlayers[i] = true;
+	}
+
+	_conBuffer.UpdateBorderColour(currentTurn);
+
 	return 1;
 }
 

@@ -22,7 +22,7 @@ public:
 	COORD ConvertIndex(int);
 	int ConvertCoord(COORD);
 
-	int Initialize(CHAR_INFO*, int, int, int);
+	int Initialize(CHAR_INFO*, int, int, int, int, int zero);
 
 	int ChangeFrame(int);
 	int GetFrame();
@@ -40,16 +40,21 @@ public:
 	int PassCurrentPlayerThreads();
 	int PassTurns();
 
+	int Save();
+	int Load();
+
 	int NextTurn();
 	int CheckInput();
 
+	bool InGame();
 
 private:
 	int frame, height, width,
 		numOfUnits, numOfPlayers, currentTurn,
-		playerColour[7], playerThreads[7], turnCounter;
+		playerColour[7], *playerThreads, *alivePlayers,
+		turnCounter, winner;
 
-	bool moveUnit, attackUnit, frameChanged;
+	bool moveUnit, attackUnit, frameChanged, isInGame;
 
 	CHAR_INFO *worldMap;
 	CHAR_INFO *unitMap;

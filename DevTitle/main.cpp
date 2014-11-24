@@ -32,6 +32,8 @@ int main()
 	menuInput->Initialize();
 	KEY_EVENT_RECORD input;
 
+	int numOfPlayers = 6;
+
 	while (mainMenu->MenuActive())
 	{
 		input = menuInput->GetKeypress();
@@ -97,14 +99,30 @@ int main()
 
 				terrainGenerator->Initialize(48, 32, time(NULL));
 				CHAR_INFO * generation = terrainGenerator->Generate();
-				world->Initialize(generation, 0, terrainGenerator->GetWidth(), terrainGenerator->GetHeight());
+				world->Initialize(generation, 0, terrainGenerator->GetWidth(), terrainGenerator->GetHeight(), numOfPlayers - 1, 0);
 
 				terrainGenerator->Save("map", world->GetMap());
-				while (true)
+				world->Save();
+				while (world->InGame())
 				{
 					world->Tick();
 				}
 
+			}
+			else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && mainMenu->GetActiveOption() == 6)
+			{
+				if (FILE *file = fopen("misc", "r"))
+				{
+					fclose(file);
+					world = new WorldClass();
+					world->Load();
+					while (world->InGame())
+					{
+						world->Tick();
+					}
+				}
+				else
+					mainMenu->SetOptionText(6, "No game data to load!");
 			}
 		}
 
