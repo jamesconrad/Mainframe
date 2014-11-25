@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <ctime>
+#include <stdlib.h>
 
 #define SCREEN_HEIGHT 51
 #define SCREEN_WIDTH 83
@@ -33,6 +34,9 @@ int main()
 	KEY_EVENT_RECORD input;
 
 	int numOfPlayers = 6;
+	int aiHandicap = 0;
+	int numAi = 0;
+	char buff[64] = "ERROR";
 
 	while (mainMenu->MenuActive())
 	{
@@ -41,6 +45,47 @@ int main()
 			mainMenu->OptionUp();
 		if (input.wVirtualKeyCode == VK_DOWN && input.bKeyDown == true)
 			mainMenu->OptionDown();
+		//numAi setting
+		if (input.wVirtualKeyCode == VK_RIGHT && input.bKeyDown == true && mainMenu->GetActiveOption() == 3 && mainMenu->GetId() == 2)
+		{
+			if (numAi < 5)
+				numAi++;
+			_itoa(numAi, buff, 10);
+			mainMenu->SetOptionText(3, buff);
+			mainMenu->OptionUp();
+			mainMenu->OptionDown();
+			mainMenu->ClearScreen();
+		}
+		else if (input.wVirtualKeyCode == VK_LEFT && input.bKeyDown == true && mainMenu->GetActiveOption() == 3 && mainMenu->GetId() == 2)
+		{
+			if (numAi > 0)
+				numAi--;
+			_itoa(numAi, buff, 10);
+			mainMenu->SetOptionText(3, buff);
+			mainMenu->ClearScreen();
+			mainMenu->OptionUp();
+			mainMenu->OptionDown();
+		}
+		//aiHandicap setting
+		else if (input.wVirtualKeyCode == VK_RIGHT && input.bKeyDown == true && mainMenu->GetActiveOption() == 5 && mainMenu->GetId() == 2)
+		{
+			aiHandicap++;
+			_itoa(aiHandicap, buff, 10);
+			mainMenu->SetOptionText(5, buff);;
+			mainMenu->ClearScreen();
+			mainMenu->OptionUp();
+			mainMenu->OptionDown();
+		}
+		else if (input.wVirtualKeyCode == VK_LEFT && input.bKeyDown == true && mainMenu->GetActiveOption() == 5 && mainMenu->GetId() == 2)
+		{
+			aiHandicap--;
+			_itoa(aiHandicap, buff, 10);
+			mainMenu->SetOptionText(5, buff);
+			mainMenu->ClearScreen();
+			mainMenu->OptionUp();
+			mainMenu->OptionDown();
+		}
+
 		if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && mainMenu->GetId() == 1)
 		{
 			if (mainMenu->GetActiveOption() == 0)
@@ -49,11 +94,14 @@ int main()
 				mainMenu->SetNumOptions(8);
 
 				mainMenu->SetOptionText(0, "Seed:");
-				mainMenu->SetOptionText(1, "seed"); // Possible change here
+				_itoa(time(NULL), buff, 10);
+				mainMenu->SetOptionText(1, buff); // Possible change here
 				mainMenu->SetOptionText(2, "Number of AI opponents");
-				mainMenu->SetOptionText(3, "0");
+				_itoa(numAi, buff, 10);
+				mainMenu->SetOptionText(3, buff);
 				mainMenu->SetOptionText(4, "AI Handicap:");
-				mainMenu->SetOptionText(5, "0"); //Possible change here
+				_itoa(aiHandicap, buff, 10);
+				mainMenu->SetOptionText(5, buff); //Possible change here
 				mainMenu->SetOptionText(6, "Load Game"); //Possible change here
 				mainMenu->SetOptionText(7, "Start Game");
 				mainMenu->NewId(2);
@@ -71,9 +119,9 @@ int main()
 				mainMenu->SetOptionText(1, "seed"); // Possible change here
 				mainMenu->SetOptionText(2, "Number of Players");
 				mainMenu->SetOptionText(3, "0");
-				mainMenu->SetOptionText(4, " "); //Possible change here
+				mainMenu->SetOptionText(4, "Load Game"); //Possible change here
 				mainMenu->SetOptionText(5, "Start Game");
-				mainMenu->NewId(2);
+				mainMenu->NewId(3);
 
 				//Done. Now cycle selections
 				mainMenu->OptionDown();
@@ -81,6 +129,7 @@ int main()
 			}
 			else if (mainMenu->GetActiveOption() == 3)
 				exit(1);
+			//numAi setting
 		}
 		else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && mainMenu->GetId() == 2)
 		{
@@ -125,7 +174,7 @@ int main()
 					mainMenu->SetOptionText(6, "No game data to load!");
 			}
 		}
-
+		
 		mainMenu->Render();
 	}
 

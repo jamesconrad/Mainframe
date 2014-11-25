@@ -15,6 +15,7 @@ public:
 
 	int SetNumOptions(int num);
 	int SetOptionText(int optionNum, const char * text);
+	
 	int ClearOptionText(int optionNum);
 
 	int Render();

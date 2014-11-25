@@ -110,6 +110,7 @@ int MenuClass::SetNumOptions(int num)
 	menu = (MenuObject*)malloc(sizeof(MenuObject)*numOfOptions);
 	return 1;
 }
+
 int MenuClass::SetOptionText(int optionNum, const char* text)
 {
 	menu[optionNum].text = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*strlen(text));
@@ -117,6 +118,7 @@ int MenuClass::SetOptionText(int optionNum, const char* text)
 	menu[optionNum].len = strlen(text);
 	return 1;
 }
+
 int MenuClass::ClearOptionText(int optionNum)
 {
 	free(menu[optionNum].text);
