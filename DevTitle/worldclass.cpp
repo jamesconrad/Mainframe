@@ -40,7 +40,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	_unitInfo.Initialize();
 	_inputClass.Initialize();
 
-	_audioClass.Load(L"DST-3rdBallad.mp3");
+	_audioClass.Load(L"Music/DST-3rdBallad.mp3");
 	_audioClass.Play();
 
 	playerColour[0] = 0x0001 | 0x0008;
@@ -230,7 +230,7 @@ int WorldClass::UpdateHealthBg(int index)
 		_entityArray[index].unitData.position = width*height;
 		unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
 		_entityArray[index].unitData.maxActions = 0;
-		wavPlayer.Load(L"death1.wav");
+		wavPlayer.Load(L"Music/death1.wav");
 		wavPlayer.Play();
 	}
 	else
@@ -377,7 +377,7 @@ int WorldClass::CheckInput()
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].MoveUnit('D', &_entityArray));
-					return _entityArray[i].MoveUnit('D', &_entityArray);
+					return _entityArray[i].AttackUnit('D', &_entityArray);
 				}
 			}
 		}
@@ -517,19 +517,19 @@ int WorldClass::CheckInput()
 int WorldClass::Save()
 {
 	FILE *saveFile;
-	saveFile = fopen("map", "wb");
+	saveFile = fopen("Save/map", "wb");
 	fwrite(worldMap, sizeof(CHAR_INFO), width*height, saveFile);
 
 	//Blank the file
-	saveFile = fopen("units", "wb");
+	saveFile = fopen("Save/units", "wb");
 	//Actually do the writing
-	saveFile = fopen("units", "ab");
+	saveFile = fopen("Save/units", "ab");
 	for (int i = 0; i < numOfUnits; i++)
 		fwrite(&_entityArray[i], sizeof(EntityClass), 1, saveFile);
 	
-	saveFile = fopen("misc", "w");
+	saveFile = fopen("Save/misc", "w");
 	fwrite(&numOfPlayers, sizeof(int), 1, saveFile);
-	saveFile = fopen("misc", "a");
+	saveFile = fopen("Save/misc", "a");
 	fwrite(&numOfUnits, sizeof(int), 1, saveFile);
 	fwrite(&width, sizeof(int), 1, saveFile);
 	fwrite(&height, sizeof(int), 1, saveFile);
@@ -544,7 +544,7 @@ int WorldClass::Save()
 int WorldClass::Load()
 {
 	FILE *saveFile;
-	saveFile = fopen("misc", "r");
+	saveFile = fopen("Save/misc", "r");
 	fread(&numOfPlayers, sizeof(int), 1, saveFile);
 	fread(&numOfUnits, sizeof(int), 1, saveFile);
 	fread(&width, sizeof(int), 1, saveFile);
@@ -556,11 +556,11 @@ int WorldClass::Load()
 		fread(&playerThreads[i], sizeof(int), 1, saveFile);
 
 
-	saveFile = fopen("map", "rb");
+	saveFile = fopen("Save/map", "rb");
 	CHAR_INFO* tmpMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*width*height);
 	fread(tmpMap, sizeof(CHAR_INFO), width*height, saveFile);
 
-	saveFile = fopen("units", "rb");
+	saveFile = fopen("Save/units", "rb");
 	EntityClass* tmpEntArr = (EntityClass*)malloc(sizeof(EntityClass)*numOfUnits);
 	for (int i = 0; i < numOfUnits; i++)
 		fread(&tmpEntArr[i], sizeof(EntityClass), 1, saveFile);
@@ -589,7 +589,7 @@ int WorldClass::Load()
 	_unitInfo.Initialize();
 	_inputClass.Initialize();
 
-	_audioClass.Load(L"DST-3rdBallad.mp3");
+	_audioClass.Load(L"Music/DST-3rdBallad.mp3");
 	_audioClass.Play();
 
 	playerColour[0] = 0x0001 | 0x0008;

@@ -228,6 +228,34 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 			}
 		}
 	}
+	/*
+	if (dir == 'U')
+	{
+		for (int k = 1; k <= unitData.range; k++)
+		{
+			for (int j = 0; j < entityArray->size(); j++)
+			{
+				if (entityArray->at(j).unitData.position == (unitData.position - (k * 48)) && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
+				{
+					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
+					{
+						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
+						unitData.actions = 0;
+						return j;
+					}
+					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
+					{
+						entityArray->at(j).unitData.hp--;
+						unitData.actions = 0;
+						return j;
+					}
+					else {}
+					//no damage done
+				}
+			}
+		}
+	}
+	*/
 	return 0;
 }
 

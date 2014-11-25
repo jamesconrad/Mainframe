@@ -26,7 +26,7 @@ int ModelLoaderClass::Initialize()
 CHAR_INFO* ModelLoaderClass::GetModel(int modelNum)
 {
 	FILE *saveFile;
-	saveFile = fopen("map", "rb");
+	saveFile = fopen("Models/builder", "rb");
 	fread(modelCharInfo, sizeof(CHAR_INFO), width*height, saveFile);
 
 	return modelCharInfo;
