@@ -30,7 +30,7 @@ int main()
 		terrainGenerator = new GenerationClass();
 
 		terrainGenerator->Initialize(48, 32, mainMenu->GetSeed());
-		world->Initialize(terrainGenerator->Generate(), 0, terrainGenerator->GetWidth(), terrainGenerator->GetHeight(), mainMenu->GetNumOfPlayers(), 0);
+		world->Initialize(terrainGenerator->Generate(), 0, terrainGenerator->GetWidth(), terrainGenerator->GetHeight(), mainMenu->GetNumOfPlayers(), 0, mainMenu->GetNumAi());
 
 		terrainGenerator->Save("map", world->GetMap());
 		world->Save();

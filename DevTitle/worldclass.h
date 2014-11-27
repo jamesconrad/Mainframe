@@ -22,7 +22,7 @@ public:
 	COORD ConvertIndex(int);
 	int ConvertCoord(COORD);
 
-	int Initialize(CHAR_INFO*, int, int, int, int, int zero);
+	int Initialize(CHAR_INFO*, int, int, int, int numOfPlayers, int zero, int numOfAi);
 
 	int ChangeFrame(int);
 	int GetFrame();

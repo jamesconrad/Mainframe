@@ -11,9 +11,9 @@ MenuClass::MenuClass(int menuId)
 	seed = rand()*rand();
 	srand(seed);
 
-	numAi = 0;
+	numAi = 1;
 	aiHandicap = 0;
-	numOfPlayers = 6;
+	numOfPlayers = 2;
 	char buff[64] = "ERROR";
 
 	loadWorld = false;
@@ -225,7 +225,10 @@ int MenuClass::UpdateMenu()
 	if (input.wVirtualKeyCode == VK_RIGHT && input.bKeyDown == true && cursor == 3 && menuId == 2)
 	{
 		if (numAi < 5)
+		{
 			numAi++;
+			numOfPlayers++;
+		}
 		_itoa(numAi, buff, 10);
 		SetOptionText(3, buff);
 		ClearScreen();
@@ -234,8 +237,11 @@ int MenuClass::UpdateMenu()
 	}
 	else if (input.wVirtualKeyCode == VK_LEFT && input.bKeyDown == true && cursor == 3 && menuId == 2)
 	{
-		if (numAi > 0)
+		if (numAi > 1)
+		{
 			numAi--;
+			numOfPlayers--;
+		}
 		_itoa(numAi, buff, 10);
 		SetOptionText(3, buff);
 		ClearScreen();

@@ -18,7 +18,7 @@ CHAR_INFO* WorldClass::GetMap()
 {
 	return worldMap;
 }
-int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height, int numOfPlayers, int numOfUnits)
+int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height, int numOfPlayers, int numOfUnits, int numOfAi)
 {
 	worldMap = generation;
 
@@ -32,7 +32,6 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	unitMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO*)*width*height);
 
 	memcpy(unitMap, worldMap, sizeof(CHAR_INFO)*width*height);
-	this->frame = frame;
 	this->height = height;
 	this->width = width;
 	this->numOfUnits = numOfUnits;
@@ -77,6 +76,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 		SpawnUnit(0, rng % (width*height));
 		++currentTurn;
 	}
+	this->frame = _entityArray[1].unitData.position;
 
 	currentTurn = 0;
 	_conBuffer.UpdateBorderColour(currentTurn);
@@ -99,11 +99,11 @@ int WorldClass::Render()
 
 	frameCoords.X++;
 	frameCoords.Y++;
-	if (frameChanged)
-	{
-		SetConsoleCursorPosition(_conBuffer.hConsole, frameCoords);
-		frameChanged = false;
-	}
+	//if (frameChanged)
+	//{
+	//	SetConsoleCursorPosition(_conBuffer.hConsole, frameCoords);
+	//	frameChanged = false;
+	//}
 
 	for (int i = 0; i < numOfUnits; ++i)
 	{
