@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include <Windows.h>
+#include "inputclass.h"
 
 class MenuClass
 {
@@ -29,7 +30,19 @@ public:
 	void NewId(int id);
 	int GetId();
 
+
+	int Tick();
+
+	int UpdateMenu();
+
+	int GetSeed(), GetNumAi(),
+		GetAiHandicap(), GetNumOfPlayers();
+	bool GetLoadWorld();
 private:
+	int seed, numAi, aiHandicap, numOfPlayers;
+	char buff[64];
+	bool loadWorld;
+
 	HANDLE hConsole;
 	int numOfOptions, cursor, menuId;
 	bool isInMenu;
@@ -43,6 +56,8 @@ private:
 	};
 	
 	MenuObject* menu;
+	InputClass* _inputClass;
+	KEY_EVENT_RECORD input;
 };
 
 

@@ -59,7 +59,7 @@ int AIClass::MakeTurn(std::vector<EntityClass> *class_EntityArray)
 
 
 	//check if units fall within radius
-	for (int myUnit = 0; myUnit < class_EntityArray->size(); myUnit++)
+	for (int myUnit = 0, n = class_EntityArray->size(); myUnit < n; myUnit++)
 	{
 		if (class_EntityArray->at(myUnit).unitData.playerID == playerNum)
 		{

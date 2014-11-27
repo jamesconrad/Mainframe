@@ -68,7 +68,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 	int rng, done = -1;
 	bool validDist = true;
 	int dist = sqrt(pow(width, 2) + pow(height, 2)), tmpDist;
-	for (int i = 0; i <= numOfPlayers; ++i)
+	for (int i = 0; i < numOfPlayers; ++i)
 	{
 		do
 			rng = rand() % (width*height);

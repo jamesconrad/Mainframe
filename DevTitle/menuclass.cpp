@@ -1,10 +1,23 @@
 #include "menuclass.h"
+#include <ctime>
+#include <iostream>
 
 #define SCREEN_HEIGHT 51
 #define SCREEN_WIDTH 83
 
 MenuClass::MenuClass(int menuId)
 {
+	srand(time(NULL));
+	seed = rand()*rand();
+	srand(seed);
+
+	numAi = 0;
+	aiHandicap = 0;
+	numOfPlayers = 6;
+	char buff[64] = "ERROR";
+
+	loadWorld = false;
+
 	this->menuId = menuId;
 	hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
 	isInMenu = true;
@@ -16,6 +29,19 @@ MenuClass::MenuClass(int menuId)
 
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 	SetConsoleWindowInfo(hConsole, true, &screenSize);
+
+	SetConsoleTitle(L"Mainframe");
+
+	_inputClass = new InputClass();
+	_inputClass->Initialize();
+
+	SetNumOptions(4);
+	SetOptionText(0, "Singleplayer");
+	SetOptionText(1, "Multiplayer");
+	SetOptionText(2, "Help");
+	SetOptionText(3, "Quit");
+	OptionDown();
+	OptionUp();
 }
 
 void MenuClass::NewId(int id)
@@ -158,3 +184,186 @@ bool MenuClass::MenuActive()
 	return isInMenu;
 }
 
+int MenuClass::GetSeed()
+{
+	return seed;
+}
+int MenuClass::GetNumAi()
+{
+	return numAi;
+}
+int MenuClass::GetAiHandicap()
+{
+	return aiHandicap;
+}
+int MenuClass::GetNumOfPlayers()
+{
+	return numOfPlayers;
+}
+bool MenuClass::GetLoadWorld()
+{
+	return loadWorld;
+}
+
+int MenuClass::Tick()
+{
+	input = _inputClass->GetKeypress();
+	UpdateMenu();
+	Render();
+
+	return 1;
+}
+
+int MenuClass::UpdateMenu()
+{
+	
+	if (input.wVirtualKeyCode == VK_UP && input.bKeyDown == true)
+		OptionUp();
+	if (input.wVirtualKeyCode == VK_DOWN && input.bKeyDown == true)
+		OptionDown();
+	//numAi setting
+	if (input.wVirtualKeyCode == VK_RIGHT && input.bKeyDown == true && cursor == 3 && menuId == 2)
+	{
+		if (numAi < 5)
+			numAi++;
+		_itoa(numAi, buff, 10);
+		SetOptionText(3, buff);
+		ClearScreen();
+		OptionUp();
+		OptionDown();
+	}
+	else if (input.wVirtualKeyCode == VK_LEFT && input.bKeyDown == true && cursor == 3 && menuId == 2)
+	{
+		if (numAi > 0)
+			numAi--;
+		_itoa(numAi, buff, 10);
+		SetOptionText(3, buff);
+		ClearScreen();
+		OptionUp();
+		OptionDown();
+	}
+	//aiHandicap setting
+	else if (input.wVirtualKeyCode == VK_RIGHT && input.bKeyDown == true && cursor == 5 && menuId == 2)
+	{
+		aiHandicap++;
+		_itoa(aiHandicap, buff, 10);
+		SetOptionText(5, buff);;
+		ClearScreen();
+		OptionUp();
+		OptionDown();
+	}
+	else if (input.wVirtualKeyCode == VK_LEFT && input.bKeyDown == true && cursor == 5 && menuId == 2)
+	{
+		aiHandicap--;
+		_itoa(aiHandicap, buff, 10);
+		SetOptionText(5, buff);
+		ClearScreen();
+		OptionUp();
+		OptionDown();
+	}
+
+	if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 1)
+	{
+		if (cursor == 0)
+		{
+			ClearScreen();
+			SetNumOptions(8);
+
+			SetOptionText(0, "Seed:");
+			_itoa(time(NULL), buff, 10);
+			SetOptionText(1, buff); // Possible change here
+			SetOptionText(2, "Number of AI opponents");
+			_itoa(numAi, buff, 10);
+			SetOptionText(3, buff);
+			SetOptionText(4, "AI Handicap:");
+			_itoa(aiHandicap, buff, 10);
+			SetOptionText(5, buff); //Possible change here
+			SetOptionText(6, "Load Game"); //Possible change here
+			SetOptionText(7, "Start Game");
+			NewId(2);
+
+			//Done. Now cycle selections
+			OptionDown();
+			OptionUp();
+		}
+		else if (cursor == 1)
+		{
+			ClearScreen();
+			SetNumOptions(6);
+
+			SetOptionText(0, "Seed:");
+			SetOptionText(1, "seed"); // Possible change here
+			SetOptionText(2, "Number of Players");
+			SetOptionText(3, "0");
+			SetOptionText(4, "Load Game"); //Possible change here
+			SetOptionText(5, "Start Game");
+			NewId(3);
+
+			//Done. Now cycle selections
+			OptionDown();
+			OptionUp();
+		}
+		else if (cursor == 2)
+		{
+			menuId = 5;
+			ClearScreen();
+			SetNumOptions(13);
+			SetOptionText(0, "GAMEPLAY");
+			SetOptionText(1, "Move your units around the world");
+			SetOptionText(2, "in an attempt to eliminate your opponents.");
+			SetOptionText(3, "");
+			SetOptionText(4, "CONTROLS");
+			SetOptionText(5, "Cursor Movement:     ARROW KEYS");
+			SetOptionText(6, "Attack:           A + ARROW KEY");
+			SetOptionText(7, "Move:             M + ARROW KEY");
+			SetOptionText(8, "Ability 1:        Q + ARROW KEY");
+			SetOptionText(9, "Ability 2:        W + ARROW KEY");
+			SetOptionText(10, "Quit:                       ESC");
+			SetOptionText(11, "");
+			SetOptionText(12, "Back");
+			cursor = 12;
+			OptionUp();
+			OptionDown();
+		}
+		else if (cursor == 3)
+			exit(1);
+		//numAi setting
+	}
+	else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 2)
+	{
+		if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && cursor == 7)
+		{
+			//LETS PLAY -> Singleplayer
+			isInMenu = false;
+			ClearScreen();
+
+		}
+		else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && cursor == 6)
+		{
+			
+			if (FILE *file = fopen("misc", "r"))
+			{
+				fclose(file);
+				isInMenu = false;
+				loadWorld = true;
+			}
+			else
+				SetOptionText(6, "No game data to load!");
+		}
+	}
+	
+	else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 5)
+	{
+		cursor = 0;
+		SetNumOptions(4);
+		SetOptionText(0, "Singleplayer");
+		SetOptionText(1, "Multiplayer");
+		SetOptionText(2, "Help");
+		SetOptionText(3, "Quit");
+		OptionDown();
+		OptionUp();
+		ClearScreen();
+		menuId = 1;
+		
+	}
+}
