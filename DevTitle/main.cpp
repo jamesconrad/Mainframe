@@ -16,6 +16,8 @@ int main()
 	WorldClass* world;
 	MenuClass* mainMenu = new MenuClass(1);
 
+	mainMenu->RenderStory(1);
+
 	while (mainMenu->MenuActive())
 	{
 		mainMenu->Tick();

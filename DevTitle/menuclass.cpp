@@ -1,6 +1,7 @@
 #include "menuclass.h"
 #include <ctime>
 #include <iostream>
+#include <fstream>
 
 #define SCREEN_HEIGHT 51
 #define SCREEN_WIDTH 83
@@ -174,6 +175,61 @@ int MenuClass::Render()
 	return 1;
 }
 
+int MenuClass::RenderStory(int storyId)
+{
+	char storyName[32], storyBuffer[82];
+	switch (storyId)
+	{
+		case 1:
+		strcpy(storyName, "Story/intro1.txt");
+		break;
+
+	}
+
+	std::ifstream storyStream(storyName);
+	CHAR_INFO storyText[82];
+	SMALL_RECT renderRect;
+	renderRect.Top = 1;
+	renderRect.Bottom = 2;
+	renderRect.Left = 1;
+	renderRect.Right = 0;
+
+	bool cont = false;
+	
+	while (!storyStream.eof())
+	{
+		storyStream.getline(storyBuffer, 82);
+		ConvertString(storyBuffer, storyText);
+		
+		for (int i = 0; i < 82; i++)
+		{
+			input = _inputClass->GetKeypress();
+			if ((input.bKeyDown == true && input.wVirtualKeyCode == VK_RETURN) || cont)
+			{
+				cont = true;
+				renderRect.Right = 81;
+				WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
+				break;
+			}
+			WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
+			SetConsoleCursorPosition(hConsole, { renderRect.Right, renderRect.Top });
+			renderRect.Right++;
+			
+		}
+		renderRect.Top++;
+		renderRect.Bottom++;
+		renderRect.Right = 0;
+	}
+	while (!input.bKeyDown)
+	{
+		input = _inputClass->GetKeypress();
+	}
+	
+	SetConsoleCursorPosition(hConsole, { 0, 0 });
+	storyStream.close();
+	ClearScreen();
+	return 1;
+}
 int MenuClass::GetActiveOption()
 {
 	return cursor;

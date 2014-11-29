@@ -35,6 +35,8 @@ public:
 
 	int UpdateMenu();
 
+	int RenderStory(int storyId);
+
 	int GetSeed(), GetNumAi(),
 		GetAiHandicap(), GetNumOfPlayers();
 	bool GetLoadWorld();
