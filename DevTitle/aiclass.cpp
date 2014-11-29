@@ -76,6 +76,7 @@ int AIClass::MakeTurn(std::vector<EntityClass> *class_EntityArray)
 						//Next step is to consider action based off of aggression
 						//Aggression is a number between 0 and 10 representing the percentage difference between
 						//the target's threat and the ai's threat
+
 					}
 				}
 			}

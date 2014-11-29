@@ -323,6 +323,27 @@ int MenuClass::UpdateMenu()
 		OptionUp();
 		OptionDown();
 	}
+	//numPlayers -- Multiplayer
+	if (input.wVirtualKeyCode == VK_RIGHT && input.bKeyDown == true && cursor == 3 && menuId == 3)
+	{
+		if (numOfPlayers < 6)
+			numOfPlayers++;
+		_itoa(numOfPlayers, buff, 10);
+		SetOptionText(3, buff);
+		ClearScreen();
+		OptionUp();
+		OptionDown();
+	}
+	else if (input.wVirtualKeyCode == VK_LEFT && input.bKeyDown == true && cursor == 3 && menuId == 3)
+	{
+		if (numOfPlayers > 2)
+			numOfPlayers--;
+		_itoa(numOfPlayers, buff, 10);
+		SetOptionText(3, buff);
+		ClearScreen();
+		OptionUp();
+		OptionDown();
+	}
 
 	if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 1)
 	{
@@ -352,11 +373,13 @@ int MenuClass::UpdateMenu()
 		{
 			ClearScreen();
 			SetNumOptions(6);
-
+			cursor = 0;
 			SetOptionText(0, "Seed:");
-			SetOptionText(1, "seed"); // Possible change here
+			_itoa(seed, buff, 10);
+			SetOptionText(1, buff); // Possible change here
 			SetOptionText(2, "Number of Players");
-			SetOptionText(3, "0");
+			_itoa(numOfPlayers, buff, 10);
+			SetOptionText(3, buff);
 			SetOptionText(4, "Load Game"); //Possible change here
 			SetOptionText(5, "Start Game");
 			NewId(3);
@@ -402,7 +425,7 @@ int MenuClass::UpdateMenu()
 		}
 		else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && cursor == 6)
 		{
-			
+
 			if (FILE *file = fopen("misc", "r"))
 			{
 				fclose(file);
@@ -413,6 +436,31 @@ int MenuClass::UpdateMenu()
 				SetOptionText(6, "No game data to load!");
 		}
 	}
+	//PLAYING MULTIPLAYER
+	if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 3)
+	{
+		if (cursor == 5)
+		{
+			//LETS PLAY -> Multiplayer
+			isInMenu = false;
+			//numOfPlayers++;
+			ClearScreen();
+
+		}
+		else if (cursor == 4)
+		{
+
+			if (FILE *file = fopen("misc", "r"))
+			{
+				fclose(file);
+				isInMenu = false;
+				loadWorld = true;
+			}
+			else
+				SetOptionText(4, "No game data to load!");
+		}
+	}
+
 	
 	else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 5)
 	{
