@@ -24,6 +24,7 @@ namespace
 			ability2,
 			ability3,
 			resourcesPerTurn;
+		char name[16];
 	};
 }
 

@@ -19,18 +19,18 @@ int ModelLoaderClass::Initialize()
 	height = 32;
 
 	modelCharInfo = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*width*height);
+	modelPath = new char[32];
 
 	return 1;
 }
 
 CHAR_INFO* ModelLoaderClass::GetModel(int modelNum)
 {
-	FILE *saveFile;
-	char* modelPath = new char[32];
 	switch (modelNum)
 	{
 	case 0:
 		modelPath = "Models/HQ";
+		break;
 	case 1:
 		modelPath = "Models/builder";
 		break;
@@ -40,8 +40,7 @@ CHAR_INFO* ModelLoaderClass::GetModel(int modelNum)
 	}
 	saveFile = fopen(modelPath, "rb");
 	fread(modelCharInfo, sizeof(CHAR_INFO), width*height, saveFile);
-	
-	delete[] modelPath;
+
 	fclose(saveFile);
 
 	SMALL_RECT renderRect;

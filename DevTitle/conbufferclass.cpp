@@ -317,9 +317,24 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 {
 	SMALL_RECT renderRect;
 	renderRect.Left = 59;
+	renderRect.Top = 27;
+	renderRect.Right = 59 + 16;
+	renderRect.Bottom = 28;
+	CHAR_INFO* unitName = new CHAR_INFO[16];
+	wchar_t* converted = new wchar_t[16];
+	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, unit.unitData.name, strlen(unit.unitData.name)*sizeof(char), converted, strlen(unit.unitData.name));
+	for (int i = 0, n = strlen(unit.unitData.name); i < n; i++)
+	{
+		unitName[i].Char.UnicodeChar = unit.unitData.name[i];
+		unitName[i].Attributes = 0x007;
+	}
+	WriteConsoleOutput(hConsole, unitName, { 1, 16 }, { 0, 0 }, &renderRect);
+
+	renderRect.Left = 59;
 	renderRect.Top = 28;
 	renderRect.Right = 59 + 20;
 	renderRect.Bottom = 28 + 8;
+
 
 	numChar = IntToCharInfo(unit.unitData.hp);
 	for (int i = 0; i < 4; ++i)
@@ -344,14 +359,14 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 
 	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
 
-	//renderRect.Left = 51;
-	//renderRect.Top = 3;
-	//renderRect.Right = 51 + 29;
-	//renderRect.Bottom = 3 + 32;
+	renderRect.Left = 51;
+	renderRect.Top = 3;
+	renderRect.Right = 51 + 29;
+	renderRect.Bottom = 3 + 32;
 
 	class_ModelLoader.GetModel(unit.unitData.unitID);
 	//WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
-
+	
 	return 1;
 }
 
