@@ -316,7 +316,6 @@ CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 int ConBufferClass::RenderUnitInfo(EntityClass unit)
 {
 	SMALL_RECT renderRect;
-
 	renderRect.Left = 59;
 	renderRect.Top = 28;
 	renderRect.Right = 59 + 20;
@@ -345,12 +344,12 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 
 	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
 
-	renderRect.Left = 51;
-	renderRect.Top = 3;
-	renderRect.Right = 51 + 29;
-	renderRect.Bottom = 3 + 32;
+	//renderRect.Left = 51;
+	//renderRect.Top = 3;
+	//renderRect.Right = 51 + 29;
+	//renderRect.Bottom = 3 + 32;
 
-	//unitModel = class_ModelLoader.GetModel(1);
+	class_ModelLoader.GetModel(unit.unitData.unitID);
 	//WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
 
 	return 1;
@@ -391,9 +390,6 @@ int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 
 int ConBufferClass::InitializeUnitInfo()
 {
-	unitInfo = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 8 * 32);
-	unitModel = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 29 * 32);
-	unitActions = (CHAR_INFO *)malloc(sizeof(CHAR_INFO)* 1 * 1);
 	for (int index = 0; index <= 8 * 32; index++)
 	{
 		unitInfo[index].Char.UnicodeChar = 32;

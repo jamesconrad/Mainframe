@@ -350,7 +350,7 @@ int MenuClass::UpdateMenu()
 		if (cursor == 0)
 		{
 			ClearScreen();
-			SetNumOptions(8);
+			SetNumOptions(9);
 
 			SetOptionText(0, "Seed:");
 			_itoa(time(NULL), buff, 10);
@@ -363,16 +363,18 @@ int MenuClass::UpdateMenu()
 			SetOptionText(5, buff); //Possible change here
 			SetOptionText(6, "Load Game"); //Possible change here
 			SetOptionText(7, "Start Game");
+			SetOptionText(8, "Back");
 			NewId(2);
 
 			//Done. Now cycle selections
 			OptionDown();
 			OptionUp();
+			input.bKeyDown = false;
 		}
 		else if (cursor == 1)
 		{
 			ClearScreen();
-			SetNumOptions(6);
+			SetNumOptions(7);
 			cursor = 0;
 			SetOptionText(0, "Seed:");
 			_itoa(seed, buff, 10);
@@ -382,11 +384,13 @@ int MenuClass::UpdateMenu()
 			SetOptionText(3, buff);
 			SetOptionText(4, "Load Game"); //Possible change here
 			SetOptionText(5, "Start Game");
+			SetOptionText(6, "Back");
 			NewId(3);
 
 			//Done. Now cycle selections
 			OptionDown();
 			OptionUp();
+			input.bKeyDown = false;
 		}
 		else if (cursor == 2)
 		{
@@ -409,6 +413,7 @@ int MenuClass::UpdateMenu()
 			cursor = 12;
 			OptionUp();
 			OptionDown();
+			input.bKeyDown = false;
 		}
 		else if (cursor == 3)
 			exit(1);
@@ -416,14 +421,14 @@ int MenuClass::UpdateMenu()
 	}
 	else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 2)
 	{
-		if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && cursor == 7)
+		if (cursor == 7)
 		{
 			//LETS PLAY -> Singleplayer
 			isInMenu = false;
 			ClearScreen();
 
 		}
-		else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && cursor == 6)
+		else if (cursor == 6)
 		{
 
 			if (FILE *file = fopen("misc", "r"))
@@ -435,6 +440,20 @@ int MenuClass::UpdateMenu()
 			else
 				SetOptionText(6, "No game data to load!");
 		}
+
+		if (cursor == 8)
+		{
+			cursor = 0;
+			SetNumOptions(4);
+			SetOptionText(0, "Singleplayer");
+			SetOptionText(1, "Multiplayer");
+			SetOptionText(2, "Help");
+			SetOptionText(3, "Quit");
+			OptionDown();
+			OptionUp();
+			ClearScreen();
+			menuId = 1;
+		}
 	}
 	//PLAYING MULTIPLAYER
 	if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 3)
@@ -443,7 +462,6 @@ int MenuClass::UpdateMenu()
 		{
 			//LETS PLAY -> Multiplayer
 			isInMenu = false;
-			//numOfPlayers++;
 			ClearScreen();
 
 		}
@@ -459,10 +477,23 @@ int MenuClass::UpdateMenu()
 			else
 				SetOptionText(4, "No game data to load!");
 		}
+		if (cursor == 6)
+		{
+			cursor = 0;
+			SetNumOptions(4);
+			SetOptionText(0, "Singleplayer");
+			SetOptionText(1, "Multiplayer");
+			SetOptionText(2, "Help");
+			SetOptionText(3, "Quit");
+			OptionDown();
+			OptionUp();
+			ClearScreen();
+			menuId = 1;
+		}
 	}
 
 	
-	else if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 5)
+	if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 5)
 	{
 		cursor = 0;
 		SetNumOptions(4);

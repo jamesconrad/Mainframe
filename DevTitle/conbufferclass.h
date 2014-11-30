@@ -30,11 +30,12 @@ private:
 	ModelLoaderClass class_ModelLoader;
 
 	CHAR_INFO *border,
-		*unitInfo,
-		*unitModel,
-		*unitActions,
 		*converted,
 		*numChar;
+
+	CHAR_INFO unitInfo[256],
+		unitModel[928],
+		unitActions[1];
 
 	int RenderBorder();
 	int RenderUnitInfo(EntityClass unit);
