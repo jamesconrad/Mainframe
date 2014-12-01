@@ -407,7 +407,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("                                                                ", tmpActionDisplay);
+		ConvertString("                                       Cost: 2 per turn.        ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 3:
@@ -415,7 +415,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("                                                                ", tmpActionDisplay);
+		ConvertString("                                       Produces: 1 per turn.    ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 4:
@@ -423,7 +423,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("Untill it has been destroyed.                                   ", tmpActionDisplay);
+		ConvertString("Until  it has been destroyed.          Cost: 1 per turn.        ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	}

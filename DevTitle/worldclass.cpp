@@ -334,7 +334,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					moveUnit = false;
 					_entityArray[i].MoveUnit('U', &_entityArray);
@@ -361,7 +361,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					moveUnit = false;
 					_entityArray[i].MoveUnit('D', &_entityArray);
@@ -372,7 +372,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].MoveUnit('D', &_entityArray));
@@ -388,7 +388,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					moveUnit = false;
 					_entityArray[i].MoveUnit('R', &_entityArray);
@@ -399,7 +399,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('R', &_entityArray));
@@ -416,7 +416,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					moveUnit = false;
 					_entityArray[i].MoveUnit('L', &_entityArray);
@@ -427,7 +427,7 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('L', &_entityArray));
