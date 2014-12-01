@@ -378,15 +378,15 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 
 	CHAR_INFO* tmpActionDisplay = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 32);
 
-	renderRect.Left = 1;
-	renderRect.Top = 80;
-	renderRect.Right = 1 + 32;
-	renderRect.Bottom = 80 + 1;
+	renderRect.Left = SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Top = 40;
+	renderRect.Right = 32 + SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Bottom = 40 + 1;
 
 	switch (unit.unitData.unitID)
 	{
 	case 0:
-		ConvertString("Q: Spawns a Worker              ", tmpActionDisplay);
+		ConvertString("Q: Spawns a Constructor         ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
@@ -394,30 +394,37 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 1:
-		SetConsoleCursorPosition(hConsole, { 16, 60 });
-		std::cout << "Q: Spawns a Thread\n";
-		std::cout << "W: Spawns a Firewall";
-		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		ConvertString("Q: Spawns a Core                ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		renderRect.Top++;
+		renderRect.Bottom++;
+		ConvertString("W: Spawns a Firewall            ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 2:
-		SetConsoleCursorPosition(hConsole, { 16, 60 });
-		std::cout << "This unit will help attack\n";
-		std::cout << "the opponents.";
-		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		ConvertString("This unit will help attack      ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		renderRect.Top++;
+		renderRect.Bottom++;
+		ConvertString("or defend from your opponents.  ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 3:
-		SetConsoleCursorPosition(hConsole, { 16, 60 });
-		std::cout << "This structure will passivley\n";
-		std::cout << "generate more threads.";
-		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		ConvertString("This unit will passivley        ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		renderRect.Top++;
+		renderRect.Bottom++;
+		ConvertString("produce threads for you to use. ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 4:
-		SetConsoleCursorPosition(hConsole, { 16, 60 });
-		std::cout << "This structure will help\n";
-		std::cout << "hold off attacking units.";
-		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		ConvertString("This unit will help slow down   ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		renderRect.Top++;
+		renderRect.Bottom++;
+		ConvertString("your opponents.                 ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
 		break;
-
 	}
 	
 	free(tmpActionDisplay);
@@ -429,35 +436,28 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 {
 	//We need to clear the info rendered by unitinfo
-
-	/*
+	CHAR_INFO* blankChar = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*SCREEN_WIDTH*SCREEN_HEIGHT);
+	for (int i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++)
+	{
+		blankChar[i].Char.UnicodeChar = 32;
+		blankChar[i].Attributes = 0x0007;
+	}
 	SMALL_RECT renderRect;
-
-	renderRect.Left = 59;
-	renderRect.Top = 28;
-	renderRect.Right = 59 + 20;
-	renderRect.Bottom = 28 + 8;
-
-	//hp
-	unitInfo[9].Char.UnicodeChar = 1;
-	//att
-	unitInfo[41].Char.UnicodeChar = 1;
-	//def
-	unitInfo[73].Char.UnicodeChar = 1;
-	//act
-	unitInfo[105].Char.UnicodeChar = 1;
-
-
-	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
-
 	renderRect.Left = 51;
 	renderRect.Top = 3;
 	renderRect.Right = 51 + 29;
-	renderRect.Bottom = 3 + 32;
+	renderRect.Bottom = 31;
 
-	unitModel = class_ModelLoader.GetModel(1);
-	WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
-	*/
+	WriteConsoleOutput(hConsole, blankChar, { SCREEN_WIDTH, SCREEN_HEIGHT }, { 0, 0 }, &renderRect);
+
+	renderRect.Left = SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Top = 40;
+	renderRect.Right = 32 + SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Bottom = 40 + 1;
+	
+	WriteConsoleOutput(hConsole, blankChar, { SCREEN_WIDTH, SCREEN_HEIGHT }, { 0, 0 }, &renderRect);
+
+	free(blankChar);
 	return 1;
 }
 

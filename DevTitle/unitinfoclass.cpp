@@ -29,9 +29,9 @@ int UnitInfoClass::Initialize()
 	unit[2] = { BASE_CHAR_INFO, 0, 2, 2, 2, 2, 2, 2, 1, 1, 2, 0, -2, 0, 0, 0, -2, { 'V', 'i', 'r', 'u', 's', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //Basic Land unit
 
 	unit[3] = { BASE_CHAR_INFO, 0, 4, 4, 3, 1, 1, 0, 4, 0, 0, 0, -3, 0, 0, 0, 1, { 'C', 'o', 'r', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //General resource building
-	unit[3].charInfo.Char.UnicodeChar = 8801;
+	unit[3].charInfo.Char.UnicodeChar = 177;
 	unit[4] = { BASE_CHAR_INFO, 0, 4, 4, 4, 1, 1, 0, 4, 0, 0, 0, -1, 0, 0, 0, -1, { 'F', 'i', 'r', 'e', 'w', 'a', 'l', 'l', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; // General upgrade building
-	unit[4].charInfo.Char.UnicodeChar = 177;
+	unit[4].charInfo.Char.UnicodeChar = 8801;
 	unit[7] = { BASE_CHAR_INFO, 0, 1, 1, 7, 100, 100, 1000, 1000, 100, 1, 0, -1000, 0, 0, 0, 0, { 'C', 'h', 'e', 'a', 't', 'e', 'r', '!', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //Unit for Land testing
 	unit[7].charInfo.Char.UnicodeChar = 8734;
 	unit[7].charInfo.Attributes = 0x0007;

@@ -56,7 +56,7 @@ CHAR_INFO* ModelLoaderClass::GetModel(int modelNum, int x, int y)
 		modelPath = "Models/tower";
 		break;
 	case 4:
-		modelPath = "Models/wall";
+		modelPath = "Models/firewall";
 		break;
 	}
 	saveFile = fopen(modelPath, "rb");

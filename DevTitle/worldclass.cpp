@@ -104,14 +104,18 @@ int WorldClass::Render()
 	//	SetConsoleCursorPosition(_conBuffer.hConsole, frameCoords);
 	//	frameChanged = false;
 	//}
-
+	bool unitTargeted = false;
 	for (int i = 0; i < numOfUnits; ++i)
 	{
 		if (frame == _entityArray[i].unitData.position)
+		{
+			unitTargeted = true;
 			_conBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, _entityArray[i]);
+		}
 
 	}
-	_conBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
+	if (!unitTargeted)
+		_conBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
 	_conBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
 
 	return 1;
@@ -443,6 +447,7 @@ int WorldClass::CheckInput()
 	{
 		moveUnit = false;
 		attackUnit = false;
+		Save();
 		exit(0);
 	}
 	else if (keyPress.wVirtualKeyCode == 0x2D && keyPress.bKeyDown == true) //Insert

@@ -28,6 +28,7 @@ int main()
 
 		world = new WorldClass();
 
+		mainMenu->ClearScreen();
 		mainMenu->RenderStory(rand()%mainMenu->GetNumOfPlayers());
 
 		if (mainMenu->GetLoadWorld() == true)
@@ -50,6 +51,7 @@ int main()
 			world->Tick();
 		}
 
+		mainMenu->ClearScreen();
 		mainMenu->RenderStory(world->GetWinner() + 10);
 		free(world);
 	}
