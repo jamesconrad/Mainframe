@@ -185,8 +185,17 @@ int WorldClass::UpdateUnitMap()
 }
 
 int WorldClass::NextTurn()
-{
-	if (numOfPlayers - 1 <= currentTurn)
+{	
+	for (int i = 0; i < numOfUnits; ++i)
+	{
+		if (_entityArray[i].unitData.playerID == currentTurn)
+		{
+			_entityArray[i].unitData.actions = _entityArray[i].unitData.maxActions;
+			playerThreads[currentTurn] += _entityArray[i].unitData.resourcesPerTurn;
+		}
+	}
+
+	if ((numOfPlayers ) <= currentTurn)
 	{
 		currentTurn = 0;
 		++turnCounter;
@@ -194,17 +203,9 @@ int WorldClass::NextTurn()
 	else
 		++currentTurn;
 
-	for (int i = 0; i < numOfUnits; i++)
-	{
-		if (_entityArray[i].unitData.playerID == currentTurn)
-		{
-			playerThreads[currentTurn] += _entityArray[i].unitData.resourcesPerTurn;
-		}
-	}
-
 
 	_conBuffer.UpdateBorderColour(currentTurn);
-
+	/*
 	for (int i = 0; i < numOfUnits; ++i)
 	{
 		if (frame == _entityArray[i].unitData.position)
@@ -212,14 +213,8 @@ int WorldClass::NextTurn()
 	}
 	_conBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
 	_conBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
+	*/
 
-	for (int i = 0; i < numOfUnits; ++i)
-	{
-		if (_entityArray[i].unitData.playerID == currentTurn)
-		{
-			_entityArray[i].unitData.actions = _entityArray[i].unitData.maxActions;
-		}
-	}
 
 	return 1;
 }
@@ -300,7 +295,7 @@ int WorldClass::Update(int index)
 	}
 
 	//Next turn if dead or out of moves
-	if (outOfMoves || alivePlayers[currentTurn])
+	if (outOfMoves /*|| alivePlayers[currentTurn]*/)
 		NextTurn();
 
 

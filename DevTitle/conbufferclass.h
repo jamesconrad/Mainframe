@@ -32,7 +32,8 @@ private:
 	CHAR_INFO *border,
 		*converted,
 		*numChar,
-		*unitName;
+		*unitName,
+		*extraInfo;
 
 	CHAR_INFO unitInfo[256],
 		unitModel[928],

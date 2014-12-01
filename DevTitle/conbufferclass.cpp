@@ -21,14 +21,14 @@ ConBufferClass::~ConBufferClass()
 
 int ConvertString(const char * text, CHAR_INFO * result)
 {
-	wchar_t * converted = (wchar_t*)malloc(sizeof(wchar_t)* strlen(text));
+	wchar_t* converted = new wchar_t [strlen(text)];
 	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, text, strlen(text)*sizeof(char), converted, strlen(text));
 	for (int i = 0; i < strlen(text); i++)
 	{
 		result[i].Char.UnicodeChar = text[i];
 		result[i].Attributes = 0x007;
 	}
-	free(converted);
+	delete[]converted;
 	return 1;
 }
 
@@ -62,6 +62,7 @@ int ConBufferClass::Initialize()
 
 	numChar = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	converted = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
+	extraInfo = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	unitName = new CHAR_INFO[16];
 	wconverted = new wchar_t[16];
 
@@ -376,54 +377,54 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 
 	class_ModelLoader.GetModel(unit.unitData.unitID, 51, 3);
 
-	CHAR_INFO* tmpActionDisplay = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 32);
+	CHAR_INFO* tmpActionDisplay = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 64);
 
-	renderRect.Left = SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Left = SCREEN_WIDTH / 2 - 64 / 2;
 	renderRect.Top = 40;
-	renderRect.Right = 32 + SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Right = 64 + SCREEN_WIDTH / 2 - 64 / 2;
 	renderRect.Bottom = 40 + 1;
 
 	switch (unit.unitData.unitID)
 	{
 	case 0:
-		ConvertString("Q: Spawns a Constructor         ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("Q: Spawns a Constructor                Cost: 1.                 ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("W: Spawns a Virus               ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("W: Spawns a Virus                      Cost: 2 + 2 per turn.    ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 1:
-		ConvertString("Q: Spawns a Core                ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("Q: Spawns a Core                       Cost: 3. Gains 1 per turn", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("W: Spawns a Firewall            ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("W: Spawns a Firewall                   Cost: 1 + 1 per turn.    ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 2:
-		ConvertString("This unit will help attack      ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("This unit will help attack and defend against your opponents    ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("or defend from your opponents.  ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("                                                                ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 3:
-		ConvertString("This unit will passivley        ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("This unit will passivley produce threads for you to spend.      ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("produce threads for you to use. ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("                                                                ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 4:
-		ConvertString("This unit will help slow down   ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("This unit will prevent units from passing through it,           ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("your opponents.                 ", tmpActionDisplay);
-		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		ConvertString("Untill it has been destroyed.                                   ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	}
 	
@@ -450,9 +451,9 @@ int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 
 	WriteConsoleOutput(hConsole, blankChar, { SCREEN_WIDTH, SCREEN_HEIGHT }, { 0, 0 }, &renderRect);
 
-	renderRect.Left = SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Left = SCREEN_WIDTH / 2 - 64 / 2;
 	renderRect.Top = 40;
-	renderRect.Right = 32 + SCREEN_WIDTH / 2 - 32 / 2;
+	renderRect.Right = 64 + SCREEN_WIDTH / 2 - 64 / 2;
 	renderRect.Bottom = 40 + 1;
 	
 	WriteConsoleOutput(hConsole, blankChar, { SCREEN_WIDTH, SCREEN_HEIGHT }, { 0, 0 }, &renderRect);
@@ -512,35 +513,19 @@ int ConBufferClass::InitializeUnitInfo()
 
 int ConBufferClass::RenderExtraInfo(int playerThreads, int turnCounter)
 {
-	CHAR_INFO* tmp;
-	tmp = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
-	char* tmpStr = (char*)malloc(sizeof(char)* 4);
-
-	for (int i = 0; i < 4; i++)
-	{
-		tmp[i].Char.UnicodeChar = 32;
-		tmp[i].Attributes = 0x0007;
-	}
-	
 	SMALL_RECT renderRect;
 	renderRect.Left = 56;
 	renderRect.Top = 1;
 	renderRect.Right = 59;
 	renderRect.Bottom = 2;
 
-
-	_itoa(playerThreads, tmpStr, 10);
-	ConvertString(tmpStr, tmp);
-	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
+	extraInfo = IntToCharInfo(turnCounter);
+	WriteConsoleOutput(hConsole, extraInfo, { 4, 1 }, { 0, 0 }, &renderRect);
 
 	renderRect.Left += 18;
-	renderRect.Right += 18; 
-	_itoa(turnCounter, tmpStr, 10);
-	ConvertString(tmpStr, tmp);
-	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
-
-	free(tmp);
-	free(tmpStr);
+	renderRect.Right += 18;
+	extraInfo = IntToCharInfo(playerThreads);
+	WriteConsoleOutput(hConsole, extraInfo, { 4, 1 }, { 0, 0 }, &renderRect);
 
 	return 1;
 }

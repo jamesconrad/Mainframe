@@ -28,7 +28,7 @@ int UnitInfoClass::Initialize()
 	unit[1] = { BASE_CHAR_INFO, 0, 1, 1, 1, 2, 2, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, { 'C', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r', ' ', ' ', ' ', ' ', ' ' } }; //Worker
 	unit[2] = { BASE_CHAR_INFO, 0, 2, 2, 2, 2, 2, 2, 1, 1, 2, 0, -2, 0, 0, 0, -2, { 'V', 'i', 'r', 'u', 's', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //Basic Land unit
 
-	unit[3] = { BASE_CHAR_INFO, 0, 4, 4, 3, 1, 1, 0, 4, 0, 0, 0, -3, 0, 0, 0, 1, { 'C', 'o', 'r', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //General resource building
+	unit[3] = { BASE_CHAR_INFO, 0, 4, 4, 3, 0, 0, 0, 4, 0, 0, 0, -3, 0, 0, 0, 1, { 'C', 'o', 'r', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //General resource building
 	unit[3].charInfo.Char.UnicodeChar = 177;
 	unit[4] = { BASE_CHAR_INFO, 0, 4, 4, 4, 1, 1, 0, 4, 0, 0, 0, -1, 0, 0, 0, -1, { 'F', 'i', 'r', 'e', 'w', 'a', 'l', 'l', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; // General upgrade building
 	unit[4].charInfo.Char.UnicodeChar = 8801;
