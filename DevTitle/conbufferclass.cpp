@@ -514,21 +514,33 @@ int ConBufferClass::RenderExtraInfo(int playerThreads, int turnCounter)
 {
 	CHAR_INFO* tmp;
 	tmp = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
+	char* tmpStr = (char*)malloc(sizeof(char)* 4);
+
+	for (int i = 0; i < 4; i++)
+	{
+		tmp[i].Char.UnicodeChar = 32;
+		tmp[i].Attributes = 0x0007;
+	}
+	
 	SMALL_RECT renderRect;
 	renderRect.Left = 56;
 	renderRect.Top = 1;
 	renderRect.Right = 59;
 	renderRect.Bottom = 2;
 
-	tmp = IntToCharInfo(turnCounter);
+
+	_itoa(playerThreads, tmpStr, 10);
+	ConvertString(tmpStr, tmp);
 	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
 
 	renderRect.Left += 18;
-	renderRect.Right += 18;
-	tmp = IntToCharInfo(playerThreads);
+	renderRect.Right += 18; 
+	_itoa(turnCounter, tmpStr, 10);
+	ConvertString(tmpStr, tmp);
 	WriteConsoleOutput(hConsole, tmp, { 4, 1 }, { 0, 0 }, &renderRect);
 
-
+	free(tmp);
+	free(tmpStr);
 
 	return 1;
 }
