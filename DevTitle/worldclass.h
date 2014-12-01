@@ -48,6 +48,8 @@ public:
 
 	bool InGame();
 
+	int GetWinner();
+
 private:
 	int frame, height, width,
 		numOfUnits, numOfPlayers, currentTurn,

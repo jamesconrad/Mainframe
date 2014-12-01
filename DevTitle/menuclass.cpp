@@ -35,6 +35,7 @@ MenuClass::MenuClass(int menuId)
 
 	_inputClass = new InputClass();
 	_inputClass->Initialize();
+	_modelLoader.Initialize();
 
 	SetNumOptions(4);
 	SetOptionText(0, "Singleplayer");
@@ -156,21 +157,20 @@ int MenuClass::ClearOptionText(int optionNum)
 int MenuClass::Render()
 {
 	SMALL_RECT renderRect;
-	
-	for (int i = 0; i < titleHeight; i++)
-	{
-		//WriteConsoleOutput(hConsole, title[i], { 0, 0 }, { titleWidth, titleHeight }, &renderRect);
-	}
+
+	_modelLoader.GetModel(-1, 7, 2);
 
 	for (int i = 0; i < numOfOptions; i++)
 	{
-		renderRect.Top = titleHeight + 2 + i;
-		renderRect.Bottom = titleHeight + 3 + i;
+		renderRect.Top = titleHeight + 16 + i;
+		renderRect.Bottom = titleHeight + 17 + i;
 		renderRect.Left = SCREEN_WIDTH / 2 - menu[i].len / 2;
 		renderRect.Right = SCREEN_WIDTH / 2 + menu[i].len / 2 + i;
 
 		WriteConsoleOutput(hConsole, menu[i].text, { menu[i].len, 1 }, { 0, 0 }, &renderRect);
 	}
+
+	_modelLoader.GetModel(0, 27, 27);
 
 	return 1;
 }
@@ -180,10 +180,45 @@ int MenuClass::RenderStory(int storyId)
 	char storyName[32], storyBuffer[82];
 	switch (storyId)
 	{
-		case 1:
-		strcpy(storyName, "Story/intro1.txt");
+	case -1:
+		strcpy(storyName, "Story/general_intro.txt");
 		break;
-
+	case 0:
+		strcpy(storyName, "Story/blue_intro.txt");
+		break;
+	case 1:
+		strcpy(storyName, "Story/green_intro.txt");
+		break;
+	case 2:
+		strcpy(storyName, "Story/cyan_intro.txt");
+		break;
+	case 3:
+		strcpy(storyName, "Story/red_intro.txt");
+		break;
+	case 4:
+		strcpy(storyName, "Story/magenta_intro.txt");
+		break;
+	case 5:
+		strcpy(storyName, "Story/yellow_intro.txt");
+		break;
+	case 10:
+		strcpy(storyName, "Story/blue_win.txt");
+		break;
+	case 11:
+		strcpy(storyName, "Story/green_win.txt");
+		break;
+	case 12:
+		strcpy(storyName, "Story/cyan_win.txt");
+		break;
+	case 13:
+		strcpy(storyName, "Story/red_win.txt");
+		break;
+	case 14:
+		strcpy(storyName, "Story/magenta_win.txt");
+		break;
+	case 15:
+		strcpy(storyName, "Story/yellow_win.txt");
+		break;
 	}
 
 	std::ifstream storyStream(storyName);
@@ -195,12 +230,12 @@ int MenuClass::RenderStory(int storyId)
 	renderRect.Right = 0;
 
 	bool cont = false;
-	
+
 	while (!storyStream.eof())
 	{
 		storyStream.getline(storyBuffer, 82);
 		ConvertString(storyBuffer, storyText);
-		
+
 		for (int i = 0; i < 82; i++)
 		{
 			input = _inputClass->GetKeypress();
@@ -214,7 +249,7 @@ int MenuClass::RenderStory(int storyId)
 			WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
 			SetConsoleCursorPosition(hConsole, { renderRect.Right, renderRect.Top });
 			renderRect.Right++;
-			
+
 		}
 		renderRect.Top++;
 		renderRect.Bottom++;
@@ -224,7 +259,7 @@ int MenuClass::RenderStory(int storyId)
 	{
 		input = _inputClass->GetKeypress();
 	}
-	
+
 	SetConsoleCursorPosition(hConsole, { 0, 0 });
 	storyStream.close();
 	ClearScreen();
@@ -272,7 +307,7 @@ int MenuClass::Tick()
 
 int MenuClass::UpdateMenu()
 {
-	
+
 	if (input.wVirtualKeyCode == VK_UP && input.bKeyDown == true)
 		OptionUp();
 	if (input.wVirtualKeyCode == VK_DOWN && input.bKeyDown == true)
@@ -492,7 +527,7 @@ int MenuClass::UpdateMenu()
 		}
 	}
 
-	
+
 	if (input.wVirtualKeyCode == VK_RETURN && input.bKeyDown == true && menuId == 5)
 	{
 		cursor = 0;
@@ -505,6 +540,6 @@ int MenuClass::UpdateMenu()
 		OptionUp();
 		ClearScreen();
 		menuId = 1;
-		
+
 	}
 }

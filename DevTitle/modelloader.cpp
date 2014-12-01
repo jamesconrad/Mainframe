@@ -24,10 +24,25 @@ int ModelLoaderClass::Initialize()
 	return 1;
 }
 
-CHAR_INFO* ModelLoaderClass::GetModel(int modelNum)
+CHAR_INFO* ModelLoaderClass::GetModel(int modelNum, int x, int y)
 {
+	SMALL_RECT renderRect;
+	renderRect.Left = x;
+	renderRect.Top = y;
+	renderRect.Right = x + 29;
+	renderRect.Bottom = y + 32;
+
+	COORD len = { 29, 24 };
+
 	switch (modelNum)
 	{
+	case -1:
+		modelPath = "Models/title";
+		renderRect.Right = x + 67;
+		renderRect.Bottom = y + 9;
+		len.X = 67;
+		len.Y = 9;
+		break;
 	case 0:
 		modelPath = "Models/HQ";
 		break;
@@ -37,19 +52,20 @@ CHAR_INFO* ModelLoaderClass::GetModel(int modelNum)
 	case 2:
 		modelPath = "Models/soldier";
 		break;
+	case 3:
+		modelPath = "Models/tower";
+		break;
+	case 4:
+		modelPath = "Models/wall";
+		break;
 	}
 	saveFile = fopen(modelPath, "rb");
 	fread(modelCharInfo, sizeof(CHAR_INFO), width*height, saveFile);
 
 	fclose(saveFile);
 
-	SMALL_RECT renderRect;
-	renderRect.Left = 51;
-	renderRect.Top = 3;
-	renderRect.Right = 51 + 29;
-	renderRect.Bottom = 3 + 32;
 
-	WriteConsoleOutput((HANDLE)GetStdHandle(STD_OUTPUT_HANDLE), modelCharInfo, { 32, 24 }, { 0, 0 }, &renderRect);
+	WriteConsoleOutput((HANDLE)GetStdHandle(STD_OUTPUT_HANDLE), modelCharInfo, len, { 0, 0 }, &renderRect);
 	
 	return modelCharInfo;
 }

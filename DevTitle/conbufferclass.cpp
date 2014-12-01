@@ -1,6 +1,7 @@
 #include "conbufferclass.h"
 #include <Windows.h>
 #include "entityclass.h"
+#include <iostream>
 
 #define SCREEN_HEIGHT 51
 #define SCREEN_WIDTH 83
@@ -15,6 +16,20 @@ ConBufferClass::ConBufferClass(const ConBufferClass&)
 
 ConBufferClass::~ConBufferClass()
 {
+}
+
+
+int ConvertString(const char * text, CHAR_INFO * result)
+{
+	wchar_t * converted = (wchar_t*)malloc(sizeof(wchar_t)* strlen(text));
+	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, text, strlen(text)*sizeof(char), converted, strlen(text));
+	for (int i = 0; i < strlen(text); i++)
+	{
+		result[i].Char.UnicodeChar = text[i];
+		result[i].Attributes = 0x007;
+	}
+	free(converted);
+	return 1;
 }
 
 int ConBufferClass::Initialize()
@@ -47,6 +62,8 @@ int ConBufferClass::Initialize()
 
 	numChar = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	converted = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
+	unitName = new CHAR_INFO[16];
+	wconverted = new wchar_t[16];
 
 	class_ModelLoader.Initialize();
 
@@ -320,15 +337,13 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 	renderRect.Top = 27;
 	renderRect.Right = 59 + 16;
 	renderRect.Bottom = 28;
-	CHAR_INFO* unitName = new CHAR_INFO[16];
-	wchar_t* converted = new wchar_t[16];
-	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, unit.unitData.name, strlen(unit.unitData.name)*sizeof(char), converted, strlen(unit.unitData.name));
+	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, unit.unitData.name, strlen(unit.unitData.name)*sizeof(char), wconverted, strlen(unit.unitData.name));
 	for (int i = 0, n = strlen(unit.unitData.name); i < n; i++)
 	{
 		unitName[i].Char.UnicodeChar = unit.unitData.name[i];
 		unitName[i].Attributes = 0x007;
 	}
-	WriteConsoleOutput(hConsole, unitName, { 1, 16 }, { 0, 0 }, &renderRect);
+	WriteConsoleOutput(hConsole, unitName, { 16, 1 }, { 0, 0 }, &renderRect);
 
 	renderRect.Left = 59;
 	renderRect.Top = 28;
@@ -359,19 +374,62 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 
 	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
 
-	renderRect.Left = 51;
-	renderRect.Top = 3;
-	renderRect.Right = 51 + 29;
-	renderRect.Bottom = 3 + 32;
+	class_ModelLoader.GetModel(unit.unitData.unitID, 51, 3);
 
-	class_ModelLoader.GetModel(unit.unitData.unitID);
-	//WriteConsoleOutput(hConsole, unitModel, { 32, 24 }, { 0, 0 }, &renderRect);
+	CHAR_INFO* tmpActionDisplay = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 32);
+
+	renderRect.Left = 1;
+	renderRect.Top = 80;
+	renderRect.Right = 1 + 32;
+	renderRect.Bottom = 80 + 1;
+
+	switch (unit.unitData.unitID)
+	{
+	case 0:
+		ConvertString("Q: Spawns a Worker              ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		renderRect.Top++;
+		renderRect.Bottom++;
+		ConvertString("W: Spawns a Virus               ", tmpActionDisplay);
+		WriteConsoleOutput(hConsole, tmpActionDisplay, { 32, 1 }, { 0, 0 }, &renderRect);
+		break;
+	case 1:
+		SetConsoleCursorPosition(hConsole, { 16, 60 });
+		std::cout << "Q: Spawns a Thread\n";
+		std::cout << "W: Spawns a Firewall";
+		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		break;
+	case 2:
+		SetConsoleCursorPosition(hConsole, { 16, 60 });
+		std::cout << "This unit will help attack\n";
+		std::cout << "the opponents.";
+		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		break;
+	case 3:
+		SetConsoleCursorPosition(hConsole, { 16, 60 });
+		std::cout << "This structure will passivley\n";
+		std::cout << "generate more threads.";
+		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		break;
+	case 4:
+		SetConsoleCursorPosition(hConsole, { 16, 60 });
+		std::cout << "This structure will help\n";
+		std::cout << "hold off attacking units.";
+		SetConsoleCursorPosition(hConsole, { 0, 0 });
+		break;
+
+	}
 	
+	free(tmpActionDisplay);
+
 	return 1;
 }
 
+
 int ConBufferClass::RenderUnitInfo(CHAR_INFO terrainTile)
 {
+	//We need to clear the info rendered by unitinfo
+
 	/*
 	SMALL_RECT renderRect;
 

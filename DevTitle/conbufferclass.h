@@ -31,11 +31,15 @@ private:
 
 	CHAR_INFO *border,
 		*converted,
-		*numChar;
+		*numChar,
+		*unitName;
 
 	CHAR_INFO unitInfo[256],
 		unitModel[928],
 		unitActions[1];
+
+
+	wchar_t* wconverted;
 
 	int RenderBorder();
 	int RenderUnitInfo(EntityClass unit);

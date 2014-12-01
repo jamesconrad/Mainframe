@@ -18,7 +18,7 @@ public:
 	~ModelLoaderClass();
 
 	int Initialize();
-	CHAR_INFO* GetModel(int modelNum);
+	CHAR_INFO* GetModel(int modelNum, int x, int y);
 
 };
 

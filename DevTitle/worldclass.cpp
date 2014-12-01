@@ -614,6 +614,11 @@ int WorldClass::Load()
 	return 1;
 }
 
+int WorldClass::GetWinner()
+{
+	return winner;
+}
+
 //Just a sumary of controls
 
 //Insert: Spawn OP testing unit

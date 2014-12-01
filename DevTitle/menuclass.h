@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include "inputclass.h"
+#include "modelloader.h"
 
 class MenuClass
 {
@@ -59,6 +60,7 @@ private:
 	
 	MenuObject* menu;
 	InputClass* _inputClass;
+	ModelLoaderClass _modelLoader;
 	KEY_EVENT_RECORD input;
 };
 

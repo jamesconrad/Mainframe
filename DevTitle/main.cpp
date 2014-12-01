@@ -10,37 +10,48 @@
 #include "worldclass.h"
 #include "generationclass.h"
 
-int main() 
+int main()
 {
 	GenerationClass* terrainGenerator;
 	WorldClass* world;
 	MenuClass* mainMenu = new MenuClass(1);
 
-	mainMenu->RenderStory(1);
-
-	while (mainMenu->MenuActive())
+	mainMenu->RenderStory(-1);
+	srand(time(NULL));
+	while (true)
 	{
-		mainMenu->Tick();
-	}
 
-	world = new WorldClass();
+		while (mainMenu->MenuActive())
+		{
+			mainMenu->Tick();
+		}
 
-	if (mainMenu->GetLoadWorld() == true)
-		world->Load();
-	else
-	{
-		terrainGenerator = new GenerationClass();
+		world = new WorldClass();
 
-		terrainGenerator->Initialize(48, 32, mainMenu->GetSeed());
-		world->Initialize(terrainGenerator->Generate(), 0, terrainGenerator->GetWidth(), terrainGenerator->GetHeight(), mainMenu->GetNumOfPlayers(), 0, mainMenu->GetNumAi());
+		mainMenu->RenderStory(rand()%mainMenu->GetNumOfPlayers());
 
-		terrainGenerator->Save("map", world->GetMap());
-		world->Save();
-	}
+		if (mainMenu->GetLoadWorld() == true)
+			world->Load();
+		else
+		{
+			terrainGenerator = new GenerationClass();
 
-	while (world->InGame())
-	{
-		world->Tick();
+			terrainGenerator->Initialize(48, 32, mainMenu->GetSeed());
+			world->Initialize(terrainGenerator->Generate(), 0, terrainGenerator->GetWidth(), terrainGenerator->GetHeight(), mainMenu->GetNumOfPlayers(), 0, mainMenu->GetNumAi());
+
+			terrainGenerator->Save("map", world->GetMap());
+			world->Save();
+
+			free(terrainGenerator);
+		}
+
+		while (world->InGame())
+		{
+			world->Tick();
+		}
+
+		mainMenu->RenderStory(world->GetWinner() + 10);
+		free(world);
 	}
 
 	return 1;
