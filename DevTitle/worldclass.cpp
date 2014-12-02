@@ -236,16 +236,16 @@ int WorldClass::UpdateHealthBg(int index)
 	{
 		hpMod = _entityArray[index].unitData.hp / _entityArray[index].unitData.maxHP;
 
-		if (hpMod <= 0.25)
+		if (hpMod > 0 && hpMod <= 0.33)
 			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0040;
-		else if (hpMod <= 0.5)
+		else if (hpMod > 0.66 && hpMod < 0.33)
 			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0030;
-		else if (hpMod <= 0.75)
+		else if (hpMod >= 0.66 && hpMod > 1)
 			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0020;
 		else
 			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID];
 
-		if (_entityArray[index].unitData.hp > 0)
+		if (_entityArray[index].unitData.hp > 1)
 			unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
 	}
 

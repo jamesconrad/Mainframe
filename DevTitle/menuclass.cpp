@@ -466,7 +466,7 @@ int MenuClass::UpdateMenu()
 		else if (cursor == 6)
 		{
 
-			if (FILE *file = fopen("misc", "r"))
+			if (FILE *file = fopen("Save/misc", "r"))
 			{
 				fclose(file);
 				isInMenu = false;
@@ -503,7 +503,7 @@ int MenuClass::UpdateMenu()
 		else if (cursor == 4)
 		{
 
-			if (FILE *file = fopen("misc", "r"))
+			if (FILE *file = fopen("Save/misc", "r"))
 			{
 				fclose(file);
 				isInMenu = false;
