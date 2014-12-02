@@ -345,11 +345,11 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('U', &_entityArray));
-					return _entityArray[i].AttackUnit('U', &_entityArray);
+					return _entityArray[i].AttackUnit('U', &_entityArray, i);
 				}
 			}
 		}
@@ -372,11 +372,11 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].MoveUnit('D', &_entityArray));
-					return _entityArray[i].AttackUnit('D', &_entityArray);
+					return _entityArray[i].AttackUnit('D', &_entityArray, i);
 				}
 			}
 		}
@@ -399,11 +399,11 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('R', &_entityArray));
-					return _entityArray[i].AttackUnit('R', &_entityArray);
+					return _entityArray[i].AttackUnit('R', &_entityArray, i);
 				}
 			}
 		}
@@ -427,11 +427,11 @@ int WorldClass::CheckInput()
 		{
 			for (int i = 0; i < numOfUnits; i++)
 			{
-				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
+				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
 					//this->UpdateHealthBg(_entityArray[i].AttackUnit('L', &_entityArray));
-					return _entityArray[i].AttackUnit('L', &_entityArray);
+					return _entityArray[i].AttackUnit('L', &_entityArray, i);
 				}
 			}
 		}

@@ -122,7 +122,7 @@ int EntityClass::MoveUnit(char dir, std::vector<EntityClass> *entityArray)
 	return 1;
 }
 
-int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
+int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray, int me)
 {
 	if (dir == 'U')
 	{
@@ -138,7 +138,7 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 						unitData.actions = 0;
 						return j;
 					}
-					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense <= 0)
 					{
 						entityArray->at(j).unitData.hp--;
 						unitData.actions = 0;
@@ -164,7 +164,7 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 						unitData.actions = 0;
 						return j;
 					}
-					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense <= 0)
 					{
 						entityArray->at(j).unitData.hp--;
 						unitData.actions = 0;
@@ -190,7 +190,7 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 						unitData.actions = 0;
 						return j;
 					}
-					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense <= 0)
 					{
 						entityArray->at(j).unitData.hp--;
 						unitData.actions = 0;
@@ -216,7 +216,7 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray)
 						unitData.actions = 0;
 						return j;
 					}
-					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
+					else if (unitData.attack - entityArray->at(j).unitData.defense <= 0)
 					{
 						entityArray->at(j).unitData.hp--;
 						unitData.actions = 0;

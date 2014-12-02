@@ -22,7 +22,7 @@ public:
 	int Initialize(/*UnitData unitData,*/ int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap);
 
 	int MoveUnit(char direction, std::vector<EntityClass> *entityArray);
-	int AttackUnit(char direction, std::vector<EntityClass> *entityArray);
+	int AttackUnit(char direction, std::vector<EntityClass> *entityArray, int me);
 	int UseAbility(int num, EntityClass *entity);
 
 	int SetUnitData(UnitData unitData);
