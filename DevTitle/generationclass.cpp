@@ -173,7 +173,7 @@ bool GenerationClass::IsLand(int tile)
 int GenerationClass::Save(char* filePath, CHAR_INFO* saveData)
 {
 	FILE *saveFile;
-	saveFile = fopen("Save/map", "wb");
+	saveFile = fopen(filePath, "wb");
 	fwrite(saveData, sizeof(CHAR_INFO), width*height, saveFile);
 	return 1;
 }
