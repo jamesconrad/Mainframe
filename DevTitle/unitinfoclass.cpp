@@ -22,7 +22,7 @@ int UnitInfoClass::Initialize()
 	//Buildings will spawn the 2 units after them
 
 	//UnitInfo::unit[unitID] = { unitCharacter , 0 , maxHP , HP, unitID , actions , maxActions , attack , defense , range , type , 0 , threadCost, ability1, ability2, ability3, resourcesPerTurn, "name"}	
-	unit[0] = { BASE_CHAR_INFO, 0, 10, 10, 0, 1, 1, 10, 100, 0, 0, 0, 0, 2, 0, 0, 2, { 'M', 'a', 'i', 'n', 'f', 'r', 'a', 'm', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //Start base
+	unit[0] = { BASE_CHAR_INFO, 0, 10, 10, 0, 1, 1, 10, 100, 0, 0, 0, 0, 2, 0, 0, 3, { 'M', 'a', 'i', 'n', 'f', 'r', 'a', 'm', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ' } }; //Start base
 	unit[0].charInfo.Char.UnicodeChar = 920;
 	unit[0].charInfo.Attributes = 0x0007;
 	unit[1] = { BASE_CHAR_INFO, 0, 1, 1, 1, 2, 2, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, { 'C', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r', ' ', ' ', ' ', ' ', ' ' } }; //Worker
