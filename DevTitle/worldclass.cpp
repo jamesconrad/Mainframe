@@ -1,7 +1,7 @@
 #include "worldclass.h"
 #include <iostream>
 #pragma comment (lib,"Winmm.lib")
-
+//primary game state
 WorldClass::WorldClass()
 {
 }
@@ -20,6 +20,7 @@ CHAR_INFO* WorldClass::GetMap()
 }
 int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int height, int numOfPlayers, int numOfUnits, int numOfAi)
 {
+	//setup and prepare the gamestate
 	worldMap = generation;
 
 	isInGame = true;
@@ -84,26 +85,20 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 
 	return 1;
 }
-
+//force an update on the world itself
 int WorldClass::UpdateTile(int index, CHAR_INFO newTile)
 {
 	worldMap[index] = newTile;
 	return 1;
 }
-
+//draws everything to the screen
 int WorldClass::Render()
 {
 	COORD frameCoords = ConvertIndex(frame);
 
-	//UpdateUnitMap();
-
 	frameCoords.X++;
 	frameCoords.Y++;
-	//if (frameChanged)
-	//{
-	//	SetConsoleCursorPosition(_conBuffer.hConsole, frameCoords);
-	//	frameChanged = false;
-	//}
+
 	bool unitTargeted = false;
 	for (int i = 0; i < numOfUnits; ++i)
 	{
@@ -131,7 +126,7 @@ int WorldClass::ChangeFrame(int newFrame)
 	frame = newFrame;
 	return 1;
 }
-
+//convert array index to a 2d point on the world
 COORD WorldClass::ConvertIndex(int index)
 {
 	COORD indexCoord;
@@ -140,7 +135,7 @@ COORD WorldClass::ConvertIndex(int index)
 
 	return indexCoord;
 }
-
+//convert 2d point to the world's index position
 int WorldClass::ConvertCoord(COORD indexCoord)
 {
 	int index;
@@ -205,16 +200,6 @@ int WorldClass::NextTurn()
 
 
 	_conBuffer.UpdateBorderColour(currentTurn);
-	/*
-	for (int i = 0; i < numOfUnits; ++i)
-	{
-		if (frame == _entityArray[i].unitData.position)
-			_conBuffer.OutputScreen(unitMap, height, width, { 0, 0 }, frame, _entityArray[i]);
-	}
-	_conBuffer.OutputScreen(worldMap, unitMap, height, width, { 0, 0 }, frame);
-	_conBuffer.RenderExtraInfo(playerThreads[currentTurn], turnCounter);
-	*/
-
 
 	return 1;
 }
@@ -277,7 +262,7 @@ int WorldClass::Update(int index)
 	}
 
 	//Check to see if alive
-	for (int i = 0; i < numOfUnits; i++)
+	for (int i = 0; i < numOfPlayers; i++)
 	{
 		if (_entityArray[i].unitData.unitID == 0 && _entityArray[i].unitData.hp <= 0)
 			alivePlayers[_entityArray[i].unitData.playerID] = false;
@@ -320,38 +305,35 @@ int WorldClass::CheckInput()
 	bool collision = false;
 	int returnVal = 0;
 	if (keyPress.wVirtualKeyCode == VK_SPACE && keyPress.bKeyDown == true)
-	{
 		WorldClass::NextTurn();
-		//Sleep(1000);
-	}
-	//Attack needs to check for map edges
-	//Adjusted movement and attack
-	//check to see if unit belongs to player before calling the actual move/attack
-
-	//	To attack
-	//	UpdateHealthBg(_entityClass[SELECTED_UNIT].Attack(DIRECTION))
-
+	//checks for directional input
 	if (keyPress.wVirtualKeyCode == VK_UP && keyPress.bKeyDown == true)
 	{
+		//check if last keypress was the movekey
 		if (moveUnit)
 		{
+			//find out who is selected
 			for (int i = 0; i < numOfUnits; i++)
 			{
+				//check if they are selected and it is our turn
 				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn)
 				{
+					//move the unit and disable the movement flag
 					moveUnit = false;
 					_entityArray[i].MoveUnit('U', &_entityArray);
 				}
 			}
 		}
+		//check if the last keypress was the attack key
 		if (attackUnit)
 		{
+			//find out who is selected
 			for (int i = 0; i < numOfUnits; i++)
 			{
 				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
+					//attack the unit and return the hit unit to update the background of it
 					attackUnit = false;
-					//this->UpdateHealthBg(_entityArray[i].AttackUnit('U', &_entityArray));
 					return _entityArray[i].AttackUnit('U', &_entityArray, i);
 				}
 			}
@@ -378,7 +360,6 @@ int WorldClass::CheckInput()
 				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
-					//this->UpdateHealthBg(_entityArray[i].MoveUnit('D', &_entityArray));
 					return _entityArray[i].AttackUnit('D', &_entityArray, i);
 				}
 			}
@@ -405,7 +386,6 @@ int WorldClass::CheckInput()
 				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
-					//this->UpdateHealthBg(_entityArray[i].AttackUnit('R', &_entityArray));
 					return _entityArray[i].AttackUnit('R', &_entityArray, i);
 				}
 			}
@@ -433,7 +413,6 @@ int WorldClass::CheckInput()
 				if (_entityArray[i].unitData.position == frame && _entityArray[i].unitData.playerID == currentTurn && _entityArray[i].unitData.actions > 0)
 				{
 					attackUnit = false;
-					//this->UpdateHealthBg(_entityArray[i].AttackUnit('L', &_entityArray));
 					return _entityArray[i].AttackUnit('L', &_entityArray, i);
 				}
 			}
@@ -621,21 +600,3 @@ int WorldClass::GetWinner()
 {
 	return winner;
 }
-
-//Just a sumary of controls
-
-//Insert: Spawn OP testing unit
-
-//A then Arrow key: Attack in direction
-
-//M then Arrow key: Move in direction
-
-//Esc: Cancel move/attack to free cursor
-
-//Q:
-//	if base:	spawns worker
-//	if worker:	spawns resource building
-
-//W:
-//	if base:	spawns general melee unit
-//	if worker:	spawns general upgrade building

@@ -1,6 +1,6 @@
 #ifndef WORLDCLASS_H
 #define WORLDCLASS_H
-
+//Main game object
 #include "conbufferclass.h"
 #include "unitinfoclass.h"
 #include "entityclass.h"

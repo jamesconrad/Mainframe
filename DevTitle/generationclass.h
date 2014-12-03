@@ -1,6 +1,7 @@
 #ifndef GENERATIONCLASS_H
 #define GENERATIONCLASS_H
 
+//World generation definition
 #include <Windows.h>
 
 class GenerationClass 
@@ -20,8 +21,6 @@ public:
 
 	void MainGen(int);
 	void RoadGen(int, short);
-	//void StructureGen(int);
-	//void FeatureGen(int);
 
 	bool NotAtBorder(int);
 	bool IsWire(int);

@@ -1,10 +1,12 @@
 #ifndef AUDIOCLASS_H
 #define AUDIOCLASS_H
+//AudioClass Definition
 #include <Windows.h>
 #include <mmsystem.h>
 #include <strmif.h>
 #include <control.h>
 
+//needed by AudioClass to play music
 #pragma comment(lib, "strmiids.lib")
 
 class AudioClass

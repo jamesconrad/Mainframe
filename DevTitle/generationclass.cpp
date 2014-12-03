@@ -43,30 +43,21 @@ CHAR_INFO* GenerationClass::Generate()
 	map = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* width * height);
 	for (int i = 0; i < width * height; i++) map[i] = water;
 
-
 	srand(seed);
 
-	/*
-	BEGIN GEN
-	*/
-
+	//BEGIN GEN
+	
 	//Beginning tile
 	tile_start = width / 2 + width * (height / 2 - 1);
 
 	MainGen(tile_start);
 	RoadGen(tile_start, 0);
 
-	/*
-	TerrainGen(firstTile);
-	ResourceGen(firstTile);
-	*/
-
 	return map;
 }
 
-/*
-HELPER FUNCTIONS
-*/
+
+//HELPER FUNCTIONS
 void GenerationClass::MainGen(int tile_at)
 {
 	//returns if it can't place anymore blocks up

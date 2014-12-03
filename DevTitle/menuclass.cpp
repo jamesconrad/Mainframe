@@ -8,6 +8,7 @@
 
 MenuClass::MenuClass(int menuId)
 {
+	//prep the variables
 	srand(time(NULL));
 	seed = rand()*rand();
 	srand(seed);
@@ -58,6 +59,7 @@ int MenuClass::GetId()
 
 int MenuClass::ClearScreen()
 {
+	//render a space with a black background on every tile
 	CHAR_INFO* blank = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*SCREEN_HEIGHT*SCREEN_WIDTH);
 	for (int i = 0; i < SCREEN_HEIGHT*SCREEN_WIDTH; i++)
 	{
@@ -78,7 +80,7 @@ int MenuClass::ClearScreen()
 
 	return 1;
 }
-
+//convert text into CHAR_INFO for rendering
 int MenuClass::ConvertString(const char * text, CHAR_INFO * result)
 {
 	wchar_t * converted = (wchar_t*)malloc(sizeof(wchar_t)* strlen(text));
@@ -94,8 +96,10 @@ int MenuClass::ConvertString(const char * text, CHAR_INFO * result)
 
 int MenuClass::OptionDown()
 {
+	//check if we can go down
 	if (cursor < numOfOptions - 1)
 	{
+		//change colour and move down
 		for (int i = 0; i < menu[cursor].len; i++)
 			menu[cursor].text[i].Attributes = 0x007;
 
@@ -114,8 +118,10 @@ int MenuClass::OptionDown()
 
 int MenuClass::OptionUp()
 {
+	//check if we can go up
 	if (cursor > 0)
 	{
+		//change colour and move up
 		for (int i = 0; i < menu[cursor].len; i++)
 			menu[cursor].text[i].Attributes = 0x007;
 
@@ -141,6 +147,7 @@ int MenuClass::SetNumOptions(int num)
 
 int MenuClass::SetOptionText(int optionNum, const char* text)
 {
+	//set the text at the menu object location
 	menu[optionNum].text = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*strlen(text));
 	ConvertString(text, menu[optionNum].text);
 	menu[optionNum].len = strlen(text);
@@ -156,6 +163,7 @@ int MenuClass::ClearOptionText(int optionNum)
 
 int MenuClass::Render()
 {
+	//draw all our text to screen
 	SMALL_RECT renderRect;
 
 	_modelLoader.GetModel(-1, 7, 2);
@@ -177,6 +185,7 @@ int MenuClass::Render()
 
 int MenuClass::RenderStory(int storyId)
 {
+	//find out which story to load
 	char storyName[32], storyBuffer[82];
 	switch (storyId)
 	{
@@ -220,7 +229,7 @@ int MenuClass::RenderStory(int storyId)
 		strcpy(storyName, "Story/yellow_win.txt");
 		break;
 	}
-
+	//load the text
 	std::ifstream storyStream(storyName);
 	CHAR_INFO storyText[82];
 	SMALL_RECT renderRect;
@@ -230,7 +239,7 @@ int MenuClass::RenderStory(int storyId)
 	renderRect.Right = 0;
 
 	bool cont = false;
-
+	//check if eof
 	while (!storyStream.eof())
 	{
 		storyStream.getline(storyBuffer, 82);
@@ -238,9 +247,12 @@ int MenuClass::RenderStory(int storyId)
 
 		for (int i = 0; i < 82; i++)
 		{
+			//render each char individually to give typing effect
 			input = _inputClass->GetKeypress();
+			//check if we want to skip
 			if ((input.bKeyDown == true && input.wVirtualKeyCode == VK_RETURN) || cont)
 			{
+				//render entire line and set a flag to keep doing so until done
 				cont = true;
 				renderRect.Right = 81;
 				WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
@@ -257,6 +269,7 @@ int MenuClass::RenderStory(int storyId)
 	}
 	while (!input.bKeyDown)
 	{
+		//wait for the user to press any key to continue
 		input = _inputClass->GetKeypress();
 	}
 

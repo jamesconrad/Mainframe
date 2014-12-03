@@ -6,10 +6,6 @@ EntityClass::EntityClass()
 {
 }
 
-//EntityClass::EntityClass(const EntityClass&)
-//{
-//}
-
 EntityClass::~EntityClass()
 {
 }
@@ -20,10 +16,8 @@ int EntityClass::SetUnitData(UnitData unitData)
 	return 1;
 }
 
-
-int EntityClass::Initialize(/*UnitData unitData, */int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap)
+int EntityClass::Initialize(int worldWidth, int worldHeight, CHAR_INFO *worldMap, CHAR_INFO *unitMap)
 {
-	//EntityClass::unitData = unitData;
 	this->worldWidth = worldWidth;
 	this->worldHeight = worldHeight;
 	this->worldMap = worldMap;
@@ -34,7 +28,7 @@ int EntityClass::Initialize(/*UnitData unitData, */int worldWidth, int worldHeig
 int EntityClass::MoveUnit(char dir, std::vector<EntityClass> *entityArray)
 {
 	bool collision = false;
-	//check to see if space is occupied
+	//check to see if space is occupied then move if possible
 	if (dir == 'U')
 	{
 		if (unitData.position - worldWidth >= 0)
@@ -130,16 +124,20 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray, int
 		{
 			for (int j = 0; j < entityArray->size(); j++)
 			{
+				//Find a target
 				if (entityArray->at(j).unitData.position == (unitData.position - (k * 48)) && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
 				{
+					//Check if we have more attack then them
 					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
 					{
+						//Deal full damage
 						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
 						unitData.actions = 0;
 						return j;
 					}
 					else if (unitData.attack - entityArray->at(j).unitData.defense <= 0)
 					{
+						//Deal one damage
 						entityArray->at(j).unitData.hp--;
 						unitData.actions = 0;
 						return j;
@@ -228,34 +226,6 @@ int EntityClass::AttackUnit(char dir, std::vector<EntityClass> *entityArray, int
 			}
 		}
 	}
-	/*
-	if (dir == 'U')
-	{
-		for (int k = 1; k <= unitData.range; k++)
-		{
-			for (int j = 0; j < entityArray->size(); j++)
-			{
-				if (entityArray->at(j).unitData.position == (unitData.position - (k * 48)) && entityArray->at(j).unitData.playerID != unitData.playerID && unitData.actions > 0)
-				{
-					if (unitData.attack - entityArray->at(j).unitData.defense > 0)
-					{
-						entityArray->at(j).unitData.hp -= (unitData.attack - entityArray->at(j).unitData.defense);
-						unitData.actions = 0;
-						return j;
-					}
-					else if (unitData.attack - entityArray->at(j).unitData.defense == 0)
-					{
-						entityArray->at(j).unitData.hp--;
-						unitData.actions = 0;
-						return j;
-					}
-					else {}
-					//no damage done
-				}
-			}
-		}
-	}
-	*/
 	return 0;
 }
 

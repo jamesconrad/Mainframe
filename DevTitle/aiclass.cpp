@@ -1,28 +1,13 @@
 
 #include "aiclass.h"
 
+//Scalars to determine weight of actions
 #define THREATSCALAR_NUMOFUNITS 1
 #define THREATSCALAR_MISSINGHP 10
 #define THREATSCALAR_AVGDMG 2
 #define THREATSCALAR_AVGDEF 2
 #define THREATSCALAR_AVGDISTANCE 2
 #define THREATSCALAR_ECNOMOY 2
-/*
-AIClass::AIClass()
-{
-
-}
-
-AIClass::AIClass(const AIClass&)
-{
-
-}
-
-AICLass::~AIClass();
-{
-
-}
-*/
 
 int AIClass::Initialize(int playerNum, int attackRadius, int agression, int numOfPlayers, int mapWidth, const std::vector<EntityClass> *class_EntityArray)
 {

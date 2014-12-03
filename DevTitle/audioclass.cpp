@@ -50,16 +50,20 @@ void AudioClass::Shutdown()
 
 bool AudioClass::Load(LPCWSTR szFile)
 {
+	//Make sure file is not already loaded
 	if (currentFile != szFile)
 	{
+		//Reset
 		Shutdown();
 		CoInitialize(NULL);
+		//Check if properly reset
 		if (SUCCEEDED(CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void**)&this->pigb)))
 		{
+			//Get handles to required objects
 			pigb->QueryInterface(IID_IMediaControl, (void**)&pimc);
 			pigb->QueryInterface(IID_IMediaEventEx, (void**)&pimex);
 			pigb->QueryInterface(IID_IBasicAudio, (void**)&piba);
-
+			//Check if sucessful
 			HRESULT hr = pigb->RenderFile(szFile, NULL);
 			if (SUCCEEDED(hr))
 			{
@@ -73,6 +77,7 @@ bool AudioClass::Load(LPCWSTR szFile)
 
 bool AudioClass::Play()
 {
+	//Start playing music
 	if (ready && pimc)
 	{
 		HRESULT hr = pimc->Run();
@@ -83,6 +88,7 @@ bool AudioClass::Play()
 
 bool AudioClass::Pause()
 {
+	//Pause music
 	if (ready && pimc)
 	{
 		HRESULT hr = pimc->Pause();
@@ -93,6 +99,7 @@ bool AudioClass::Pause()
 
 bool AudioClass::Stop()
 {
+	//Set time to 0, and pause.
 	if (ready && pimc)
 	{
 		HRESULT hr = pimc->Stop();
@@ -103,6 +110,7 @@ bool AudioClass::Stop()
 
 bool AudioClass::SetVolume(long vol)
 {
+	//Change volume, returns sucesses
 	if (ready && piba)
 	{
 		HRESULT hr = piba->put_Volume(vol);
@@ -113,6 +121,7 @@ bool AudioClass::SetVolume(long vol)
 
 long AudioClass::GetVolume()
 {
+	//Get volume, returns -1 if not ready
 	if (ready && piba)
 	{
 		long vol = -1;

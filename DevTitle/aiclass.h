@@ -1,6 +1,6 @@
 #ifndef AICLASS_H
 #define AICLASS_H
-
+//AIClass definition
 #include <Windows.h>
 #include <vector>
 #include "entityclass.h"

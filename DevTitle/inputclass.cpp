@@ -25,13 +25,15 @@ KEY_EVENT_RECORD InputClass::GetKeypress()
 	DWORD eventsRead;
 
 	GetNumberOfConsoleInputEvents(hConsole, &eventsToRead);
-
+	//Check to see if a key has been pressed
 	if (eventsToRead >= 1)
 	{
+		//get keyboard input
 		ReadConsoleInput(hConsole, &inputRecord, nLength, &eventsRead);
 		if (inputRecord.Event.KeyEvent.bKeyDown == true)
 			prevKeyEventRecord = inputRecord.Event.KeyEvent;
 	}
+	//Sleep just to stall the keyspamm
 	Sleep(75);
 	return inputRecord.Event.KeyEvent;
 }

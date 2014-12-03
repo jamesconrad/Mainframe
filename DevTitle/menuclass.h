@@ -1,6 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
-
+//MenuClass, much like WorldClass needs to have control passed to it.
 #include <Windows.h>
 #include "inputclass.h"
 #include "modelloader.h"

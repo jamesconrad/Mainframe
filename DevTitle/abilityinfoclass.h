@@ -1,6 +1,9 @@
 #ifndef ABILITYINFO_H
 #define ABILITYINFO_H
-
+//AbilityInfo:
+//much like UnitIfo
+//TODO:
+//Make an interpreter to use abilities.
 #include <Windows.h>
 
 namespace

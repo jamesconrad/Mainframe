@@ -1,6 +1,6 @@
 #ifndef ENTITYCLASS_H
 #define ENTITYCLASS_H
-
+//EntityClass definition
 #include <vector>
 #include "unitinfoclass.h"
 

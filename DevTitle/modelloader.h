@@ -1,6 +1,6 @@
 #ifndef MODELLOADER_H
 #define MODELLOADER_H
-
+//ModelLoaderClass definition
 #include <Windows.h>
 #include <fstream>
 

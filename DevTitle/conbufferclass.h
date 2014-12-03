@@ -1,6 +1,7 @@
 #ifndef CONBUFFERCLASS_H
 #define CONBUFFERCLASS_H
 
+//Interface for WorldClass to render
 #include <Windows.h>
 #include "entityclass.h"
 #include "modelloader.h"

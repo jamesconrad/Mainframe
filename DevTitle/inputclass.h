@@ -1,6 +1,7 @@
 #ifndef INPUTCLASS_H
 #define INPUTCLASS_H
 
+//InputClass to get keyboard input.
 #include <Windows.h>
 
 class InputClass 

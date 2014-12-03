@@ -18,7 +18,7 @@ ConBufferClass::~ConBufferClass()
 {
 }
 
-
+//Used to easily fill CHAR_INFO arrays
 int ConvertString(const char * text, CHAR_INFO * result)
 {
 	wchar_t* converted = new wchar_t [strlen(text)];
@@ -34,9 +34,10 @@ int ConvertString(const char * text, CHAR_INFO * result)
 
 int ConBufferClass::Initialize()
 {
+	//Get Handle
 	hConsole = (HANDLE)GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTitle(L"Mainframe");
-
+	//Setup some variables
 	playerColour[0] = 0x0001 | 0x0008;
 	playerColour[1] = 0x0002 | 0x0008;
 	playerColour[2] = 0x0003 | 0x0008;
@@ -55,24 +56,25 @@ int ConBufferClass::Initialize()
 	screenSize.Right = SCREEN_WIDTH - 1;
 	screenSize.Top = 0;
 	screenSize.Bottom = SCREEN_HEIGHT - 1;
-
+	//Resize screen buffer
 	SetConsoleScreenBufferSize(hConsole, { SCREEN_WIDTH, SCREEN_HEIGHT });
 	SetConsoleWindowInfo(hConsole, true, &screenSize);
-	int err = GetLastError();
-
+	//Dynamically allocate some arrays
 	numChar = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	converted = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	extraInfo = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 4);
 	unitName = new CHAR_INFO[16];
 	wconverted = new wchar_t[16];
-
+	//Initialize my class requirments
 	class_ModelLoader.Initialize();
 
 	return 0;
 }
-
+//Primary output from worldclass
+//Overloaded below - this version is for if a unit is selected
 int ConBufferClass::OutputScreen(CHAR_INFO* unitData, int height, int width, COORD buffCoord, int frame, EntityClass selectedUnit)
 {
+	//Prep array for rendering
 	COORD buffSize;
 	SMALL_RECT renderRect;
 	buffSize.X = width;
@@ -104,7 +106,7 @@ int ConBufferClass::OutputScreen(CHAR_INFO* unitData, int height, int width, COO
 		unitData[frame + width - 1].Attributes = 0x0007 | 0x0008;
 		unitData[frame - width - 1].Attributes = 0x0007 | 0x0008;
 	}
-
+	//Actually draw to the screen
 	RenderUnitInfo(selectedUnit);
 	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
 
@@ -117,8 +119,11 @@ int ConBufferClass::OutputScreen(CHAR_INFO* unitData, int height, int width, COO
 
 	return 1;
 }
+//Primary output for WorldClass
+//Overloaded version above - this version is for if a terrain tile is selected
 int ConBufferClass::OutputScreen(CHAR_INFO* worldMap, CHAR_INFO* unitData, int height, int width, COORD buffCoord, int frame)
 {
+	//Prep variables
 	COORD buffSize;
 	SMALL_RECT renderRect;
 	buffSize.X = width;
@@ -150,7 +155,7 @@ int ConBufferClass::OutputScreen(CHAR_INFO* worldMap, CHAR_INFO* unitData, int h
 		unitData[frame + width - 1].Attributes = 0x0007 | 0x0008;
 		unitData[frame - width - 1].Attributes = 0x0007 | 0x0008;
 	}
-
+	//Draw to the screen
 	RenderUnitInfo(worldMap[frame]);
 	WriteConsoleOutput(hConsole, unitData, buffSize, buffCoord, &renderRect);
 
@@ -257,7 +262,8 @@ int ConBufferClass::RenderBorder()
 
 	return 1;
 }
-
+//Used to convert int to CHAR_INFO
+//Does a check on the number then converts
 CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 {
 	int tmp;
@@ -330,20 +336,23 @@ CHAR_INFO* ConBufferClass::IntToCharInfo(int num)
 
 	return converted;
 }
-
+//Renders the box on the right, and bottom
 int ConBufferClass::RenderUnitInfo(EntityClass unit)
 {
+	//Set some variables
 	SMALL_RECT renderRect;
 	renderRect.Left = 59;
 	renderRect.Top = 27;
 	renderRect.Right = 59 + 16;
 	renderRect.Bottom = 28;
+	//Convert some variables
 	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, unit.unitData.name, strlen(unit.unitData.name)*sizeof(char), wconverted, strlen(unit.unitData.name));
 	for (int i = 0, n = strlen(unit.unitData.name); i < n; i++)
 	{
 		unitName[i].Char.UnicodeChar = unit.unitData.name[i];
 		unitName[i].Attributes = 0x007;
 	}
+	//Write the name to the screen
 	WriteConsoleOutput(hConsole, unitName, { 16, 1 }, { 0, 0 }, &renderRect);
 
 	renderRect.Left = 59;
@@ -351,7 +360,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 	renderRect.Right = 59 + 20;
 	renderRect.Bottom = 28 + 8;
 
-
+	//Setup the unit stats
 	numChar = IntToCharInfo(unit.unitData.hp);
 	for (int i = 0; i < 4; ++i)
 	{
@@ -372,18 +381,19 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 	{
 		unitInfo[105 + i].Char.UnicodeChar = numChar[i].Char.UnicodeChar;
 	}
-
+	//Write the unit stats
 	WriteConsoleOutput(hConsole, unitInfo, { 32, 4 }, { 0, 0 }, &renderRect);
 
 	class_ModelLoader.GetModel(unit.unitData.unitID, 51, 3);
 
+	//Setup the bottom box
 	CHAR_INFO* tmpActionDisplay = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* 64);
 
 	renderRect.Left = SCREEN_WIDTH / 2 - 64 / 2;
 	renderRect.Top = 40;
 	renderRect.Right = 64 + SCREEN_WIDTH / 2 - 64 / 2;
 	renderRect.Bottom = 40 + 1;
-
+	//Writes the bottom box
 	switch (unit.unitData.unitID)
 	{
 	case 0:
@@ -510,7 +520,7 @@ int ConBufferClass::InitializeUnitInfo()
 
 	return 1;
 }
-
+//Renders the Turn+Thread part of the screen
 int ConBufferClass::RenderExtraInfo(int playerThreads, int turnCounter)
 {
 	SMALL_RECT renderRect;

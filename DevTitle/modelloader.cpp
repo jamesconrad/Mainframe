@@ -33,7 +33,7 @@ CHAR_INFO* ModelLoaderClass::GetModel(int modelNum, int x, int y)
 	renderRect.Bottom = y + 32;
 
 	COORD len = { 29, 24 };
-
+	//find out which model to load
 	switch (modelNum)
 	{
 	case -1:
@@ -64,7 +64,7 @@ CHAR_INFO* ModelLoaderClass::GetModel(int modelNum, int x, int y)
 
 	fclose(saveFile);
 
-
+	//render the model to the given position, starting at the top left corner
 	WriteConsoleOutput((HANDLE)GetStdHandle(STD_OUTPUT_HANDLE), modelCharInfo, len, { 0, 0 }, &renderRect);
 	
 	return modelCharInfo;
