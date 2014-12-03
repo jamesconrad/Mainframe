@@ -60,7 +60,7 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 
 	for (int i = 0; i < numOfPlayers; ++i)
 	{
-		playerThreads[i] = 3;
+		playerThreads[i] = 0;
 		alivePlayers[i] = true;
 	}
 
@@ -76,11 +76,11 @@ int WorldClass::Initialize(CHAR_INFO* generation, int frame, int width, int heig
 		SpawnUnit(0, rng % (width*height));
 		++currentTurn;
 	}
-	this->frame = _entityArray[1].unitData.position;
+	this->frame = _entityArray[0].unitData.position;
 
 	currentTurn = 0;
 	_conBuffer.UpdateBorderColour(currentTurn);
-	turnCounter = 1;
+	turnCounter = 0;
 
 	return 1;
 }
@@ -221,32 +221,35 @@ int WorldClass::NextTurn()
 
 int WorldClass::UpdateHealthBg(int index)
 {
-	double hpMod;
-	if (_entityArray[index].unitData.hp <= 0) //Get rid of the unit by moving it to the bottom right corner
+	if (index != -1)
 	{
-		unitMap[_entityArray[index].unitData.position] = worldMap[_entityArray[index].unitData.position];
-		_entityArray[index].unitData.charInfo = worldMap[width*height];
-		_entityArray[index].unitData.position = width*height;
-		unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
-		_entityArray[index].unitData.maxActions = 0;
-		wavPlayer.Load(L"Music/death1.wav");
-		wavPlayer.Play();
-	}
-	else
-	{
-		hpMod = _entityArray[index].unitData.hp / _entityArray[index].unitData.maxHP;
-
-		if (hpMod > 0 && hpMod <= 0.33)
-			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0040;
-		else if (hpMod > 0.66 && hpMod < 0.33)
-			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0030;
-		else if (hpMod >= 0.66 && hpMod > 1)
-			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0020;
-		else
-			_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID];
-
-		if (_entityArray[index].unitData.hp > 1)
+		double hpMod;
+		if (_entityArray[index].unitData.hp <= 0) //Get rid of the unit by moving it to the bottom right corner
+		{
+			unitMap[_entityArray[index].unitData.position] = worldMap[_entityArray[index].unitData.position];
+			_entityArray[index].unitData.charInfo = worldMap[width*height];
+			_entityArray[index].unitData.position = width*height;
 			unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
+			_entityArray[index].unitData.maxActions = 0;
+			wavPlayer.Load(L"Music/death1.wav");
+			wavPlayer.Play();
+		}
+		else
+		{
+			hpMod = _entityArray[index].unitData.hp / _entityArray[index].unitData.maxHP;
+
+			if (hpMod > 0 && hpMod <= 0.33)
+				_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0040;
+			else if (hpMod > 0.33 && hpMod <= 0.66)
+				_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0030;
+			else if (hpMod > 0.66 && hpMod < 1)
+				_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID] | 0x0020;
+			else
+				_entityArray[index].unitData.charInfo.Attributes = playerColour[_entityArray[index].unitData.playerID];
+
+			if (_entityArray[index].unitData.hp >= 1)
+				unitMap[_entityArray[index].unitData.position] = _entityArray[index].unitData.charInfo;
+		}
 	}
 
 
@@ -511,7 +514,7 @@ int WorldClass::CheckInput()
 			}
 		}
 	}
-	return 1;
+	return -1;
 }
 
 int WorldClass::Save()
@@ -519,17 +522,15 @@ int WorldClass::Save()
 	FILE *saveFile;
 	saveFile = fopen("Save/map", "wb");
 	fwrite(worldMap, sizeof(CHAR_INFO), width*height, saveFile);
-
+	fflush(saveFile);
 	//Blank the file
-	saveFile = fopen("Save/units", "wb");
-	//Actually do the writing
-	saveFile = fopen("Save/units", "ab");
+	saveFile = fopen("Save/units", "wb"); 
 	for (int i = 0; i < numOfUnits; i++)
 		fwrite(&_entityArray[i], sizeof(EntityClass), 1, saveFile);
-	
+	fflush(saveFile);
 	saveFile = fopen("Save/misc", "w");
 	fwrite(&numOfPlayers, sizeof(int), 1, saveFile);
-	saveFile = fopen("Save/misc", "a");
+	//saveFile = fopen("Save/misc", "ab");
 	fwrite(&numOfUnits, sizeof(int), 1, saveFile);
 	fwrite(&width, sizeof(int), 1, saveFile);
 	fwrite(&height, sizeof(int), 1, saveFile);
@@ -537,7 +538,7 @@ int WorldClass::Save()
 	fwrite(&currentTurn, sizeof(int), 1, saveFile);
 	for (int i = 0; i < numOfPlayers; i++)
 		fwrite(&playerThreads[i], sizeof(int), 1, saveFile);
-
+	fflush(saveFile);
 	return 1;
 }
 
@@ -554,16 +555,18 @@ int WorldClass::Load()
 	playerThreads = (int*)malloc(sizeof(int)*numOfPlayers);
 	for (int i = 0; i < numOfPlayers; i++)
 		fread(&playerThreads[i], sizeof(int), 1, saveFile);
-
+	fflush(saveFile);;
 
 	saveFile = fopen("Save/map", "rb");
 	CHAR_INFO* tmpMap = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)*width*height);
 	fread(tmpMap, sizeof(CHAR_INFO), width*height, saveFile);
+	fflush(saveFile);
 
 	saveFile = fopen("Save/units", "rb");
 	EntityClass* tmpEntArr = (EntityClass*)malloc(sizeof(EntityClass)*numOfUnits);
 	for (int i = 0; i < numOfUnits; i++)
 		fread(&tmpEntArr[i], sizeof(EntityClass), 1, saveFile);
+	fflush(saveFile);
 	for (int i = 0; i < numOfUnits; i++)
 		_entityArray.push_back(tmpEntArr[i]);
 	free(tmpEntArr);

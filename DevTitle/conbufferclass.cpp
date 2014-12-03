@@ -387,19 +387,19 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 	switch (unit.unitData.unitID)
 	{
 	case 0:
-		ConvertString("Q: Spawns a Constructor                Cost: 1.                 ", tmpActionDisplay);
+		ConvertString("Q: Spawns a Constructor         Cost: 1 Threads                 ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("W: Spawns a Virus                      Cost: 2 + 2 per turn.    ", tmpActionDisplay);
+		ConvertString("W: Spawns a Virus               Cost: 2 Threads + 2 per turn    ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 1:
-		ConvertString("Q: Spawns a Core                       Cost: 3. Gains 1 per turn", tmpActionDisplay);
+		ConvertString("Q: Spawns a Core                Cost: 3 Threads Gains 1 per turn", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("W: Spawns a Firewall                   Cost: 1 + 1 per turn.    ", tmpActionDisplay);
+		ConvertString("W: Spawns a Firewall            Cost: 1 Thread + 1 per turn     ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 2:
@@ -407,7 +407,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("                                       Cost: 2 per turn.        ", tmpActionDisplay);
+		ConvertString("                                Cost: 2 Threads per turn        ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 3:
@@ -415,7 +415,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("                                       Produces: 1 per turn.    ", tmpActionDisplay);
+		ConvertString("                                Produces: 1 Thread per turn     ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	case 4:
@@ -423,7 +423,7 @@ int ConBufferClass::RenderUnitInfo(EntityClass unit)
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		renderRect.Top++;
 		renderRect.Bottom++;
-		ConvertString("Until  it has been destroyed.          Cost: 1 per turn.        ", tmpActionDisplay);
+		ConvertString("Until  it has been destroyed.   Cost: 1 Thread per turn         ", tmpActionDisplay);
 		WriteConsoleOutput(hConsole, tmpActionDisplay, { 64, 1 }, { 0, 0 }, &renderRect);
 		break;
 	}
