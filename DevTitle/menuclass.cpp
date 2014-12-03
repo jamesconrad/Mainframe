@@ -555,4 +555,5 @@ int MenuClass::UpdateMenu()
 		menuId = 1;
 
 	}
+	return 1;
 }
