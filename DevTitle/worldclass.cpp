@@ -500,6 +500,8 @@ int WorldClass::Save()
 {
 	FILE *saveFile;
 	saveFile = fopen("Save/map", "wb");
+	if (saveFile == nullptr)
+		return 1;
 	fwrite(worldMap, sizeof(CHAR_INFO), width*height, saveFile);
 	fflush(saveFile);
 	//Blank the file

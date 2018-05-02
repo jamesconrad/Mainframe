@@ -165,7 +165,8 @@ int GenerationClass::Save(char* filePath, CHAR_INFO* saveData)
 {
 	FILE *saveFile;
 	saveFile = fopen(filePath, "wb");
-	fwrite(saveData, sizeof(CHAR_INFO), width*height, saveFile);
+	if (saveFile != nullptr)
+		fwrite(saveData, sizeof(CHAR_INFO), width*height, saveFile);
 	return 1;
 }
 

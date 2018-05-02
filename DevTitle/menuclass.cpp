@@ -175,7 +175,7 @@ int MenuClass::Render()
 		renderRect.Left = SCREEN_WIDTH / 2 - menu[i].len / 2;
 		renderRect.Right = SCREEN_WIDTH / 2 + menu[i].len / 2 + i;
 
-		WriteConsoleOutput(hConsole, menu[i].text, { menu[i].len, 1 }, { 0, 0 }, &renderRect);
+		WriteConsoleOutput(hConsole, menu[i].text, { (SHORT)menu[i].len, (SHORT)1 }, { (SHORT)0, (SHORT)0 }, &renderRect);
 	}
 
 	_modelLoader.GetModel(0, 27, 27);
@@ -240,37 +240,40 @@ int MenuClass::RenderStory(int storyId)
 
 	bool cont = false;
 	//check if eof
-	while (!storyStream.eof())
+	if (storyStream.is_open())
 	{
-		storyStream.getline(storyBuffer, 82);
-		ConvertString(storyBuffer, storyText);
-
-		for (int i = 0; i < 82; i++)
+		while (!storyStream.eof())
 		{
-			//render each char individually to give typing effect
-			input = _inputClass->GetKeypress();
-			//check if we want to skip
-			if ((input.bKeyDown == true && input.wVirtualKeyCode == VK_RETURN) || cont)
-			{
-				//render entire line and set a flag to keep doing so until done
-				cont = true;
-				renderRect.Right = 81;
-				WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
-				break;
-			}
-			WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
-			SetConsoleCursorPosition(hConsole, { renderRect.Right, renderRect.Top });
-			renderRect.Right++;
+			storyStream.getline(storyBuffer, 82);
+			ConvertString(storyBuffer, storyText);
 
+			for (int i = 0; i < 82; i++)
+			{
+				//render each char individually to give typing effect
+				input = _inputClass->GetKeypress();
+				//check if we want to skip
+				if ((input.bKeyDown == true && input.wVirtualKeyCode == VK_RETURN) || cont)
+				{
+					//render entire line and set a flag to keep doing so until done
+					cont = true;
+					renderRect.Right = 81;
+					WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
+					break;
+				}
+				WriteConsoleOutput(hConsole, storyText, { 82, 1 }, { 0, 0 }, &renderRect);
+				SetConsoleCursorPosition(hConsole, { renderRect.Right, renderRect.Top });
+				renderRect.Right++;
+
+			}
+			renderRect.Top++;
+			renderRect.Bottom++;
+			renderRect.Right = 0;
 		}
-		renderRect.Top++;
-		renderRect.Bottom++;
-		renderRect.Right = 0;
-	}
-	while (!input.bKeyDown)
-	{
-		//wait for the user to press any key to continue
-		input = _inputClass->GetKeypress();
+		while (!input.bKeyDown)
+		{
+			//wait for the user to press any key to continue
+			input = _inputClass->GetKeypress();
+		}
 	}
 
 	SetConsoleCursorPosition(hConsole, { 0, 0 });

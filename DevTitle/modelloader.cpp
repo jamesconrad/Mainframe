@@ -13,6 +13,20 @@ ModelLoaderClass::~ModelLoaderClass()
 {
 }
 
+//Used to easily fill CHAR_INFO arrays
+void ConvertString(const char * text, CHAR_INFO * result, int hexAttribute)
+{
+	wchar_t* converted = new wchar_t[strlen(text)];
+	MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, text, strlen(text) * sizeof(char), converted, strlen(text));
+	for (int i = 0; i < strlen(text); i++)
+	{
+		result[i].Char.UnicodeChar = text[i];
+		result[i].Attributes = hexAttribute;
+	}
+	delete[]converted;
+}
+
+
 int ModelLoaderClass::Initialize()
 {
 	width = 29;
@@ -60,10 +74,20 @@ CHAR_INFO* ModelLoaderClass::GetModel(int modelNum, int x, int y)
 		break;
 	}
 	saveFile = fopen(modelPath, "rb");
-	fread(modelCharInfo, sizeof(CHAR_INFO), width*height, saveFile);
-
-	fclose(saveFile);
-
+	if (saveFile != nullptr)
+	{
+		fread(modelCharInfo, sizeof(CHAR_INFO), width*height, saveFile);
+		fclose(saveFile);
+	}
+	else
+	{
+		char* errorstring = (char*)malloc(sizeof(char)*width*height);
+		memset(errorstring, ' ', width*height);
+		memcpy(errorstring, "Error model file not found: ", 28);
+		memcpy(errorstring + 28, modelPath, strlen(modelPath));
+		errorstring[width*height - 1] = '\0';
+		ConvertString(errorstring, modelCharInfo, 0x0001 | 0x0002 | 0x0004 | 0x0008 | 0x0040 | 0x0080);
+	}
 	//render the model to the given position, starting at the top left corner
 	WriteConsoleOutput((HANDLE)GetStdHandle(STD_OUTPUT_HANDLE), modelCharInfo, len, { 0, 0 }, &renderRect);
 	
